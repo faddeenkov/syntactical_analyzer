@@ -53,11 +53,13 @@ type query = {sel : select;
               str : structure;
               lim : constr;
               }
-              
+
+exception SyntaxError of string
+
 (* Generates query from JSON-tree *)
 
 let rec get_parameter_json l param = match l with (s,j)::xs -> if (String.compare (String.lowercase_ascii s) (String.lowercase_ascii param) = 0) then j else get_parameter_json xs param
-                                                  | _ -> Printf.printf "Error: parameter was not found\n"; `Null
+                                                  | _ -> raise (SyntaxError "Error: parameter was not found")
 
 (* Generate select-parameter *) 
 
@@ -66,33 +68,33 @@ let rec resolve_sel_helper acc l = match l with [] -> acc
                                                                                             | "location" -> (resolve_sel_helper (Location_sel::acc) xs)
                                                                                             | "type" -> (resolve_sel_helper (Type_sel::acc) xs)
                                                                                             | "id" -> (resolve_sel_helper (ID_sel::acc) xs)
-                                                                                            | _ -> (Printf.printf "Wrong syntax: unknown selectable\n"; (resolve_sel_helper acc xs)))
-                                    | __-> Printf.printf "Impossible error\n"; []
+                                                                                            | _ -> raise (SyntaxError "Wrong syntax: unknown selectable"))
+                                    | __-> raise (SyntaxError "Impossible error")
 
-let resolve_sel_json j = match j with `String(s) -> if (String.compare (String.lowercase_ascii s) "$all" = 0) then [Name_sel; Location_sel; Type_sel; ID_sel] else (Printf.printf "Wrong syntax: unexpected input for selection\n"; [])
+let resolve_sel_json j = match j with `String(s) -> if (String.compare (String.lowercase_ascii s) "$all" = 0) then [Name_sel; Location_sel; Type_sel; ID_sel] else raise (SyntaxError "Wrong syntax: unexpected input for selection")
                                     | `List(x::xs) -> resolve_sel_helper [] (x::xs)
-                                    | _ -> Printf.printf "Wrong syntax: unexpected input for selection\n"; []
+                                    | _ -> raise (SyntaxError "Wrong syntax: unexpected input for selection")
 
 let generate_select tree = match tree with `Assoc(attr_list) -> resolve_sel_json (get_parameter_json attr_list "select")
-                                            | _ ->  Printf.printf "Wrong syntax: association expected\n";[]
+                                            | _ ->  raise (SyntaxError "Wrong syntax: association expected")
 
 (* Generate type-parameter *)
 
 let resolve_type_json j = match j with `String(s) -> (match (String.lowercase_ascii s) with "var" -> Var_k
                                                                                             | "fun" -> Fun_k
                                                                                             | "datatype" -> Datatype_k
-                                                                                            | _ -> Printf.printf "Wrong syntax: unexpected input for type\n"; Var_k)
-                                         | _ -> Printf.printf "Wrong syntax: unexpected input for type\n"; Var_k
+                                                                                            | _ -> raise (SyntaxError "Wrong syntax: unexpected input for type"))
+                                         | _ -> raise (SyntaxError "Wrong syntax: unexpected input for type")
 
 let generate_type tree = match tree with `Assoc(attr_list) -> resolve_type_json (get_parameter_json attr_list "type")
-                                        | _ -> Printf.printf "Wrong syntax: association expected\n"; Var_k
+                                        | _ -> raise (SyntaxError "Wrong syntax: association expected")
 
 (* Generate target-parameter *)
 
 let resolve_target_id j = match j with `String(s) -> int_of_string s
-                                        | _ -> -1
+                                        | _ -> raise (SyntaxError "Wrong syntax: ID-input should be a string of numbers")
 
-let resolve_target_or_and j = match j with `List(l) -> (List.map (fun a -> match a with `String(s) -> s | _ -> Printf.printf "Wrong syntax: Element in or-list is not a string\n"; "" ) l)
+let resolve_target_or_and j = match j with `List(l) -> (List.map (fun a -> match a with `String(s) -> s | _ -> raise (SyntaxError "Wrong syntax: Element in or-list is not a string") ) l)
                                         | _ -> []
 
 let resolve_target_json j = match j with `String(s) -> (match (String.lowercase_ascii s) with "$all" -> All_t
@@ -101,54 +103,54 @@ let resolve_target_json j = match j with `String(s) -> (match (String.lowercase_
                                         | `Assoc(l) -> (match l with ((s,j)::[]) -> (match (String.lowercase_ascii s) with "id" -> ID_t(resolve_target_id j)
                                                                                                                         | "or" -> Or_t(resolve_target_or_and j)
                                                                                                                         | "and" -> And_t(resolve_target_or_and j)
-                                                                                                                        | _ -> Printf.printf "Wrong syntax: unexpected form of association in input for target\n"; All_t)
-                                                                | _ -> Printf.printf "Wrong syntax: unexpected form of association in input for target\n"; All_t)
-                                        | _ -> Printf.printf "Wrong syntax: unexpected input for target\n"; All_t
+                                                                                                                        | _ -> raise (SyntaxError "Wrong syntax: unexpected form of association in input for target"))
+                                                                | _ -> raise (SyntaxError "Wrong syntax: unexpected form of association in input for target"))
+                                        | _ -> raise (SyntaxError "Wrong syntax: unexpected input for target")
 
 let generate_target tree = match tree with `Assoc(attr_list) -> resolve_target_json (get_parameter_json attr_list "target")
-                                            | _ -> Printf.printf "Wrong syntax: association expected\n"; All_t
+                                            | _ -> raise (SyntaxError "Wrong syntax: association expected")
 
 (* Generate find-parameter *)
 
 let resolve_find_uses_with_var j = match j with `String(s) -> s
-                                                | _ -> Printf.printf "Wrong syntax: unexpected argument for uses_with_var in find\n"; ""
+                                                | _ -> raise (SyntaxError "Wrong syntax: unexpected argument for uses_with_var in find")
 
 let resolve_find_json j = match j with `String(s) -> (match (String.lowercase_ascii s) with "uses" -> Uses_f
                                                                                         | "decl" -> Decl_f
                                                                                         | "defs" -> Defs_f
                                                                                         | "returns" -> Returns_f
-                                                                                        | _ -> Printf.printf "Wrong syntax: unexpected input for find\n"; Uses_f)
-                                        | `Assoc(l) -> (match l with ((s, json)::[]) -> if (String.compare (String.lowercase_ascii s) "uses_with_var" = 0) then UsesWithVar_f(resolve_find_uses_with_var json) else (Printf.printf "Wrong syntax: unexpected input for find\n"; Uses_f)
-                                                                        | _ -> Printf.printf "Wrong syntax: unexpected input for find in assoc\n"; Uses_f)
-                                        | _ -> Printf.printf "Wrong syntax: unexpected input for find\n"; Uses_f
+                                                                                        | _ -> raise (SyntaxError "Wrong syntax: unexpected input for find"))
+                                        | `Assoc(l) -> (match l with ((s, json)::[]) -> if (String.compare (String.lowercase_ascii s) "uses_with_var" = 0) then UsesWithVar_f(resolve_find_uses_with_var json) else raise (SyntaxError "Wrong syntax: unexpected input for find")
+                                                                        | _ -> raise (SyntaxError "Wrong syntax: unexpected input for find in assoc"))
+                                        | _ -> raise (SyntaxError "Wrong syntax: unexpected input for find")
 
 let generate_find tree = match tree with `Assoc(attr_list) -> resolve_find_json (get_parameter_json attr_list "find")
-                                        | _ -> Printf.printf "Wrong syntax: association expected\n"; Uses_f
+                                        | _ -> raise (SyntaxError "Wrong syntax: association expected")
 
 (* Generate structure-parameter *)
 
 let resolve_struc_fun_name j = match j with `String(s) -> s
-                                        | _ -> Printf.printf "Wrong syntax: fun_name parameter in strucutre has to a string\n"; ""
+                                        | _ -> raise (SyntaxError "Wrong syntax: fun_name parameter in strucutre has to a string")
 
 let resolve_struc_json j = match j with `String(s) -> (match (String.lowercase_ascii s) with "$none" -> None_s
                                                                                         | "cond" -> Cond_s
                                                                                         | "non-cond" -> NonCond_s
-                                                                                        | _ -> Printf.printf "Wrong syntax: unexpected input for structure\n"; None_s)
-                                        | `Assoc(l) -> (match l with ((s, json)::[]) -> if (String.compare (String.lowercase_ascii s) "fun_name" = 0) then Fun_s(resolve_struc_fun_name json) else (Printf.printf "Wrong syntax: unexpected input for structure\n"; None_s)
-                                                                        | _ -> Printf.printf "Wrong syntax: unexpected input for structure\n"; None_s)
-                                        | _ -> Printf.printf "Wrong syntax: unexpected input for structure\n"; None_s
+                                                                                        | _ -> raise (SyntaxError "Wrong syntax: unexpected input for structure"))
+                                        | `Assoc(l) -> (match l with ((s, json)::[]) -> if (String.compare (String.lowercase_ascii s) "fun_name" = 0) then Fun_s(resolve_struc_fun_name json) else raise (SyntaxError "Wrong syntax: unexpected input for structure")
+                                                                        | _ -> raise (SyntaxError "Wrong syntax: unexpected input for structure"))
+                                        | _ -> raise (SyntaxError "Wrong syntax: unexpected input for structure")
 
 let generate_structure tree = match tree with `Assoc(attr_list) -> if (get_parameter_json attr_list "structure" = `Null) then None_s else resolve_struc_json (get_parameter_json attr_list "structure")
-                                                | _ -> Printf.printf "Wrong syntax: association expected\n"; None_s
+                                                | _ -> raise (SyntaxError "Wrong syntax: association expected")
 
 (* Generate constraint-parameter *)
 
 let resolve_constr_json j = match j with `String(s) -> (match (String.lowercase_ascii s) with "$none" -> None_c
                                                                                                 | _ -> Constraint_c(s))
-                                        | _ -> Printf.printf "Wrong syntax: parameter of constraint should be a string\n"; None_c
+                                        | _ -> raise (SyntaxError "Wrong syntax: parameter of constraint must be a string")
 
 let generate_constraint tree = match tree with `Assoc(attr_list) -> if (get_parameter_json attr_list "constraint" = `Null) then None_c else resolve_constr_json (get_parameter_json attr_list "constraint")
-                                                | _ -> Printf.printf "Wrong syntax: association expected\n"; None_c
+                                                | _ -> raise (SyntaxError "Wrong syntax: association expected")
 
 (* Generate parameter-structure *)
 
