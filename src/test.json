@@ -1,0 +1,11 @@
+{   "select" : "$ALL",
+
+    "type" : "datatype",
+    
+    "target" : {"or" : ["a", "b", "c"]},
+    
+    "find" : {"uses_with_var" : "z"},
+    
+    "structure" : {"fun_name" : "yea"},
+
+    "constraint" : "x==y && a<=b"}
