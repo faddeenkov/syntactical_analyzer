@@ -1,9 +1,7 @@
 open Yojson.Basic
+(*
 open Cil
-open Frontc
-
-module JSONParser =
-struct
+open Frontc *)
 
 (* JSON-query has the following form:
         select: ...
@@ -61,7 +59,7 @@ exception SyntaxError of string
 let rec get_parameter_json l param = match l with (s,j)::xs -> if (String.compare (String.lowercase_ascii s) (String.lowercase_ascii param) = 0) then j else get_parameter_json xs param
                                                   | _ -> raise (SyntaxError "Error: parameter was not found")
 
-(* Generate select-parameter *) 
+(* Generate select-parameter *)
 
 let rec resolve_sel_helper acc l = match l with [] -> acc
                                     | `String(x)::xs -> (match (String.lowercase_ascii x) with "name" -> (resolve_sel_helper (Name_sel::acc) xs)
@@ -159,7 +157,7 @@ let generate_query tree = {sel = (generate_select tree);
                            tar = (generate_target tree);
                            f = (generate_find tree);
                            str = (generate_structure tree);
-                           lim = generate_constraint tree;} 
+                           lim = generate_constraint tree;}
 
 (* toString-function for query *)
 
@@ -203,13 +201,12 @@ let to_string_constr t = match t with Constraint_c(s) -> "constraint: "^s
 
 let to_string tree = "{sel = ["^(to_string_sel tree.sel)^"];\nk = "^(to_string_type tree.k)^";\ntar = "^(to_string_target tree.tar)^";\nf = "^(to_string_find tree.f)^";\nstr = "^(to_string_struc tree.str)^";\nlim = "^(to_string_constr tree.lim)^";}\n"
 
-let parse_json_file filename = 
+let parse_json_file filename =
 let jsonTree = from_file filename
 in generate_query jsonTree
 
-end
 
-
+(*
 open JSONParser
 
 (* Reads input *)
@@ -217,4 +214,4 @@ let filename = Sys.argv.(1)
 
 let _ =
 let query = parse_json_file filename
-in Printf.printf "%s" (to_string query)
+in Printf.printf "%s" (to_string query) *)
