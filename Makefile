@@ -1,18 +1,17 @@
 FILENAME = jsonParser
 
 .PHONY: clean
-clean_old:
-	rm $(addprefix src/$(FILENAME),.cmi .cmx .o )
-	rm main
-
 clean:
-	rm -r src/_build
-	rm src/.merlin
-
-compile_old: src/jsonParser.ml
-	ocamlfind ocamlopt -I cil/lib/cil -o main src/jsonParser.ml src/main.ml -package yojson -package zarith -linkpkg
+	rm -r -f src/_build
+	rm -f src/.merlin
+	rm -r -f test/_build
+	rm -f test/.merlin
 
 compile: 
 	cd src; echo "I'm in src"; \
         dune build main.exe 
 #dune build --only-packages=src --build-dir=build main.exe
+
+tests:
+	cd test; echo "I'm in test"; \
+		dune build jsonParser_test.exe

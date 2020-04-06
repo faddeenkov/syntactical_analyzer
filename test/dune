@@ -1,0 +1,5 @@
+(executable
+ (name jsonParser_test)
+  (libraries oUnit))
+
+  ;;ocamlfind ocamlc -o test -package oUnit -linkpkg -g foo.ml test.ml
