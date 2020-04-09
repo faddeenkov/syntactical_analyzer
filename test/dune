@@ -1,4 +1,4 @@
-(executable
+(test
  (name jsonParser_test)
   (libraries oUnit))
 
