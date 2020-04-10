@@ -1,0 +1,11 @@
+{   "SeLeCt" : ["type", "iD", "nAmE"],
+
+    "tYpe" : "fun",
+
+    "TARGET" : {"ID" : "4447"},
+
+    "fInd" : {"uses_with_VAR" : "tmp"},
+
+    "constraint" : "tmp == 'E'"
+
+}

@@ -57,7 +57,7 @@ exception SyntaxError of string
 (* Generates query from JSON-tree *)
 
 let rec get_parameter_json l param = match l with (s,j)::xs -> if (String.compare (String.lowercase_ascii s) (String.lowercase_ascii param) = 0) then j else get_parameter_json xs param
-                                                  | _ -> raise (SyntaxError "Error: parameter was not found")
+                                                  | _ -> `Null
 
 (* Generate select-parameter *)
 
@@ -70,7 +70,7 @@ let rec resolve_sel_helper acc l = match l with [] -> acc
                                     | __-> raise (SyntaxError "Impossible error")
 
 let resolve_sel_json j = match j with `String(s) -> if (String.compare (String.lowercase_ascii s) "$all" = 0) then [Name_sel; Location_sel; Type_sel; ID_sel] else raise (SyntaxError "Wrong syntax: unexpected input for selection")
-                                    | `List(x::xs) -> resolve_sel_helper [] (x::xs)
+                                    | `List(x::xs) -> List.rev (resolve_sel_helper [] (x::xs))
                                     | _ -> raise (SyntaxError "Wrong syntax: unexpected input for selection")
 
 let generate_select tree = match tree with `Assoc(attr_list) -> resolve_sel_json (get_parameter_json attr_list "select")

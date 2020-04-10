@@ -1,11 +1,9 @@
-{   "select" : "$ALL",
+{   "select" : ["NAME", "ID", "LOCATION"],
 
     "type" : "datatype",
     
-    "target" : {"or" : ["a", "b", "c"]},
+    "target" : "int",
     
-    "find" : {"uses_with_var" : "z"},
+    "find" : "uses",
     
-    "structure" : {"fun_name" : "yea"},
-
-    "constraint" : "x==y && a<=b"}
+    "structure" : {"fun_name" : "mergeSort"}}
