@@ -89,7 +89,7 @@ let generate_type tree = match tree with `Assoc(attr_list) -> resolve_type_json 
 
 (* Generate target-parameter *)
 
-let resolve_target_id j = match j with `String(s) -> int_of_string s
+let resolve_target_id j = match j with `Int(s) -> s
                                         | _ -> raise (SyntaxError "Wrong syntax: ID-input should be a string of numbers")
 
 let resolve_target_or_and j = match j with `List(l) -> (List.map (fun a -> match a with `String(s) -> s | _ -> raise (SyntaxError "Wrong syntax: Element in or-list is not a string") ) l)
