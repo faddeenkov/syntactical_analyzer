@@ -1,0 +1,6 @@
+{"select": "bad",
+ "type": "worse",
+ "target": "worst",
+ "find": "idk",
+ "structure": "this is a bad query",
+ "constraint": "$NONE"}
