@@ -1,5 +1,5 @@
-open JsonParser
-open FuncDatatype
+open Mylib.JsonParser
+open Mylib.FuncDatatype
 
 (* Reads input *)
 let filename = Sys.argv.(1)
