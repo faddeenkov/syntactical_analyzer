@@ -20,19 +20,10 @@ opam install yojson
 
 ## Usage
 
-Theoretically you can build it using
+You can build it using
 ```bash
 dune build
 ```
-and test it with 
+and test (not yet) it with 
 ```bash
 dune test
-```
-Current functioning usage is 
-```bash
-make compile_ocamlfind
-```
-and
-```bash
-make test_ocamlfind
-```
