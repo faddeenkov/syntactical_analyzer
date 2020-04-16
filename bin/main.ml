@@ -1,5 +1,5 @@
 open Mylib.JsonParser
-open Mylib.FuncDatatype
+open Mylib.QueryMapping
 open Yojson.Safe
 open Cil
 
@@ -9,7 +9,7 @@ let jsonFile = Sys.argv.(1)
 let sourceFile = Sys.argv.(2)
 
 let _ = let query = parse_json_file jsonFile
-in (* Printf.printf "%s" (Mylib.JsonParser.to_string query); *)match (find_decl "student" (Frontc.parse sourceFile ())) with (name, loc, kind, id) -> Printf.printf "name: %s, loc.line= %d, loc.file= %s, loc.byte: %d, kind: %s, id: %d \n" name loc.line loc.file loc.byte kind id  
+in (* Printf.printf "%s" (Mylib.JsonParser.to_string query); *)match (map_query query (Frontc.parse sourceFile ())) with (name, loc, kind, id) -> Printf.printf "name: %s, loc.line= %d, loc.file= %s, loc.byte: %d, kind: %s, id: %d \n" name loc.line loc.file loc.byte kind id  
 
 (* let _ = Printf.printf "main started\n";
 let query = Printf.printf "now query will be parsed\n"; parse_json_file jsonFile 
