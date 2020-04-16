@@ -10,12 +10,12 @@ add-apt-repository ppa:avsm/ppa
 apt update
 apt install opam
 opam init
-eval %(opam env)
 opam switch create . ocaml-base-compiler.4.09.0
 eval %(opam env)
-opam install dune
-opam install zarith
-opam install yojson
+```
+Install following opam-packages: dune, zarith, yojson and ppx_deriving_yojson with 
+```bash
+opam install [package]
 ```
 
 ## Usage
@@ -24,6 +24,7 @@ You can build it using
 ```bash
 dune build
 ```
-and test (not yet) it with 
+(or with ignoring warnings):
 ```bash
-dune test
+dune build --profile release
+```

@@ -2,7 +2,7 @@
 
     "type" : "datatype",
     
-    "target" : "int",
+    "target" : {"name" : "int"},
     
     "find" : "uses",
     

@@ -6,6 +6,6 @@
 
     "fInd" : {"uses_with_VAR" : "tmp"},
 
-    "constraint" : "tmp == 'E'"
+    "constraint" : {"constr" : "tmp == 'E'"}
 
 }

@@ -1,3 +1,4 @@
 (library
 (name mylib)
-(libraries yojson goblint-cil))
+(libraries yojson goblint-cil ppx_deriving_yojson.runtime)
+(preprocess (pps ppx_deriving_yojson)))

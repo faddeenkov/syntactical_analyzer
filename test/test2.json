@@ -3,4 +3,4 @@
 "target": {"and" : ["a","b"]},
 "find": "uses",
 "structure" : {"fun_name" : "ggt"},
-"constraint": "a/b == 2"}
+"constraint": {"constr" : "a/b == 2"}}

@@ -8,20 +8,23 @@ open Frontc *)
         type: ...
         target: ...
         find: ...
-        struture: ...
+        structure: ...
         constraint: ... *)
 
 (* Definition of parameters *)
-type selectable = Name_sel
-| Location_sel
-| Type_sel
-| ID_sel
+type selectable = Name_sel [@name "name"]
+| Location_sel [@name "location"]
+| Type_sel [@name "type"]
+| ID_sel [@name "id"]
+[@@deriving yojson]
 
 type select = selectable list
+[@@deriving yojson]
 
-type kind = Var_k
-| Fun_k
-| Datatype_k
+type kind = Var_k [@name "var"]
+| Fun_k [@name "fun"]
+| Datatype_k [@name "datatype"]
+[@@deriving yojson]
 
 type target = Name_t of string
 | ID_t of int
@@ -29,28 +32,33 @@ type target = Name_t of string
 | AllGlobVar_t
 | Or_t of (string list)
 | And_t of (string list)
+[@@deriving yojson]
 
 type find = Uses_f
 | Decl_f
 | Defs_f
 | UsesWithVar_f of string
 | Returns_f
+[@@deriving yojson]
 
 type structure = Fun_s of string
 | Cond_s
 | NonCond_s
 | None_s
+[@@deriving yojson]
 
 type constr = Constraint_c of string
 | None_c
+[@@deriving yojson]
 
-type query = {sel : select;
-              k : kind;
-              tar : target;
-              f : find;
-              str : structure;
-              lim : constr;
+type query = {sel : select; [@key "select"]
+              k : kind; [@key "type"]
+              tar : target; [@key "target"]
+              f : find; [@key "find"]
+              str : (structure [@default None_s]); [@key "structure"]
+              lim : (constr [@default None_c]); [@key "constraint"]
               }
+              [@@deriving yojson]
 
 exception SyntaxError of string
 
@@ -89,18 +97,22 @@ let generate_type tree = match tree with `Assoc(attr_list) -> resolve_type_json 
 
 (* Generate target-parameter *)
 
+let resolve_target_name j = match j with `String(s) -> s
+                                        | _ -> raise (SyntaxError "Wrong syntax: name-input should be a string")
+
 let resolve_target_id j = match j with `Int(s) -> s
-                                        | _ -> raise (SyntaxError "Wrong syntax: ID-input should be a string of numbers")
+                                        | _ -> raise (SyntaxError "Wrong syntax: ID-input should be an integer")
 
 let resolve_target_or_and j = match j with `List(l) -> (List.map (fun a -> match a with `String(s) -> s | _ -> raise (SyntaxError "Wrong syntax: Element in or-list is not a string") ) l)
                                         | _ -> []
 
 let resolve_target_json j = match j with `String(s) -> (match (String.lowercase_ascii s) with "$all" -> All_t
                                                                                         | "$all_glob_var" -> AllGlobVar_t
-                                                                                        | _ -> Name_t(s))
+                                                                                        | _ -> raise (SyntaxError "Wrong syntax: Unexpected string as target-input"))
                                         | `Assoc(l) -> (match l with ((s,j)::[]) -> (match (String.lowercase_ascii s) with "id" -> ID_t(resolve_target_id j)
                                                                                                                         | "or" -> Or_t(resolve_target_or_and j)
                                                                                                                         | "and" -> And_t(resolve_target_or_and j)
+                                                                                                                        | "name" -> Name_t(resolve_target_name j)
                                                                                                                         | _ -> raise (SyntaxError "Wrong syntax: unexpected form of association in input for target"))
                                                                 | _ -> raise (SyntaxError "Wrong syntax: unexpected form of association in input for target"))
                                         | _ -> raise (SyntaxError "Wrong syntax: unexpected input for target")
@@ -144,7 +156,9 @@ let generate_structure tree = match tree with `Assoc(attr_list) -> if (get_param
 (* Generate constraint-parameter *)
 
 let resolve_constr_json j = match j with `String(s) -> (match (String.lowercase_ascii s) with "$none" -> None_c
-                                                                                                | _ -> Constraint_c(s))
+                                                                                                | _ -> raise (SyntaxError "Wrong syntax: unexpected string as constraint-input"))
+                                        | `Assoc(l) -> (match l with ((s, `String(c))::[]) -> if(String.compare (String.lowercase_ascii s) "constr" = 0) then Constraint_c(c) else raise (SyntaxError "Wrong syntax: unexpected association in constraint")
+                                                                        | _ -> raise (SyntaxError "Syntax error in constraint"))
                                         | _ -> raise (SyntaxError "Wrong syntax: parameter of constraint must be a string")
 
 let generate_constraint tree = match tree with `Assoc(attr_list) -> if (get_parameter_json attr_list "constraint" = `Null) then None_c else resolve_constr_json (get_parameter_json attr_list "constraint")

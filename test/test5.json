@@ -1,0 +1,6 @@
+{
+    "select" : ["NAME"],
+    "type" : "var",
+    "target" : {"name" : "tmp"},
+    "find" : "uses"
+}
