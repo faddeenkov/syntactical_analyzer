@@ -9,7 +9,15 @@ let jsonFile = Sys.argv.(1)
 let sourceFile = Sys.argv.(2)
 
 let _ = let query = parse_json_file jsonFile
-in (* Printf.printf "%s" (Mylib.JsonParser.to_string query); *)match (map_query query (Frontc.parse sourceFile ())) with (name, loc, kind, id) -> Printf.printf "name: %s, loc.line= %d, loc.file= %s, loc.byte: %d, kind: %s, id: %d \n" name loc.line loc.file loc.byte kind id  
+in 
+let result = map_query query (Frontc.parse sourceFile ())
+in
+let rec print_result list =
+match list with (name, loc, kind, id)::xs -> Printf.printf "name: %s, loc.line= %d, loc.file= %s, loc.byte: %d, kind: %s, id: %d \n" name loc.line loc.file loc.byte kind id; print_result xs
+            | [] -> ()
+in print_result result
+
+(* Printf.printf "%s" (Mylib.JsonParser.to_string query); *)  
 
 (* let _ = Printf.printf "main started\n";
 let query = Printf.printf "now query will be parsed\n"; parse_json_file jsonFile 
