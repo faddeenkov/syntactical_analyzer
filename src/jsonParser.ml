@@ -26,29 +26,29 @@ type kind = Var_k [@name "var"]
 | Datatype_k [@name "datatype"]
 [@@deriving yojson]
 
-type target = Name_t of string
-| ID_t of int
-| All_t
-| AllGlobVar_t
-| Or_t of (string list)
-| And_t of (string list)
+type target = Name_t of string [@name "name"]
+| ID_t of int [@name "id"]
+| All_t [@name "$all"]
+| AllGlobVar_t [@name "$all_glob_var"]
+| Or_t of (string list) [@name "or"]
+| And_t of (string list) [@name "and"]
 [@@deriving yojson]
 
-type find = Uses_f
-| Decl_f
-| Defs_f
-| UsesWithVar_f of string
-| Returns_f
+type find = Uses_f [@name "uses"]
+| Decl_f [@name "decl"]
+| Defs_f [@name "defs"]
+| UsesWithVar_f of string [@name "uses_with_var"]
+| Returns_f [@name "returns"]
 [@@deriving yojson]
 
-type structure = Fun_s of string
-| Cond_s
-| NonCond_s
-| None_s
+type structure = Fun_s of string [@name "fun_name"]
+| Cond_s [@name "cond"]
+| NonCond_s [@name "non-cond"]
+| None_s [@name "$none"]
 [@@deriving yojson]
 
-type constr = Constraint_c of string
-| None_c
+type constr = Constraint_c of string [@name "constr"]
+| None_c [@name "$none"]
 [@@deriving yojson]
 
 type query = {sel : select; [@key "select"]
