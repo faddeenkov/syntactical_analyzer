@@ -23,6 +23,7 @@ in if result_userdef = None then (if result_decl = None then (loc_default,"") el
 (* Finds definition or declaration of user-defined datatypes *)
 let find_decl name file = match (find_decl_helper name file) with (loc, typename) -> ("", loc, typename, -1)
 
+(* Okay, actually I restricted target-parameter All and AllGlobVar for datatype but I forgot, lol *)
 let rec find_decl_all_glob_iter_list list acc = 
 match list with (GType(info, loc))::xs -> find_decl_all_glob_iter_list xs (("", loc, info.tname, -1)::acc)
             | (GCompTag(info,loc))::xs -> find_decl_all_glob_iter_list xs (("", loc, info.cname, -1)::acc)
@@ -35,3 +36,6 @@ let find_decl_all_glob file = List.rev (find_decl_all_glob_iter_list file.global
 
 (* I guess that in C you cannot define any new datatype in function-scopes (see CIL-Doc 4.5) *)
 let find_decl_all file = find_decl_all_glob file
+
+(* Find uses of a datatype in a function *)
+(* let find_uses_in_fun typename funname file = [] (* This function needs to use variable-search in functions. *) *)

@@ -1,9 +1,18 @@
 open Mylib.JsonParser
 open Mylib.QueryMapping
+open Mylib.FuncVar
 open Yojson.Safe
 open Cil
 
-(* Reads input *)
+let sourceFile = Sys.argv.(1)
+
+let rec print_result list =
+match list with (name, loc, kind, id)::xs -> Printf.printf "name:%s, loc.line=%d, loc.file=%s, loc.byte:%d, kind:%s, id:%d \n" name loc.line loc.file loc.byte kind id; print_result xs
+            | [] -> ()
+
+let _ = print_result (find_uses_in_fun ("x") ("main") (Frontc.parse sourceFile ()))
+
+(* (* Reads input *)
 let jsonFile = Sys.argv.(1)
 
 let sourceFile = Sys.argv.(2)
@@ -15,7 +24,7 @@ in
 let rec print_result list =
 match list with (name, loc, kind, id)::xs -> Printf.printf "name:%s, loc.line=%d, loc.file=%s, loc.byte:%d, kind:%s, id:%d \n" name loc.line loc.file loc.byte kind id; print_result xs
             | [] -> ()
-in print_result result
+in print_result result *)
 
 (* Printf.printf "%s" (Mylib.JsonParser.to_string query); *)  
 

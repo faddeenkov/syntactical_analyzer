@@ -24,10 +24,14 @@ enum State {Working = 1, Failed = 0}; //GEnumTag
 
 enum anonym; //GEnumTagDecl
 
+BYTE x[] = {'b'};
+
 int main(){
     typedef char zeichen;
     union SomeUnion {
     int i;
     char str[4];
 }; 
+
+    x[0] = 'a';
 }
