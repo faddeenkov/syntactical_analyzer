@@ -1,6 +1,6 @@
 {
     "select" : ["NAME"],
     "type" : "datatype",
-    "target" : "$All_glob_var",
+    "target" : "$All",
     "find" : "decl"
 }

@@ -32,3 +32,6 @@ match list with (GType(info, loc))::xs -> find_decl_all_glob_iter_list xs (("", 
 
 (* Finds all definitions of user-defined variables *)
 let find_decl_all_glob file = List.rev (find_decl_all_glob_iter_list file.globals [])
+
+(* I guess that in C you cannot define any new datatype in function-scopes (see CIL-Doc 4.5) *)
+let find_decl_all file = find_decl_all_glob file

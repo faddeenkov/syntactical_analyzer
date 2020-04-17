@@ -13,7 +13,7 @@ in
 let result = map_query query (Frontc.parse sourceFile ())
 in
 let rec print_result list =
-match list with (name, loc, kind, id)::xs -> Printf.printf "name: %s, loc.line= %d, loc.file= %s, loc.byte: %d, kind: %s, id: %d \n" name loc.line loc.file loc.byte kind id; print_result xs
+match list with (name, loc, kind, id)::xs -> Printf.printf "name:%s, loc.line=%d, loc.file=%s, loc.byte:%d, kind:%s, id:%d \n" name loc.line loc.file loc.byte kind id; print_result xs
             | [] -> ()
 in print_result result
 

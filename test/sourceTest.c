@@ -16,13 +16,18 @@ typedef struct uni_tag
 
 struct student me;
 
-union SomeUnion {
-    int i;
-    char str[4];
-}; 
+
 
 struct mystery; //GCompTagDecl
 
 enum State {Working = 1, Failed = 0}; //GEnumTag
 
 enum anonym; //GEnumTagDecl
+
+int main(){
+    typedef char zeichen;
+    union SomeUnion {
+    int i;
+    char str[4];
+}; 
+}
