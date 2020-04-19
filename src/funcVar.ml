@@ -37,6 +37,9 @@ let search_lhost host name loc =
 match host with Var(info) -> if String.compare info.vname name = 0 then (name, loc, (resolve_type info.vtype), info.vid)::[] else []
             | _ -> []
 in
+(* let rec search_expression exp name loc = match exp with Lval((lhost, _)) -> search_lhost lhost name loc
+                                                | Real(e) -> search_expression e name loc
+in *)
 let rec search_instr_list_for_var list name = 
 match list with Set((lhost, offset), exp, loc)::xs ->  (search_lhost lhost name loc)@(search_instr_list_for_var xs name)
                 | _::xs -> search_instr_list_for_var xs name
