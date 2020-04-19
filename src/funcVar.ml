@@ -7,34 +7,8 @@ match list with x::xs -> if String.compare x.vname name = 0 then x.vid else find
 let find_uses_in_fun_var dec name = let id_local = find_var_in_varinfo_list dec.slocals name
 in let id_formal = find_var_in_varinfo_list dec.sformals name
 in 
-let rec resolve_type t = 
-match t with TInt(ikind, _) -> (match ikind with IChar -> "char"
-                                                | ISChar -> "signed char"
-                                                | IUChar -> "unsigned char"
-                                                | IBool -> "bool"
-                                                | IInt -> "int"
-                                                | IUInt -> "unsigned int"
-                                                | IShort -> "short"
-                                                | IUShort -> "unsigned short"
-                                                | ILong -> "long"
-                                                | IULong -> "unsigned long"
-                                                | ILongLong -> "long long"
-                                                | IULongLong -> "unisgned long long")
-        | TFloat(fkind, _) -> (match fkind with FFloat -> "float"
-                                                | FDouble -> "double"
-                                                | FLongDouble -> "long double"
-                                                | FComplexFloat -> "float _Complex"
-                                                | FComplexDouble -> "double _Complex"
-                                                | FComplexLongDouble -> "long double _Complex")
-        | TPtr(typ, _) -> "*"^(resolve_type typ)
-        | TArray (typ, _, _) -> (resolve_type typ)^"[]"
-        | TNamed (info, _) -> info.tname
-        | TComp (info, _) -> info.cname
-        | TEnum (info, _) -> info.ename
-        | _ -> ""
-in
-let search_lhost host name loc = 
-match host with Var(info) -> if String.compare info.vname name = 0 then (name, loc, (resolve_type info.vtype), info.vid)::[] else []
+let search_lhost host name loc = Printf.printf "search_lhost was called\n";
+match host with Var(info) -> if String.compare info.vname name = 0 then (name, loc, (Pretty.sprint 1 (d_type () info.vtype)), info.vid)::[] else []
             | _ -> []
 in
 (* let rec search_expression exp name loc = match exp with Lval((lhost, _)) -> search_lhost lhost name loc

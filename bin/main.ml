@@ -30,4 +30,4 @@ match list with (name, loc, kind, id)::xs -> Printf.printf "name:%s, loc.line=%d
 in print_result result
 
 (* Replace function name with jsonDeriverTest find_uses_in_funTest or mapTest *)
-let _ = jsonDeriverTest ()
+let _ = find_uses_in_funTest ()
