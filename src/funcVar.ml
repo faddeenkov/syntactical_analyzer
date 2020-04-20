@@ -3,7 +3,7 @@ open Cil
 (* Helper functions *)
 (* Finds a variable in a lhost *)
 let search_lhost host name loc = 
-match host with Var(info) -> if String.compare info.vname name = 0 then (name, loc, (Pretty.sprint 1 (d_type () info.vtype)), info.vid)::[] else []
+match host with Var(info) -> if String.compare info.vname name = 0 then  (name, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::[]  else []
                 (* Should I consider Mem too? *)
             | _ -> []
 

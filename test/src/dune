@@ -1,0 +1,4 @@
+(library
+(name testlib)
+(libraries oUnit mylib)
+)

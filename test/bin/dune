@@ -1,5 +1,5 @@
 (test
- (name jsonParser_test)
-  (libraries oUnit mylib))
+ (name main_test)
+  (libraries testlib))
 
   ;;ocamlfind ocamlc -o test -package oUnit -linkpkg -g foo.ml test.ml
