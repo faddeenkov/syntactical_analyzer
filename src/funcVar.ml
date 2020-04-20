@@ -30,7 +30,7 @@ match list with x::xs -> (search_expression x name loc)@(search_expression_list 
 (* Finds a variable in a list of instructions *)
 let rec search_instr_list_for_var list name = 
 match list with Set((lhost, offset), exp, loc)::xs ->  (search_lhost lhost name loc)@(search_expression exp name loc)@(search_instr_list_for_var xs name)
-                | VarDecl(info, loc)::xs -> Printf.printf "A VarDecl was found\n"; if (String.compare info.vname name = 0) then (name, loc, (Pretty.sprint 1 (d_type () info.vtype)), info.vid)::(search_instr_list_for_var xs name) else (search_instr_list_for_var xs name)
+                | VarDecl(info, loc)::xs -> if (String.compare info.vname name = 0) then (name, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::(search_instr_list_for_var xs name) else (search_instr_list_for_var xs name)
                 | Call (Some(lhost,_), exp, exp_list, loc)::xs -> (search_lhost lhost name loc)@(search_expression exp name loc)@(search_expression_list exp_list name loc)@(search_instr_list_for_var xs name)
                 (* Should I consider Asm too? *)
                 | _::xs -> search_instr_list_for_var xs name

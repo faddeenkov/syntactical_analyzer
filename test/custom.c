@@ -1,3 +1,4 @@
+
 typedef unsigned char BYTE; //GType
 
 struct student;
