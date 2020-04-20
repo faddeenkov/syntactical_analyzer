@@ -1,6 +1,7 @@
 {
     "select" : ["NAME"],
-    "type" : "datatype",
-    "target" : "$All",
-    "find" : "decl"
+    "type" : "var",
+    "target" : {"name": "x2"},
+    "find" : "uses",
+    "structure" : {"fun_name" : "main"}
 }

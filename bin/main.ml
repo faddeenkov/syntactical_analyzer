@@ -19,8 +19,8 @@ match list with (name, loc, kind, id)::xs -> Printf.printf "name:%s, loc.line=%d
 
 let find_uses_in_funTest () = print_result (find_uses_in_fun ("x2") ("main") (Frontc.parse sourceFile ()))
 
-(* This test actually parses and executes the query *)
-let mapTest () = let query = parse_json_file jsonFile
+(* This actually parses and executes the query *)
+let executeQuery () = let query = parse_json_file jsonFile
 in 
 let result = map_query query (Frontc.parse sourceFile ())
 in
@@ -29,5 +29,5 @@ match list with (name, loc, kind, id)::xs -> Printf.printf "name:%s, loc.line=%d
             | [] -> ()
 in print_result result
 
-(* Replace function name with jsonDeriverTest find_uses_in_funTest or mapTest *)
-let _ = find_uses_in_funTest ()
+(* Replace function name with jsonDeriverTest find_uses_in_funTest or executeQuery *)
+let _ = executeQuery ()

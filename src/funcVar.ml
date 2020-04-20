@@ -1,11 +1,13 @@
 open Cil
 
-let find_uses_in_fun_var dec name =
+(* Helper functions *)
+(* Finds a variable in a lhost *)
 let search_lhost host name loc = 
 match host with Var(info) -> if String.compare info.vname name = 0 then (name, loc, (Pretty.sprint 1 (d_type () info.vtype)), info.vid)::[] else []
                 (* Should I consider Mem too? *)
             | _ -> []
-in
+
+(* Finds a variable in an expression *)
 let rec search_expression exp name loc = 
 match exp with Lval((lhost, _)) -> search_lhost lhost name loc
         | Real(e) -> search_expression e name loc
@@ -19,11 +21,13 @@ match exp with Lval((lhost, _)) -> search_lhost lhost name loc
         | AddrOf((lhost,_)) -> search_lhost lhost name loc
         | StartOf((lhost, _)) -> search_lhost lhost name loc
         | _ -> []
-in 
+ 
+ (* Finds a variable in a list of expressions *)
 let rec search_expression_list list name loc = 
 match list with x::xs -> (search_expression x name loc)@(search_expression_list xs name loc)
                 | [] -> []
-in
+
+(* Finds a variable in a list of instructions *)
 let rec search_instr_list_for_var list name = 
 match list with Set((lhost, offset), exp, loc)::xs ->  (search_lhost lhost name loc)@(search_expression exp name loc)@(search_instr_list_for_var xs name)
                 | VarDecl(info, loc)::xs -> Printf.printf "A VarDecl was found\n"; if (String.compare info.vname name = 0) then (name, loc, (Pretty.sprint 1 (d_type () info.vtype)), info.vid)::(search_instr_list_for_var xs name) else (search_instr_list_for_var xs name)
@@ -31,7 +35,8 @@ match list with Set((lhost, offset), exp, loc)::xs ->  (search_lhost lhost name 
                 (* Should I consider Asm too? *)
                 | _::xs -> search_instr_list_for_var xs name
                 | [] -> []
-in 
+ 
+ (* Finds a variable in a list of statements *)
 let rec search_stmt_list_for_var list name = 
 match list with x::xs -> (match x.skind with Instr(ins_list) -> search_instr_list_for_var ins_list name
                                             | Return(Some(exp), loc) -> search_expression exp name loc
@@ -48,11 +53,15 @@ match list with x::xs -> (match x.skind with Instr(ins_list) -> search_instr_lis
                                             | TryExcept(b1, (instr_list, exp), b2, loc) -> (search_stmt_list_for_var b1.bstmts name)@(search_instr_list_for_var instr_list name)@(search_expression exp name loc)@(search_stmt_list_for_var b2.bstmts name)
                                             | _ -> [])@(search_stmt_list_for_var xs name)
             | [] -> []
-in search_stmt_list_for_var dec.sbody.bstmts name
 
+(* Finds all uses of a variable in a function-body *)
+let find_uses_in_fun_var dec name = search_stmt_list_for_var dec.sbody.bstmts name
+
+(* Finds the function in which a variable shall be found *)
 let rec find_uses_in_fun_find_fun list name varname = 
 match list with GFun(dec, loc)::xs -> if String.compare dec.svar.vname name = 0 then find_uses_in_fun_var dec varname else find_uses_in_fun_find_fun xs name varname
             | [] -> []
             | _::xs -> find_uses_in_fun_find_fun xs name varname
 
+(* Finds all uses of a variable in a function *)
 let find_uses_in_fun varname funname file = find_uses_in_fun_find_fun file.globals funname varname

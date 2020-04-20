@@ -51,6 +51,7 @@ type constr = Constraint_c of string [@name "constr"]
 | None_c [@name "$none"]
 [@@deriving yojson]
 
+(* Type-definition of a query for mapping use *)
 type query = {sel : select; [@key "select"]
               k : kind; [@key "type"]
               tar : target; [@key "target"]
@@ -218,14 +219,3 @@ let to_string tree = "{sel = ["^(to_string_sel tree.sel)^"];\nk = "^(to_string_t
 let parse_json_file filename =
 let jsonTree = from_file filename
 in generate_query jsonTree
-
-
-(*
-open JSONParser
-
-(* Reads input *)
-let filename = Sys.argv.(1)
-
-let _ =
-let query = parse_json_file filename
-in Printf.printf "%s" (to_string query) *)
