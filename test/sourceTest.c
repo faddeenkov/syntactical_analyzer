@@ -43,6 +43,16 @@ int main(){
 
     int x2;
     x2 = 7;
+    
+
+    /**
+     * __try{
+        int j = x2;
+        x2 = j*3;
+    }
+    __finally{
+
+    } **/
 
     int k = f(x+4-x2);
 
@@ -57,10 +67,20 @@ int main(){
         break;
     }
 
+    while(x2 < 17){
+        if(x2 == 2){
+            break;
+        }
+        else{
+            x2 = x2 + 1;
+        }
+    }
+
     if(x2 == 7){
         return f(x2);
     }
     else{
         return x2 - x[0];
     }
+
 }

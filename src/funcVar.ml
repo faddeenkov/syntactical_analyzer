@@ -1,12 +1,6 @@
 open Cil
 
-let rec find_var_in_varinfo_list list name = 
-match list with x::xs -> if String.compare x.vname name = 0 then x.vid else find_var_in_varinfo_list xs name
-            | [] -> -1
-
-let find_uses_in_fun_var dec name = let id_local = find_var_in_varinfo_list dec.slocals name
-in let id_formal = find_var_in_varinfo_list dec.sformals name
-in 
+let find_uses_in_fun_var dec name =
 let search_lhost host name loc = 
 match host with Var(info) -> if String.compare info.vname name = 0 then (name, loc, (Pretty.sprint 1 (d_type () info.vtype)), info.vid)::[] else []
                 (* Should I consider Mem too? *)
@@ -45,6 +39,13 @@ match list with x::xs -> (match x.skind with Instr(ins_list) -> search_instr_lis
                                             | ComputedGoto(exp, loc) -> search_expression exp name loc
                                             | If (exp, b1, b2, loc) -> (search_expression exp name loc)@(search_stmt_list_for_var b1.bstmts name)@(search_stmt_list_for_var b2.bstmts name) 
                                             | Switch (exp, block, stmt_list, loc) -> (search_expression exp name loc)@(search_stmt_list_for_var stmt_list name) (* (search_stmt_list_for_var block.bstmts name)@ is this a duplicate of stmt list? *)
+                                            | Loop (block, loc, None, None) -> search_stmt_list_for_var block.bstmts name
+                                            | Loop (block, loc, None, Some(s2)) -> (search_stmt_list_for_var block.bstmts name)@(search_stmt_list_for_var (s2::[]) name)
+                                            | Loop (block, loc, Some(s1), None) -> (search_stmt_list_for_var block.bstmts name)@(search_stmt_list_for_var (s1::[]) name)
+                                            | Loop (block, loc, Some(s1), Some(s2)) -> (search_stmt_list_for_var block.bstmts name)@(search_stmt_list_for_var (s1::[]) name)@(search_stmt_list_for_var (s2::[]) name)
+                                            | Block(block) -> Printf.printf "A Block\n"; search_stmt_list_for_var block.bstmts name
+                                            | TryFinally (b1, b2, loc) -> (search_stmt_list_for_var b1.bstmts name)@(search_stmt_list_for_var b2.bstmts name)
+                                            | TryExcept(b1, (instr_list, exp), b2, loc) -> (search_stmt_list_for_var b1.bstmts name)@(search_instr_list_for_var instr_list name)@(search_expression exp name loc)@(search_stmt_list_for_var b2.bstmts name)
                                             | _ -> [])@(search_stmt_list_for_var xs name)
             | [] -> []
 in search_stmt_list_for_var dec.sbody.bstmts name
