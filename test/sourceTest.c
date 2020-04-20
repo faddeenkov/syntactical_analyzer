@@ -26,6 +26,10 @@ enum anonym; //GEnumTagDecl
 
 BYTE x[] = {'b'};
 
+int f (BYTE b){
+    return b++;
+}
+
 int main(){
     typedef char zeichen;
     union SomeUnion {
@@ -34,4 +38,29 @@ int main(){
 }; 
 
     x[0] = 'a';
+
+    BYTE z = x[0];
+
+    int x2;
+    x2 = 7;
+
+    int k = f(x+4-x2);
+
+    switch(x2){
+        case 1:
+            x2 = 1;
+        break;
+        case 7:
+            x[0] = x2;
+        break;
+        default:
+        break;
+    }
+
+    if(x2 == 7){
+        return f(x2);
+    }
+    else{
+        return x2 - x[0];
+    }
 }
