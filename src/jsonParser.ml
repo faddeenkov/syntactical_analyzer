@@ -1,7 +1,4 @@
 open Yojson.Safe
-(*
-open Cil
-open Frontc *)
 
 (* JSON-query has the following form:
         select: ...
@@ -11,19 +8,11 @@ open Frontc *)
         structure: ...
         constraint: ... *)
 
-(* Definition of parameters *)
-(* type select_der = string list
-
-type name_t = {name : string}
-type id_t = {id : int}
-type target_der = name_t
-| id_t *)
-
 type selectable = Name_sel [@name "name"]
-| Location_sel [@name "location"]
-| Type_sel [@name "type"]
-| ID_sel [@name "id"]
-[@@deriving yojson]
+| Location_sel [@name "location"] [@to_yojson fun x -> `String(x)]
+| Type_sel [@name "type"] [@to_yojson fun x -> `String(x)]
+| ID_sel [@name "id"] [@to_yojson fun x -> `String(x)]
+[@@deriving yojson] 
 
 type select = selectable list
 [@@deriving yojson]
@@ -61,6 +50,7 @@ type constr = Constraint_c of string [@name "constr"]
 
 exception SyntaxError of string
 
+(* Resolution of parameters *)
 (* Generate select-parameter *)
 
 let rec resolve_sel_helper acc l = match l with [] -> acc
@@ -140,62 +130,53 @@ let resolve_constr_json j = match j with `String(s) -> (match (String.lowercase_
                                                                         | _ -> raise (SyntaxError "Syntax error in constraint"))
                                         | _ -> raise (SyntaxError "Wrong syntax: parameter of constraint must be a string")
 
+(* to_yojson helper functions *)
+
+let rec print_select_to_yojson l = 
+match l with x::xs -> (match x with Name_sel -> `String("name")::(print_select_to_yojson xs)
+                                | Location_sel -> `String("location")::(print_select_to_yojson xs)
+                                | Type_sel -> `String("type")::(print_select_to_yojson xs)
+                                | ID_sel -> `String("id")::(print_select_to_yojson xs) )
+        | [] -> []
+        
+let rec print_target_list_to_yj_string l = 
+match l with x::xs -> `String(x)::(print_target_list_to_yj_string xs)
+        | [] -> []
+
+let print_target_to_yojson x = 
+match x with Name_t(s) -> `Assoc(("name", `String(s))::[])
+        | ID_t(i) -> `Assoc(("id", `Int(i))::[])
+        | All_t -> `String("$all")
+        | AllGlobVar_t -> `String("$all_glob_var")
+        | Or_t(list) -> `Assoc(("or", `List(print_target_list_to_yj_string list))::[]) 
+        | And_t(list) -> `Assoc(("and", `List(print_target_list_to_yj_string list))::[])
+
 (* Type-definition of a query for mapping use *)
-type query = {sel : select; [@key "select"] [@of_yojson fun x -> Result.Ok(resolve_sel_json x)]
-              k : kind; [@key "type"] [@of_yojson fun x -> Result.Ok(resolve_type_json x)]
-              tar : target; [@key "target"] [@of_yojson fun x -> Result.Ok(resolve_target_json x)]
-              f : find; [@key "find"] [@of_yojson fun x -> Result.Ok(resolve_find_json x)]
-              str : (structure [@default None_s]); [@key "structure"] [@of_yojson fun x -> Result.Ok(resolve_struc_json x)]
-              lim : (constr [@default None_c]); [@key "constraint"] [@of_yojson fun x -> Result.Ok(resolve_constr_json x)]
+type query = {sel : select; [@key "select"] [@of_yojson fun x -> Result.Ok(resolve_sel_json x)] [@to_yojson fun x -> `List(print_select_to_yojson x)]
+              k : kind; [@key "type"] [@of_yojson fun x -> Result.Ok(resolve_type_json x)] [@to_yojson fun x -> match x with Var_k -> `String("var")
+                                                                                                                        | Fun_k -> `String("fun")
+                                                                                                                        | Datatype_k -> `String("datatype")]
+              tar : target; [@key "target"] [@of_yojson fun x -> Result.Ok(resolve_target_json x)] [@to_yojson fun x -> print_target_to_yojson x]
+              f : find; [@key "find"] [@of_yojson fun x -> Result.Ok(resolve_find_json x)] [@to_yojson fun x -> match x with Uses_f -> `String("uses")
+                                                                                                                        | Decl_f -> `String("decl")
+                                                                                                                        | Defs_f -> `String("defs")
+                                                                                                                        | UsesWithVar_f(s) -> `Assoc(("uses_with_var", `String(s))::[])
+                                                                                                                        | Returns_f -> `String("returns")]
+              str : (structure [@default None_s]); [@key "structure"] [@of_yojson fun x -> Result.Ok(resolve_struc_json x)] [@to_yojson fun x -> match x with Cond_s -> `String("cond")
+                                                                                                                                                        | NonCond_s -> `String("non-cond")
+                                                                                                                                                        | Fun_s(s) -> `Assoc(("fun_name", `String(s))::[])]
+              lim : (constr [@default None_c]); [@key "constraint"] [@of_yojson fun x -> Result.Ok(resolve_constr_json x)] [@to_yojson fun x -> match x with Constraint_c(s) -> `String(s)]
               }
               [@@deriving yojson]
 
 (* toString-function for query *)
 
-let to_string_selectable x = match x with Name_sel -> "NAME"
-                                        | Location_sel -> "LOCATION"
-                                        | ID_sel -> "ID"
-                                        | Type_sel -> "TYPE"
-
-let rec to_string_sel sel = match sel with x::[] -> to_string_selectable x
-                                        | x::xs -> (to_string_selectable x)^", "^(to_string_sel xs)
-                                        | [] -> ""
-
-let to_string_type k = match k with Var_k -> "var"
-                                | Fun_k -> "fun"
-                                | Datatype_k -> "datatype"
-
-let rec to_string_target_or_and_list l = match l with x::[] -> x^" "
-                                                | x::xs -> x^", "^(to_string_target_or_and_list xs)
-                                                | [] -> ""
-
-let to_string_target t = match t with All_t -> "$all"
-                                | AllGlobVar_t -> "$all_glob"
-                                | Name_t(s) -> "name: "^s
-                                | ID_t(i) -> "ID: "^(string_of_int i)
-                                | Or_t(l) -> "or: "^(to_string_target_or_and_list l)
-                                | And_t(l) -> "and: "^(to_string_target_or_and_list l)
-
-let to_string_find t = match t with Uses_f -> "uses"
-                                | Decl_f -> "decl"
-                                | Defs_f -> "defs"
-                                | UsesWithVar_f(s) -> "uses_with_var: "^s
-                                | Returns_f -> "returns"
-
-let to_string_struc t = match t with Fun_s(s) -> "fun_name: "^s
-                                | Cond_s -> "cond"
-                                | NonCond_s -> "non-cond"
-                                | None_s -> "none"
-
-let to_string_constr t = match t with Constraint_c(s) -> "constraint: "^s
-                                | None_c -> "none"
-
-let to_string tree = "{sel = ["^(to_string_sel tree.sel)^"];\nk = "^(to_string_type tree.k)^";\ntar = "^(to_string_target tree.tar)^";\nf = "^(to_string_find tree.f)^";\nstr = "^(to_string_struc tree.str)^";\nlim = "^(to_string_constr tree.lim)^";}\n"
+let to_string_q query = Yojson.Safe.to_string (query_to_yojson query)
 
 exception Error of string
 
 let parse_json_file filename =
 let jsonTree = from_file filename
 in let derived = query_of_yojson jsonTree
-in match derived with Result.Ok y -> y
+in match derived with Result.Ok y -> Printf.printf "%s\n" (to_string_q y); y
                     | Result.Error x -> raise (Error(x))

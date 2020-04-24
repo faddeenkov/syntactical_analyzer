@@ -9,11 +9,6 @@ let sourceFile = Sys.argv.(2)
 
 exception Error of string
 
-let jsonDeriverTest () = Printf.printf "main started\n";
-let derived = Printf.printf "query_of_yojson will be called\n"; query_of_yojson (from_file jsonFile)  (* Second statement does not make any sense, just testing dependencies *)
-in Printf.printf "matching time!\n"; match derived with Result.Ok y -> Printf.printf "No error occured\n"; Mylib.JsonParser.to_string y
-                    | Result.Error x -> Printf.printf "An error occured: %s\n" x; "" 
-
 let rec print_result list =
 match list with (name, loc, kind, id)::xs -> Printf.printf "name:%s, loc.line=%d, loc.file=%s, loc.byte:%d, kind:%s, id:%d \n" name loc.line loc.file loc.byte kind id; print_result xs
             | [] -> ()
@@ -29,5 +24,14 @@ match list with (name, loc, kind, id)::xs -> Printf.printf "name:%s, loc.line=%d
             | [] -> ()
 in print_result result 
 
+(* This tests to_yojson *)
+let testToJson () =
+let query = {sel = [Name_sel; Location_sel]; 
+            k = Var_k;
+            tar = Or_t(["x";"y"]);
+            f = Decl_f;
+            str = None_s;
+            lim = Constraint_c("x==y")}
+in Printf.printf "%s\n" (Yojson.Safe.to_string (query_to_yojson query))
 (* Replace function name with jsonDeriverTest find_uses_in_funTest or executeQuery *)
 let _ = executeQuery ()
