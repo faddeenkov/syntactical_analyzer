@@ -7,6 +7,8 @@ open Cil
 let jsonFile = Sys.argv.(1)
 let sourceFile = Sys.argv.(2)
 
+exception Error of string
+
 let jsonDeriverTest () = Printf.printf "main started\n";
 let derived = Printf.printf "query_of_yojson will be called\n"; query_of_yojson (from_file jsonFile)  (* Second statement does not make any sense, just testing dependencies *)
 in Printf.printf "matching time!\n"; match derived with Result.Ok y -> Printf.printf "No error occured\n"; Mylib.JsonParser.to_string y
@@ -19,14 +21,13 @@ match list with (name, loc, kind, id)::xs -> Printf.printf "name:%s, loc.line=%d
 let find_uses_in_funTest () = print_result (find_uses_in_fun ("x2") ("main") (Frontc.parse sourceFile ()))
 
 (* This actually parses and executes the query *)
-let executeQuery () = let query = parse_json_file jsonFile
-in 
-let result = map_query query (Frontc.parse sourceFile ())
+let executeQuery () = 
+let result = map_query (parse_json_file jsonFile) (Frontc.parse sourceFile ())
 in
 let rec print_result list =
 match list with (name, loc, kind, id)::xs -> Printf.printf "name:%s, loc.line=%d, loc.file=%s, loc.byte:%d, kind:%s, id:%d \n" name loc.line loc.file loc.byte kind id; print_result xs
             | [] -> ()
-in print_result result
+in print_result result 
 
 (* Replace function name with jsonDeriverTest find_uses_in_funTest or executeQuery *)
 let _ = executeQuery ()

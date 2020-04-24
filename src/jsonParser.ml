@@ -1,4 +1,4 @@
-open Yojson.Basic
+open Yojson.Safe
 (*
 open Cil
 open Frontc *)
@@ -12,6 +12,13 @@ open Frontc *)
         constraint: ... *)
 
 (* Definition of parameters *)
+(* type select_der = string list
+
+type name_t = {name : string}
+type id_t = {id : int}
+type target_der = name_t
+| id_t *)
+
 type selectable = Name_sel [@name "name"]
 | Location_sel [@name "location"]
 | Type_sel [@name "type"]
@@ -51,22 +58,8 @@ type constr = Constraint_c of string [@name "constr"]
 | None_c [@name "$none"]
 [@@deriving yojson]
 
-(* Type-definition of a query for mapping use *)
-type query = {sel : select; [@key "select"]
-              k : kind; [@key "type"]
-              tar : target; [@key "target"]
-              f : find; [@key "find"]
-              str : (structure [@default None_s]); [@key "structure"]
-              lim : (constr [@default None_c]); [@key "constraint"]
-              }
-              [@@deriving yojson]
 
 exception SyntaxError of string
-
-(* Generates query from JSON-tree *)
-
-let rec get_parameter_json l param = match l with (s,j)::xs -> if (String.compare (String.lowercase_ascii s) (String.lowercase_ascii param) = 0) then j else get_parameter_json xs param
-                                                  | _ -> `Null
 
 (* Generate select-parameter *)
 
@@ -82,9 +75,6 @@ let resolve_sel_json j = match j with `String(s) -> if (String.compare (String.l
                                     | `List(x::xs) -> List.rev (resolve_sel_helper [] (x::xs))
                                     | _ -> raise (SyntaxError "Wrong syntax: unexpected input for selection")
 
-let generate_select tree = match tree with `Assoc(attr_list) -> resolve_sel_json (get_parameter_json attr_list "select")
-                                            | _ ->  raise (SyntaxError "Wrong syntax: association expected")
-
 (* Generate type-parameter *)
 
 let resolve_type_json j = match j with `String(s) -> (match (String.lowercase_ascii s) with "var" -> Var_k
@@ -92,9 +82,6 @@ let resolve_type_json j = match j with `String(s) -> (match (String.lowercase_as
                                                                                             | "datatype" -> Datatype_k
                                                                                             | _ -> raise (SyntaxError "Wrong syntax: unexpected input for type"))
                                          | _ -> raise (SyntaxError "Wrong syntax: unexpected input for type")
-
-let generate_type tree = match tree with `Assoc(attr_list) -> resolve_type_json (get_parameter_json attr_list "type")
-                                        | _ -> raise (SyntaxError "Wrong syntax: association expected")
 
 (* Generate target-parameter *)
 
@@ -118,9 +105,6 @@ let resolve_target_json j = match j with `String(s) -> (match (String.lowercase_
                                                                 | _ -> raise (SyntaxError "Wrong syntax: unexpected form of association in input for target"))
                                         | _ -> raise (SyntaxError "Wrong syntax: unexpected input for target")
 
-let generate_target tree = match tree with `Assoc(attr_list) -> resolve_target_json (get_parameter_json attr_list "target")
-                                            | _ -> raise (SyntaxError "Wrong syntax: association expected")
-
 (* Generate find-parameter *)
 
 let resolve_find_uses_with_var j = match j with `String(s) -> s
@@ -135,9 +119,6 @@ let resolve_find_json j = match j with `String(s) -> (match (String.lowercase_as
                                                                         | _ -> raise (SyntaxError "Wrong syntax: unexpected input for find in assoc"))
                                         | _ -> raise (SyntaxError "Wrong syntax: unexpected input for find")
 
-let generate_find tree = match tree with `Assoc(attr_list) -> resolve_find_json (get_parameter_json attr_list "find")
-                                        | _ -> raise (SyntaxError "Wrong syntax: association expected")
-
 (* Generate structure-parameter *)
 
 let resolve_struc_fun_name j = match j with `String(s) -> s
@@ -151,9 +132,6 @@ let resolve_struc_json j = match j with `String(s) -> (match (String.lowercase_a
                                                                         | _ -> raise (SyntaxError "Wrong syntax: unexpected input for structure"))
                                         | _ -> raise (SyntaxError "Wrong syntax: unexpected input for structure")
 
-let generate_structure tree = match tree with `Assoc(attr_list) -> if (get_parameter_json attr_list "structure" = `Null) then None_s else resolve_struc_json (get_parameter_json attr_list "structure")
-                                                | _ -> raise (SyntaxError "Wrong syntax: association expected")
-
 (* Generate constraint-parameter *)
 
 let resolve_constr_json j = match j with `String(s) -> (match (String.lowercase_ascii s) with "$none" -> None_c
@@ -162,17 +140,15 @@ let resolve_constr_json j = match j with `String(s) -> (match (String.lowercase_
                                                                         | _ -> raise (SyntaxError "Syntax error in constraint"))
                                         | _ -> raise (SyntaxError "Wrong syntax: parameter of constraint must be a string")
 
-let generate_constraint tree = match tree with `Assoc(attr_list) -> if (get_parameter_json attr_list "constraint" = `Null) then None_c else resolve_constr_json (get_parameter_json attr_list "constraint")
-                                                | _ -> raise (SyntaxError "Wrong syntax: association expected")
-
-(* Generate parameter-structure *)
-
-let generate_query tree = {sel = (generate_select tree);
-                           k = (generate_type tree);
-                           tar = (generate_target tree);
-                           f = (generate_find tree);
-                           str = (generate_structure tree);
-                           lim = generate_constraint tree;}
+(* Type-definition of a query for mapping use *)
+type query = {sel : select; [@key "select"] [@of_yojson fun x -> Result.Ok(resolve_sel_json x)]
+              k : kind; [@key "type"] [@of_yojson fun x -> Result.Ok(resolve_type_json x)]
+              tar : target; [@key "target"] [@of_yojson fun x -> Result.Ok(resolve_target_json x)]
+              f : find; [@key "find"] [@of_yojson fun x -> Result.Ok(resolve_find_json x)]
+              str : (structure [@default None_s]); [@key "structure"] [@of_yojson fun x -> Result.Ok(resolve_struc_json x)]
+              lim : (constr [@default None_c]); [@key "constraint"] [@of_yojson fun x -> Result.Ok(resolve_constr_json x)]
+              }
+              [@@deriving yojson]
 
 (* toString-function for query *)
 
@@ -216,6 +192,10 @@ let to_string_constr t = match t with Constraint_c(s) -> "constraint: "^s
 
 let to_string tree = "{sel = ["^(to_string_sel tree.sel)^"];\nk = "^(to_string_type tree.k)^";\ntar = "^(to_string_target tree.tar)^";\nf = "^(to_string_find tree.f)^";\nstr = "^(to_string_struc tree.str)^";\nlim = "^(to_string_constr tree.lim)^";}\n"
 
+exception Error of string
+
 let parse_json_file filename =
 let jsonTree = from_file filename
-in generate_query jsonTree
+in let derived = query_of_yojson jsonTree
+in match derived with Result.Ok y -> y
+                    | Result.Error x -> raise (Error(x))

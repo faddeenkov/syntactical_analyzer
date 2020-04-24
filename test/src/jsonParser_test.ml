@@ -29,10 +29,11 @@ let query3 = {sel = [Location_sel];
               str = None_s;
               lim = None_c}
 
+
 let parser_tests = "test suite for JSONParser" >::: [
   "typical query"  >:: (fun _ -> assert_equal query (parse_json_file "test.json"));
   "random lowcase and uppercase" >:: (fun _ -> assert_equal query1 (parse_json_file "test1.json"));
   "query with and" >:: (fun _ -> assert_equal query2 (parse_json_file "test2.json"));
   "function-returns query" >:: (fun _ -> assert_equal query3 (parse_json_file "test3.json"));
-  "bad query" >:: (fun _ -> assert_raises (SyntaxError("Wrong syntax: unexpected input for structure")) (fun _ -> (parse_json_file "test4.json")))
+  "bad query" >:: (fun _ -> assert_raises (SyntaxError("Wrong syntax: unexpected input for selection")) (fun _ -> (parse_json_file "test4.json")))
 ]
