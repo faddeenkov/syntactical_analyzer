@@ -76,10 +76,10 @@ let statement3 = {labels = [];
 let stmt_list = statement1::statement2::statement3::[]
 
 let funcvar_tests = "test suite for sum" >::: [
-  "search lhost1"  >:: (fun _ -> assert_equal (search_lhost lhost1 "x" location1) result1);
-  "search expression1" >:: (fun _ -> assert_equal (search_expression expression1 "x" location1) result1);
-  "search expression2" >:: (fun _ -> assert_equal (search_expression expression3 "y" location2) result2);
-  "search expression-list1" >:: (fun _ -> assert_equal (search_expression_list expr_list "x" location1) result4);
-  "search instruction-list1" >:: (fun _ -> assert_equal (search_instr_list_for_var instr_list "x") result4);
-  "search statement-list1" >:: (fun _ -> assert_equal (search_stmt_list_for_var stmt_list "x") result5);
+  "search lhost1"  >:: (fun _ -> assert_equal (search_lhost lhost1 "x" location1 (-1)) result1);
+  "search expression1" >:: (fun _ -> assert_equal (search_expression expression1 "x" location1 (-1)) result1);
+  "search expression2" >:: (fun _ -> assert_equal (search_expression expression3 "y" location2 (-1)) result2);
+  "search expression-list1" >:: (fun _ -> assert_equal (search_expression_list expr_list "x" location1 (-1)) result4);
+  "search instruction-list1" >:: (fun _ -> assert_equal (search_instr_list_for_var instr_list "x" (-1)) result4);
+  "search statement-list1" >:: (fun _ -> assert_equal (search_stmt_list_for_var stmt_list "x" (-1)) result5);
 ]

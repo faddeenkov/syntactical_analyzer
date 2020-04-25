@@ -21,7 +21,8 @@ match query.f with Decl_f -> if ((query.str = None_s) && (query.lim = None_c)) t
 
 (* Resolution of variable-oriented queries *)
 let resolve_query_var_uses_fun_none query cilfile funname = 
-match query.tar with Name_t(name) -> find_uses_in_fun name funname cilfile
+match query.tar with Name_t(name) -> find_uses_in_fun name (-1) funname cilfile
+                | ID_t(id) -> find_uses_in_fun "" id funname cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_var_uses query cilfile = 
