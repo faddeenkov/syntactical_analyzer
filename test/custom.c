@@ -3,6 +3,8 @@ typedef unsigned char BYTE; //GType
 
 struct student;
 
+int test;
+
 struct student //GCompTag
  {
   char name[100];
@@ -65,7 +67,8 @@ int main(){
 
     int k = f(x+4-x2);
 
-    switch(x2){
+    BYTE arr[] = {2};
+    switch(arr[0]){
         case 1:
             x2 = 1;
         break;
@@ -91,5 +94,7 @@ int main(){
     else{
         return x2 - x[0];
     }
+
+    test = 3;
 
 }

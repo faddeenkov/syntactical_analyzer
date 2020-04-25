@@ -1,6 +1,6 @@
 {   "select":["name","location"],
-    "type": "var",
-    "target":{"id" : 286},
+    "type": "datatype",
+    "target":{"name" : "BYTE [1]"},
     "find":"uses",
     "structure": {"fun_name" : "main"},
     "constraint": "$none"}

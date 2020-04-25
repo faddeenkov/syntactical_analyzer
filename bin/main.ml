@@ -1,6 +1,7 @@
 open Mylib.JsonParser
 open Mylib.QueryMapping
 open Mylib.FuncVar
+open Mylib.FuncDatatype
 open Yojson.Safe
 open Cil
 
@@ -13,7 +14,7 @@ let rec print_result list =
 match list with (name, loc, kind, id)::xs -> Printf.printf "name:%s, loc.line=%d, loc.file=%s, loc.byte:%d, kind:%s, id:%d \n" name loc.line loc.file loc.byte kind id; print_result xs
             | [] -> ()
 
-let find_uses_in_funTest () = print_result (find_uses_in_fun ("x2") (-1) ("main") (Frontc.parse sourceFile ()))
+let find_type_uses_in_funTest () = print_result (Mylib.FuncDatatype.find_uses_in_fun ("int") ("main") (Frontc.parse sourceFile ()))
 
 (* This actually parses and executes the query *)
 let executeQuery () = 
