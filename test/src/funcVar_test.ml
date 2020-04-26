@@ -75,8 +75,9 @@ let statement3 = {labels = [];
 
 let stmt_list = statement1::statement2::statement3::[]
 
-let funcvar_tests = "test suite for sum" >::: [
+let funcvar_tests = "test suite for func_Var" >::: [
   "search lhost1"  >:: (fun _ -> assert_equal (search_lhost lhost1 "x" location1 (-1)) result1);
+  "search lhost1 by id" >:: (fun _ -> assert_equal (search_lhost lhost1 "" location1 0) result1);
   "search expression1" >:: (fun _ -> assert_equal (search_expression expression1 "x" location1 (-1)) result1);
   "search expression2" >:: (fun _ -> assert_equal (search_expression expression3 "y" location2 (-1)) result2);
   "search expression-list1" >:: (fun _ -> assert_equal (search_expression_list expr_list "x" location1 (-1)) result4);
