@@ -19,7 +19,7 @@ typedef struct uni_tag
 
 struct student me;
 
-
+double glob_var;
 
 struct mystery; //GCompTagDecl
 
@@ -30,6 +30,7 @@ enum anonym; //GEnumTagDecl
 BYTE x[] = {'b'};
 
 int f (BYTE b){
+    glob_var = 123.456;
     return b++;
 }
 
@@ -78,6 +79,8 @@ int main(){
         default:
         break;
     }
+
+glob_var = 3.0;
 
     while(x2 < 17){
         if(x2 == 2){

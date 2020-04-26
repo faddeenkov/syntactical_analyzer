@@ -65,11 +65,11 @@ match list with GFun(dec, loc)::xs -> if String.compare dec.svar.vname name = 0 
             | [] -> []
             | _::xs -> find_uses_in_fun_find_fun xs name varname varid
 (*
-class var_search_in_fun_visitor varname funname : nopCilVisitor = 
+class var_search_in_fun_visitor varname funname varid : nopCilVisitor = 
     object(self)
         inherit nopCilVisitor
         val mutable result = []
-        method vinst instr = result <- result@(search_instr_list_for_var (instr::[]) varname); SkipChildren
+        method vinst instr = result <- result@(search_instr_list_for_var (instr::[]) varname varid); SkipChildren
         method vstmt stmt = DoChildren
         method vblock block = DoChildren
         method vfunc dec = if (String.compare dec.svar.vname funname = 0) then DoChildren else SkipChildren
@@ -78,9 +78,22 @@ class var_search_in_fun_visitor varname funname : nopCilVisitor =
         method get_result = result
     end
 
-let find_uses_in_fun varname funname file = 
-let visitor = new var_search_in_fun_visitor varname funname
+let find_uses_in_fun varname varid funname file = 
+let visitor = new var_search_in_fun_visitor varname funname varid
 in visitCilFileSameGlobals visitor file; visitor#get_result *)
 
+
 (* Finds all uses of a variable in a function *)
-let find_uses_in_fun varname varid funname file = find_uses_in_fun_find_fun file.globals funname varname varid
+let find_uses_in_fun varname varid funname file = find_uses_in_fun_find_fun file.globals funname varname varid 
+
+let rec find_all_glob_vars list = 
+match list with GVar(info, _, _)::xs -> info.vid::(find_all_glob_vars xs)
+            | _::xs -> find_all_glob_vars xs
+            | [] -> []
+
+let find_uses_in_fun_all_glob funname file = 
+let id_list = find_all_glob_vars file.globals
+in let rec iter_list l = 
+match l with x::xs -> (find_uses_in_fun "" x funname file)@(iter_list xs)
+            | [] -> []
+in iter_list id_list

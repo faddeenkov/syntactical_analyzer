@@ -38,7 +38,7 @@ let enuminfo1 = {ename = "seasons";
 
 let genumtag1 = GEnumTag(enuminfo1, location2)
 
-let fundec1 = {svar = (makeVarinfo false "yeet" (TInt(IInt,[])));
+let fundec1 = {svar = (makeVarinfo false "factorial" (TInt(IInt,[])));
                sformals = [];
                slocals = [];
                smaxid = 65;
@@ -100,5 +100,6 @@ let funcdatatype_tests = "test suite for func_Datatype" >::: [
     "test find_decl" >:: (fun _ -> assert_equal (find_decl "someStruct" file1) ("", location1, "someStruct", -1));
     "test find_decl_all_glob 1" >:: (fun _ -> assert_equal (find_decl_all_glob file1) [("",location1,"BYTE",-1);("",location1,"someStruct",-1)]);
     "test find_decl_all_glob 2" >:: (fun _ -> assert_equal (find_decl_all_glob file2) [("", location2, "seasons",-1);("", location1, "BYTE",-1)]); 
-    "test find_in_globals" >:: (fun _ -> assert_equal (find_in_globals globals3 "int") [3;4])
+    "test find_in_globals" >:: (fun _ -> assert_equal (find_in_globals globals3 "int") [3;4]);
+    "test find_fundec" >:: (fun _ -> assert_equal (find_fundec globals3 "factorial") (Some(fundec1)))
 ]
