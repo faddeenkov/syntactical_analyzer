@@ -5,25 +5,25 @@ let is_equal_varname_varid varinfo name id = if ((String.compare varinfo.vname n
 
 (* Finds a variable in a lhost *)
 let search_lhost host name loc varid = 
-match host with Var(info) -> if is_equal_varname_varid info name varid then (info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::[]  else []
+match host with Var(info) -> if is_equal_varname_varid info name varid then (info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::[] else []
                 (* Should I consider Mem too? *)
             | _ -> []
+ 
+class var_search_in_expr varname varid loc result : nopCilVisitor =
+object(self)
+inherit nopCilVisitor
+method vvrbl info = if (is_equal_varname_varid info varname varid) then (result := (!result)@((info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::[]); SkipChildren) else SkipChildren
+method vlval (h,o) = match h with Var(_) -> DoChildren
+                                | _ -> SkipChildren
+method vexpr exp = DoChildren
+end
 
 (* Finds a variable in an expression *)
-let rec search_expression exp name loc varid = 
-match exp with Lval((lhost, _)) -> search_lhost lhost name loc varid
-        | Real(e) -> search_expression e name loc varid
-        | Imag(e) -> search_expression e name loc varid
-        | SizeOfE(e) -> search_expression e name loc varid
-        | AlignOfE(e) -> search_expression e name loc varid
-        | UnOp(_,e,_) -> search_expression e name loc varid
-        | BinOp(_, e1, e2, _) -> (search_expression e1 name loc varid)@(search_expression e2 name loc varid)
-        | Question(e1,e2,e3,_) -> (search_expression e1 name loc varid)@(search_expression e2 name loc varid)@(search_expression e3 name loc varid)
-        | CastE(_,e) -> search_expression e name loc varid
-        | AddrOf((lhost,_)) -> search_lhost lhost name loc varid
-        | StartOf((lhost, _)) -> search_lhost lhost name loc varid
-        | _ -> []
- 
+let search_expression exp name loc varid = 
+let result = ref []
+in let visitor = new var_search_in_expr name varid loc result
+in ignore (visitCilExpr visitor exp); !result
+
  (* Finds a variable in a list of expressions *)
 let rec search_expression_list list name loc varid = 
 match list with x::xs -> (search_expression x name loc varid)@(search_expression_list xs name loc varid)
@@ -64,24 +64,6 @@ let rec find_uses_in_fun_find_fun list name varname varid =
 match list with GFun(dec, loc)::xs -> if String.compare dec.svar.vname name = 0 then find_uses_in_fun_var dec varname varid else find_uses_in_fun_find_fun xs name varname varid
             | [] -> []
             | _::xs -> find_uses_in_fun_find_fun xs name varname varid
-(*
-class var_search_in_fun_visitor varname funname varid : nopCilVisitor = 
-    object(self)
-        inherit nopCilVisitor
-        val mutable result = []
-        method vinst instr = result <- result@(search_instr_list_for_var (instr::[]) varname varid); SkipChildren
-        method vstmt stmt = DoChildren
-        method vblock block = DoChildren
-        method vfunc dec = if (String.compare dec.svar.vname funname = 0) then DoChildren else SkipChildren
-        method vglob glob = match glob with GFun(_) -> DoChildren
-                                | _ -> SkipChildren
-        method get_result = result
-    end
-
-let find_uses_in_fun varname varid funname file = 
-let visitor = new var_search_in_fun_visitor varname funname varid
-in visitCilFileSameGlobals visitor file; visitor#get_result *)
-
 
 (* Finds all uses of a variable in a function *)
 let find_uses_in_fun varname varid funname file = find_uses_in_fun_find_fun file.globals funname varname varid 
@@ -121,3 +103,11 @@ match l with GFun(dec, _)::xs -> (find_uses_in_fun varname varid dec.svar.vname 
             | _ ::xs -> find_uses_in_all_fun xs
             | [] -> []
 in find_uses_in_all_fun file.globals
+
+(* Finds all uses of global variables in all functions *)
+let find_uses_all_glob file =
+let rec iter_functions list = 
+match list with GFun(dec,_)::xs -> (find_uses_in_fun_all_glob dec.svar.vname file)@(iter_functions xs)
+            | _ ::xs -> iter_functions xs
+            | [] -> []
+in iter_functions file.globals

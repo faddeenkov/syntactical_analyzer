@@ -178,5 +178,5 @@ exception Error of string
 let parse_json_file filename =
 let jsonTree = from_file filename
 in let derived = query_of_yojson jsonTree
-in match derived with Result.Ok y -> Printf.printf "%s\n" (to_string_q y); y
+in match derived with Result.Ok y -> y
                     | Result.Error x -> raise (Error(x))

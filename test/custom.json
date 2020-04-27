@@ -1,4 +1,6 @@
 {   "select":["name","location"],
     "type": "var",
-    "target":{"name": "glob_var"},
-    "find":"uses"}
+    "target":{"name" : "global"},
+    "find":"uses",
+    "structure": "$none",
+    "constraint": "$none"}
