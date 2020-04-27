@@ -111,3 +111,11 @@ match list with GFun(dec,_)::xs -> (find_uses_in_fun_all_glob dec.svar.vname fil
             | _ ::xs -> iter_functions xs
             | [] -> []
 in iter_functions file.globals
+
+(* Finds uses of all variables in all functions *)
+let find_uses_all file =
+let rec iter_functions list = 
+match list with GFun(dec,_)::xs -> (find_uses_in_fun_all dec.svar.vname file)@(iter_functions xs)
+            | _ ::xs -> iter_functions xs
+            | [] -> []
+in iter_functions file.globals

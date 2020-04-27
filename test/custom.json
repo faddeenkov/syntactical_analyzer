@@ -1,6 +1,6 @@
 {   "select":["name","location"],
     "type": "var",
-    "target":{"name" : "global"},
+    "target": "$all",
     "find":"uses",
     "structure": "$none",
     "constraint": "$none"}

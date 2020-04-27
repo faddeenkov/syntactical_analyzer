@@ -14,7 +14,7 @@ struct student //GCompTag
 
 typedef struct uni_tag
 {
-    char name[];
+    char name;
 } uni;
 
 struct student me;

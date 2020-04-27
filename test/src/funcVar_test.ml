@@ -120,6 +120,21 @@ match x with (name, loc, typ, id) -> if (String.compare name "global" = 0)
                                       &&(String.compare typ "char" = 0)
                                       &&(loc.line == 17) then true else false
 
+let check_test11_first_and_second x = 
+match x with (name, loc, typ, id) -> if (String.compare name "new_var" = 0)
+                                      &&(String.compare typ "struct var" = 0)
+                                      &&(loc.line == 8) then true else false
+
+let check_test11_third x = 
+match x with (name, loc, typ, id) -> if (String.compare name "new_var" = 0)
+                                      &&(String.compare typ "struct var" = 0)
+                                      &&(loc.line == 13) then true else false
+
+let check_test11_fourth x = 
+match x with (name, loc, typ, id) -> if (String.compare name "copy_var" = 0)
+                                      &&(String.compare typ "struct var" = 0)
+                                      &&(loc.line == 13) then true else false
+
 let funcvar_tests = "test suite for func_Var" >::: [
   "search lhost1"  >:: (fun _ -> assert_equal (search_lhost lhost1 "x" location1 (-1)) result1);
   "search lhost1 by id" >:: (fun _ -> assert_equal (search_lhost lhost1 "" location1 0) result1);
@@ -142,5 +157,11 @@ let funcvar_tests = "test suite for func_Var" >::: [
                                  in assert_equal (List.length result) 3;
                                     assert_bool "check result of first" (check_test10_first (List.hd result));
                                     assert_bool "check result of second" (check_test10_second (List.nth result 1));
-                                    assert_bool "check result of third" (check_test10_third (List.nth result 2)))                                                 
+                                    assert_bool "check result of third" (check_test10_third (List.nth result 2)));
+   "test find_uses_all" >:: (fun _ -> let result = find_uses_all (Frontc.parse "test3.c" ())
+                                      in assert_equal (List.length result) 4;
+                                         assert_bool "check result of first" (check_test11_first_and_second (List.hd result));
+                                         assert_bool "check result of second" (check_test11_first_and_second (List.nth result 1));
+                                         assert_bool "check result of third" (check_test11_third (List.nth result 2));
+                                         assert_bool "check result of fourth" (check_test11_fourth (List.nth result 3)))                                                 
 ]
