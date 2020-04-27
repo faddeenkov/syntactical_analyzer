@@ -105,6 +105,21 @@ match x with (name, loc, typ, id) -> if (String.compare name "local" = 0)
                                       &&(String.compare typ "float" = 0)
                                       &&(loc.line == 5) then true else false
 
+let check_test10_first x = 
+match x with (name, loc, typ, id) -> if (String.compare name "global" = 0)
+                                      &&(String.compare typ "char" = 0)
+                                      &&(loc.line == 4) then true else false
+
+let check_test10_second x = 
+match x with (name, loc, typ, id) -> if (String.compare name "global" = 0)
+                                      &&(String.compare typ "char" = 0)
+                                      &&(loc.line == 8) then true else false
+
+let check_test10_third x = 
+match x with (name, loc, typ, id) -> if (String.compare name "global" = 0)
+                                      &&(String.compare typ "char" = 0)
+                                      &&(loc.line == 17) then true else false
+
 let funcvar_tests = "test suite for func_Var" >::: [
   "search lhost1"  >:: (fun _ -> assert_equal (search_lhost lhost1 "x" location1 (-1)) result1);
   "search lhost1 by id" >:: (fun _ -> assert_equal (search_lhost lhost1 "" location1 0) result1);
@@ -122,5 +137,10 @@ let funcvar_tests = "test suite for func_Var" >::: [
                                                assert_bool "check result of first" (check_test9_first (List.hd result));
                                                assert_bool "check result of second" (check_test9_second (List.nth result 1));
                                                assert_bool "check result of third" (check_test9_third (List.nth result 2));
-                                               assert_bool "check result of fourth" (check_test9_fourth (List.nth result 3)))                                                 
+                                               assert_bool "check result of fourth" (check_test9_fourth (List.nth result 3)));
+  "test find_uses" >:: (fun _ -> let result = find_uses "global" (-1) (Frontc.parse "test2.c" ())
+                                 in assert_equal (List.length result) 3;
+                                    assert_bool "check result of first" (check_test10_first (List.hd result));
+                                    assert_bool "check result of second" (check_test10_second (List.nth result 1));
+                                    assert_bool "check result of third" (check_test10_third (List.nth result 2)))                                                 
 ]

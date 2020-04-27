@@ -1,6 +1,4 @@
 {   "select":["name","location"],
     "type": "var",
-    "target":"$All",
-    "find":"uses",
-    "structure": {"fun_name" : "niceFunction"},
-    "constraint": "$none"}
+    "target":{"name": "glob_var"},
+    "find":"uses"}

@@ -113,3 +113,11 @@ match l with x::xs -> (find_uses_in_fun "" x funname file)@(iter_list xs)
 in
 match fundec_opt with None -> []
                 | Some(fundec) -> (find_uses_in_fun_all_glob funname file)@(iter_list (List.map (fun x -> x.vid) fundec.sformals))@(iter_list (List.map (fun x -> x.vid) fundec.slocals))
+
+(* Find all uses of a variable in all functions *)
+let find_uses varname varid file = 
+let rec find_uses_in_all_fun l = 
+match l with GFun(dec, _)::xs -> (find_uses_in_fun varname varid dec.svar.vname file)@(find_uses_in_all_fun xs)
+            | _ ::xs -> find_uses_in_all_fun xs
+            | [] -> []
+in find_uses_in_all_fun file.globals
