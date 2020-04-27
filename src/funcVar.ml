@@ -98,3 +98,18 @@ in let rec iter_list l =
 match l with x::xs -> (find_uses_in_fun "" x funname file)@(iter_list xs)
             | [] -> []
 in iter_list id_list
+
+let rec find_fundec globals funname = 
+match globals with GFun(dec, _)::xs -> if (String.compare dec.svar.vname funname = 0) then Some(dec) else find_fundec xs funname
+                | _::xs -> find_fundec xs funname
+                | [] -> None
+
+(* Finds all uses of all variables in a function *)
+let find_uses_in_fun_all funname file = 
+let fundec_opt = find_fundec file.globals funname
+in let rec iter_list l = 
+match l with x::xs -> (find_uses_in_fun "" x funname file)@(iter_list xs)
+            | [] -> []
+in
+match fundec_opt with None -> []
+                | Some(fundec) -> (find_uses_in_fun_all_glob funname file)@(iter_list (List.map (fun x -> x.vid) fundec.sformals))@(iter_list (List.map (fun x -> x.vid) fundec.slocals))

@@ -31,7 +31,8 @@ BYTE x[] = {'b'};
 
 int f (BYTE b){
     glob_var = 123.456;
-    return b++;
+    BYTE c = b-1;
+    return b;
 }
 
 int main(){
