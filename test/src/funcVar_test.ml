@@ -75,6 +75,16 @@ let statement3 = {labels = [];
 
 let stmt_list = statement1::statement2::statement3::[]
 
+let check_test8_first x = 
+match x with (name, loc, typ, id) -> if (String.compare name "x" = 0)
+                                      &&(String.compare typ "int" = 0)
+                                      &&(loc.line == 7) then true else false
+
+let check_test8_second x = 
+match x with (name, loc, typ, id) -> if (String.compare name "y" = 0)
+                                      &&(String.compare typ "char" = 0)
+                                      &&(loc.line == 8) then true else false
+
 let funcvar_tests = "test suite for func_Var" >::: [
   "search lhost1"  >:: (fun _ -> assert_equal (search_lhost lhost1 "x" location1 (-1)) result1);
   "search lhost1 by id" >:: (fun _ -> assert_equal (search_lhost lhost1 "" location1 0) result1);
@@ -83,4 +93,9 @@ let funcvar_tests = "test suite for func_Var" >::: [
   "search expression-list1" >:: (fun _ -> assert_equal (search_expression_list expr_list "x" location1 (-1)) result4);
   "search instruction-list1" >:: (fun _ -> assert_equal (search_instr_list_for_var instr_list "x" (-1)) result4);
   "search statement-list1" >:: (fun _ -> assert_equal (search_stmt_list_for_var stmt_list "x" (-1)) result5);
+  "test find_uses_in_fun_all_glob" >:: (fun _ -> let result = find_uses_in_fun_all_glob "main" (Frontc.parse "test.c" ())
+                                                  in assert_equal (List.length result) 2;
+                                                     assert_bool "check result of first" (check_test8_first (List.hd result));
+                                                     assert_bool "check result of second" (check_test8_second (List.nth result 1)))
+                                                     
 ]

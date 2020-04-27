@@ -91,6 +91,7 @@ match list with GVar(info, _, _)::xs -> info.vid::(find_all_glob_vars xs)
             | _::xs -> find_all_glob_vars xs
             | [] -> []
 
+(* Finds all uses of all global variables in a function *)
 let find_uses_in_fun_all_glob funname file = 
 let id_list = find_all_glob_vars file.globals
 in let rec iter_list l = 
