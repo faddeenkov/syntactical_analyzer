@@ -134,6 +134,21 @@ let check_test11_fourth x =
 match x with (name, loc, typ, id) -> if (String.compare name "copy_var" = 0)
                                       &&(String.compare typ "struct var" = 0)
                                       &&(loc.line == 13) then true else false
+                                      
+let check_test12_first x = 
+match x with (name, loc, typ, id) -> if (String.compare name "i" = 0)
+                                      &&(String.compare typ "int" = 0)
+                                      &&(loc.line == 4) then true else false
+
+let check_test12_second x = 
+match x with (name, loc, typ, id) -> if (String.compare name "i" = 0)
+                                      &&(String.compare typ "int" = 0)
+                                      &&(loc.line == 5) then true else false
+
+let check_test12_third x = 
+match x with (name, loc, typ, id) -> if (String.compare name "i" = 0)
+                                      &&(String.compare typ "int" = 0)
+                                      &&(loc.line == 10) then true else false
 
 let funcvar_tests = "test suite for func_Var" >::: [
   "search lhost1"  >:: (fun _ -> assert_equal (search_lhost lhost1 "x" location1 (-1)) result1);
@@ -163,5 +178,10 @@ let funcvar_tests = "test suite for func_Var" >::: [
                                          assert_bool "check result of first" (check_test11_first_and_second (List.hd result));
                                          assert_bool "check result of second" (check_test11_first_and_second (List.nth result 1));
                                          assert_bool "check result of third" (check_test11_third (List.nth result 2));
-                                         assert_bool "check result of fourth" (check_test11_fourth (List.nth result 3)))                                                 
+                                         assert_bool "check result of fourth" (check_test11_fourth (List.nth result 3)));    
+   "test find_uses_in_cond" >:: (fun _ -> let result = find_uses_in_cond "i" (-1) (Frontc.parse "test4.c" ())
+                                          in assert_equal (List.length result) 3;
+                                             assert_bool "check result of first" (check_test12_first (List.hd result));
+                                             assert_bool "check result of second" (check_test12_second (List.nth result 1));
+                                             assert_bool "check result of third" (check_test12_third (List.nth result 2)))                                            
 ]

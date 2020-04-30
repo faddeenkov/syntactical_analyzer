@@ -48,14 +48,13 @@ int main(){
 
     int *ptr = &i;
 
-    /**
-     * x[0] = 'a';
+    x[0] = 'a';
 
     BYTE z = x[0];
 
     int x2;
     x2 = 7;
-    **/
+    
 
 
     /**
@@ -67,8 +66,7 @@ int main(){
 
     } **/
 
-    /**
-     * for(int i = 0; i < 10; i++){
+    for(int i = 0; i < 10; i++){
        
     }
 
@@ -109,5 +107,5 @@ glob_var = 3.0;
     }
 
     test = 3;
-**/
+
 }

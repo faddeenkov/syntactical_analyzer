@@ -125,5 +125,29 @@ match list with GFun(dec,_)::xs -> (find_uses_in_fun_all dec.svar.vname file)@(i
             | [] -> []
 in iter_functions file.globals
 
+let rec cond_search_uses_stmt_list list varname varid =
+match list with x::xs -> (match x.skind with If(exp, b1, b2, loc) -> (search_expression exp varname loc varid)@(cond_search_uses_stmt_list (b1.bstmts@b2.bstmts) varname varid)
+                                        | Switch(exp, block, stmt_list, loc) -> (search_expression exp varname loc varid)@(cond_search_uses_stmt_list block.bstmts varname varid)
+                                        | Loop(block, loc, None, None) -> (cond_search_uses_stmt_list block.bstmts varname varid)
+                                        | Loop (block, loc, None, Some(s1)) -> (cond_search_uses_stmt_list (s1::block.bstmts) varname varid)
+                                        | Loop(block, loc, Some(s2), None) -> (cond_search_uses_stmt_list (s2::block.bstmts) varname varid)
+                                        | Loop (block, loc, Some(s2), Some(s1)) -> (cond_search_uses_stmt_list (s2::s1::block.bstmts) varname varid)
+                                        | Block(block) -> (cond_search_uses_stmt_list block.bstmts varname varid)
+                                        | TryFinally (b1, b2, loc) -> (cond_search_uses_stmt_list (b1.bstmts@b2.bstmts) varname varid)
+                                        | TryExcept(b1, _, b2, loc) -> (cond_search_uses_stmt_list (b1.bstmts@b2.bstmts) varname varid)
+                                        | _ -> [] )@(cond_search_uses_stmt_list xs varname varid)
+            | [] -> []
+
 (* Finds all uses of a variable in conditions of a function *)
-let find_uses_in_cond_in_fun varname varid funname file = []
+let find_uses_in_cond_in_fun varname varid funname file =
+let fundec_opt = find_fundec file.globals funname
+in match fundec_opt with None -> []
+| Some(fundec) -> cond_search_uses_stmt_list fundec.sbody.bstmts varname varid
+
+(* Finds all uses of a variable in conditions in all functions *)
+let find_uses_in_cond varname varid file = 
+let rec iter_functions list = 
+match list with GFun(dec,_)::xs -> (cond_search_uses_stmt_list dec.sbody.bstmts varname varid)@(iter_functions xs)
+            | _ ::xs -> iter_functions xs
+            | [] -> []
+in iter_functions file.globals
