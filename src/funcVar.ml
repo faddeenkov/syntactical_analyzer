@@ -3,18 +3,11 @@ open Cil
 (* Helper functions *)
 let is_equal_varname_varid varinfo name id = if ((String.compare varinfo.vname name = 0) || (varinfo.vid = id)) then true else false
 
-(* Finds a variable in a lhost *)
-let search_lhost host name loc varid = 
-match host with Var(info) -> if is_equal_varname_varid info name varid then (info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::[] else []
-                (* Should I consider Mem too? *)
-            | _ -> []
- 
 class var_search_in_expr varname varid loc result : nopCilVisitor =
 object(self)
 inherit nopCilVisitor
 method vvrbl info = if (is_equal_varname_varid info varname varid) then (result := (!result)@((info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::[]); SkipChildren) else SkipChildren
-method vlval (h,o) = match h with Var(_) -> DoChildren
-                                | _ -> SkipChildren
+method vlval (h,o) = DoChildren
 method vexpr exp = DoChildren
 end
 
@@ -24,16 +17,28 @@ let result = ref []
 in let visitor = new var_search_in_expr name varid loc result
 in ignore (visitCilExpr visitor exp); !result
 
- (* Finds a variable in a list of expressions *)
+(* Finds a variable in a lhost *)
+let search_lhost host name loc varid = 
+match host with Var(info) -> if is_equal_varname_varid info name varid then (info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::[] else []
+                (* Should I consider Mem too? *)
+            | Mem(exp) -> Printf.printf "It's a pointer\n"; search_expression exp name loc varid
+ 
+let rec search_offset os name loc varid =
+match os with NoOffset -> []
+            | Field(_, offset) -> search_offset offset name loc varid 
+            | Index(exp, offset) -> (search_expression exp name loc varid)@(search_offset offset name loc varid)
+
+(* Finds a variable in a list of expressions *)
 let rec search_expression_list list name loc varid = 
 match list with x::xs -> (search_expression x name loc varid)@(search_expression_list xs name loc varid)
                 | [] -> []
 
 (* Finds a variable in a list of instructions *)
 let rec search_instr_list_for_var list name varid = 
-match list with Set((lhost, offset), exp, loc)::xs ->  (search_lhost lhost name loc varid)@(search_expression exp name loc varid)@(search_instr_list_for_var xs name varid)
+match list with Set((lhost, offset), exp, loc)::xs ->  (search_lhost lhost name loc varid)@(search_offset offset name loc varid)@(search_expression exp name loc varid)@(search_instr_list_for_var xs name varid)
                 | VarDecl(info, loc)::xs -> if is_equal_varname_varid info name varid then (info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::(search_instr_list_for_var xs name varid) else (search_instr_list_for_var xs name varid)
-                | Call (Some(lhost,_), exp, exp_list, loc)::xs -> (search_lhost lhost name loc varid)@(search_expression exp name loc varid)@(search_expression_list exp_list name loc varid)@(search_instr_list_for_var xs name varid)
+                | Call (Some(lhost,offset), exp, exp_list, loc)::xs -> (search_lhost lhost name loc varid)@(search_offset offset name loc varid)@(search_expression exp name loc varid)@(search_expression_list exp_list name loc varid)@(search_instr_list_for_var xs name varid)
+                | Call (None, exp, exp_list, loc)::xs -> (search_expression exp name loc varid)@(search_expression_list exp_list name loc varid)@(search_instr_list_for_var xs name varid)
                 (* Should I consider Asm too? *)
                 | _::xs -> search_instr_list_for_var xs name varid
                 | [] -> []
@@ -119,3 +124,6 @@ match list with GFun(dec,_)::xs -> (find_uses_in_fun_all dec.svar.vname file)@(i
             | _ ::xs -> iter_functions xs
             | [] -> []
 in iter_functions file.globals
+
+(* Finds all uses of a variable in conditions of a function *)
+let find_uses_in_cond_in_fun varname varid funname file = []

@@ -58,8 +58,13 @@ let rec find_typevar_uses_in_fun list funname file =
 match list with x::xs -> (FuncVar.find_uses_in_fun "" x funname file)@(find_typevar_uses_in_fun xs funname file)
             | [] -> []
 
-(* Find uses of a datatype in a function *)
+(* Finds uses of a datatype in a function *)
 let find_uses_in_fun typename funname file = 
 let fundec_res = find_fundec file.globals funname
 in match fundec_res with None -> []
                     | Some(f) -> find_typevar_uses_in_fun ((find_in_globals file.globals typename)@(find_in_varinfos f.slocals typename)@(find_in_varinfos f.sformals typename)) f.svar.vname file
+
+(* Finds all uses of a datatype in all functions *)
+let find_uses typename file = 
+let list = FuncVar.find_uses_all file
+in List.filter (fun (name, loc, typ, id) -> (String.compare typ typename = 0)) list

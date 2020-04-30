@@ -7,7 +7,7 @@ int test;
 
 struct student //GCompTag
  {
-  char name[100];
+  char name[1];
   int roll;
   float marks;
  };
@@ -41,14 +41,22 @@ int main(){
     int i;
     char str[4];
 }; 
+    int i = 0;
+    struct student person = {{'a'}, 3, 1.0f};
+    struct student *someone = &person;
+    char c = (*someone).name[i];
 
-    x[0] = 'a';
+    int *ptr = &i;
+
+    /**
+     * x[0] = 'a';
 
     BYTE z = x[0];
 
     int x2;
     x2 = 7;
-    
+    **/
+
 
     /**
      * __try{
@@ -59,7 +67,8 @@ int main(){
 
     } **/
 
-    for(int i = 0; i < 10; i++){
+    /**
+     * for(int i = 0; i < 10; i++){
        
     }
 
@@ -100,5 +109,5 @@ glob_var = 3.0;
     }
 
     test = 3;
-
+**/
 }

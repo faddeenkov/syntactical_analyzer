@@ -15,12 +15,17 @@ match query.tar with Name_t(name) -> (find_decl name cilfile)::[]
                 | All_t -> find_decl_all cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
-let resolve_query_datatype_uses_fun_none query cilfile funname = 
+let resolve_query_datatype_uses_fun query cilfile funname = 
 match query.tar with Name_t(name) -> FuncDatatype.find_uses_in_fun name funname cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
+let resolve_query_datatype_uses_none query cilfile =
+match query.tar with Name_t(name) -> FuncDatatype.find_uses name cilfile
+                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+
 let resolve_query_datatype_uses query cilfile =
-match query.str with Fun_s(funname) -> resolve_query_datatype_uses_fun_none query cilfile funname
+match query.str with Fun_s(funname) -> resolve_query_datatype_uses_fun query cilfile funname
+                | None_s -> resolve_query_datatype_uses_none query cilfile
                 | _ ->  Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_datatype query cilfile = 
