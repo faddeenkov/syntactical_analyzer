@@ -2,5 +2,5 @@
     "type": "var",
     "target": "$all",
     "find":"uses",
-    "structure": "cond",
+    "structure": "non-cond",
     "constraint": "$none"}

@@ -55,11 +55,18 @@ match query.tar with Name_t(name) -> FuncVar.find_uses_in_cond name (-1) cilfile
                 | All_t -> FuncVar.find_uses_in_cond_all cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
+let resolve_query_var_uses_noncond query cilfile =
+match query.tar with Name_t(name) -> FuncVar.find_uses_in_noncond name (-1) cilfile
+                | ID_t(id) -> FuncVar.find_uses_in_noncond "" id cilfile
+                | AllGlobVar_t -> FuncVar.find_uses_in_noncond_all_glob cilfile
+                | All_t -> FuncVar.find_uses_in_noncond_all cilfile
+                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+
 let resolve_query_var_uses query cilfile = 
 match query.str with Fun_s(funname) -> resolve_query_var_uses_fun query cilfile funname
                 | Cond_s -> resolve_query_var_uses_cond query cilfile
+                | NonCond_s -> resolve_query_var_uses_noncond query cilfile
                 | None_s -> resolve_query_var_uses_none query cilfile
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_var query cilfile = 
 match query.f with Uses_f -> resolve_query_var_uses query cilfile

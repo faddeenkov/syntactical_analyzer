@@ -185,3 +185,33 @@ match list with GFun(dec, _)::xs -> (find_uses_in_cond_in_fun_all dec.svar.vname
             | _ ::xs -> iter_list xs
             | [] -> []
 in iter_list file.globals
+
+let rec remove_result list res =
+match list with x::xs -> if x = res then (remove_result xs res) else x::(remove_result xs res)
+            | [] -> []
+
+(* Finds all uses of a variable in non-conditions *)
+let find_uses_in_noncond varname varid file =
+let no_struc_result = find_uses varname varid file
+in let cond_result = find_uses_in_cond varname varid file
+in let rec iter_list list new_list = 
+match list with x::xs -> iter_list xs (remove_result new_list x)
+            | [] -> new_list
+in iter_list cond_result no_struc_result
+
+(* Finds all uses of global variables in non-conditions *)
+let find_uses_in_noncond_all_glob file =
+let id_list = find_all_glob_vars file.globals
+in let rec iter_list list =
+match list with x::xs -> (find_uses_in_noncond "" x file)@(iter_list xs)
+            | [] -> []
+in iter_list id_list
+
+(* Finds all uses of variables in non-conditions *)
+let find_uses_in_noncond_all file =
+let no_struc_result = find_uses_all file
+in let cond_result = find_uses_in_cond_all file
+in let rec iter_list list new_list = 
+match list with x::xs -> iter_list xs (remove_result new_list x)
+            | [] -> new_list
+in iter_list cond_result no_struc_result
