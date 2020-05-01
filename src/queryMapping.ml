@@ -51,6 +51,8 @@ match query.tar with Name_t(name) -> FuncVar.find_uses name (-1) cilfile
 let resolve_query_var_uses_cond query cilfile =
 match query.tar with Name_t(name) -> FuncVar.find_uses_in_cond name (-1) cilfile
                 | ID_t(id) -> FuncVar.find_uses_in_cond "" id cilfile
+                | AllGlobVar_t -> FuncVar.find_uses_in_cond_all_glob cilfile
+                | All_t -> FuncVar.find_uses_in_cond_all cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_var_uses query cilfile = 

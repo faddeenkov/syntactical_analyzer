@@ -77,7 +77,7 @@ int main(){
     int k = f(x+4-x2);
 
     BYTE arr[] = {2};
-    switch(arr[0]){
+    switch(x[0]){
         case 1:
             x2 = 1;
         break;
@@ -99,7 +99,7 @@ glob_var = 3.0;
         }
     }
 
-    if(x2 == 7){
+    if(test == 7){
         return f(x2);
     }
     else{

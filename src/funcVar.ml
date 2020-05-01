@@ -151,3 +151,37 @@ match list with GFun(dec,_)::xs -> (cond_search_uses_stmt_list dec.sbody.bstmts 
             | _ ::xs -> iter_functions xs
             | [] -> []
 in iter_functions file.globals
+
+(* Finds all uses of global variables in conditions in all functions *)
+let find_uses_in_cond_all_glob file = 
+let id_list = find_all_glob_vars file.globals
+in let rec iter_list list =
+match list with x::xs -> (find_uses_in_cond "" x file)@(iter_list xs)
+            | [] -> []
+in iter_list id_list
+
+(* Finds all uses of global variables in conditions in a function *)
+let find_uses_in_cond_in_fun_all_glob funname file =
+let id_list = find_all_glob_vars file.globals
+in let rec iter_list list = 
+match list with x::xs -> (find_uses_in_cond_in_fun "" x funname file)@(iter_list xs)
+            | [] -> []
+in iter_list id_list
+
+(* Finds all uses of variables in conditions in a function *)
+let find_uses_in_cond_in_fun_all funname file = 
+let get_formals_locals dec = dec.sformals@dec.slocals
+in let rec iter_list list = 
+match list with x::xs -> (find_uses_in_cond_in_fun x.vname (-1) funname file)@(iter_list xs)
+| [] -> []
+in let fundec_opt = find_fundec file.globals funname
+in match fundec_opt with None -> []
+| Some(fundec) -> (find_uses_in_cond_in_fun_all_glob funname file)@(iter_list (get_formals_locals fundec))
+
+(* Finds all uses of variables in conditions in all functions *)
+let find_uses_in_cond_all file =
+let rec iter_list list =
+match list with GFun(dec, _)::xs -> (find_uses_in_cond_in_fun_all dec.svar.vname file)@(iter_list xs)
+            | _ ::xs -> iter_list xs
+            | [] -> []
+in iter_list file.globals
