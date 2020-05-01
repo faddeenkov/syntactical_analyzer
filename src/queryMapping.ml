@@ -23,10 +23,19 @@ let resolve_query_datatype_uses_none query cilfile =
 match query.tar with Name_t(name) -> FuncDatatype.find_uses name cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
+let resolve_query_datatype_uses_cond query cilfile =
+match query.tar with Name_t(name) -> FuncDatatype.find_uses_in_cond name cilfile
+                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+
+let resolve_query_datatype_uses_noncond query cilfile =
+match query.tar with Name_t(name) -> FuncDatatype.find_uses_in_noncond name cilfile
+                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+
 let resolve_query_datatype_uses query cilfile =
 match query.str with Fun_s(funname) -> resolve_query_datatype_uses_fun query cilfile funname
+                | Cond_s -> resolve_query_datatype_uses_cond query cilfile
+                | NonCond_s -> resolve_query_datatype_uses_noncond query cilfile
                 | None_s -> resolve_query_datatype_uses_none query cilfile
-                | _ ->  Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_datatype query cilfile = 
 match query.f with Decl_f -> if ((query.str = None_s)) then (resolve_query_datatype_decl_none query cilfile) else (Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[])

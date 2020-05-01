@@ -75,120 +75,10 @@ let statement3 = {labels = [];
 
 let stmt_list = statement1::statement2::statement3::[]
 
-let check_test8_first x = 
-match x with (name, loc, typ, id) -> if (String.compare name "x" = 0)
-                                      &&(String.compare typ "int" = 0)
-                                      &&(loc.line == 7) then true else false
-
-let check_test8_second x = 
-match x with (name, loc, typ, id) -> if (String.compare name "y" = 0)
-                                      &&(String.compare typ "char" = 0)
-                                      &&(loc.line == 8) then true else false
-
-let check_test9_first x = 
-match x with (name, loc, typ, id) -> if (String.compare name "global" = 0)
-                                      &&(String.compare typ "int" = 0)
-                                      &&(loc.line == 5) then true else false
-
-let check_test9_second x = 
-match x with (name, loc, typ, id) -> if (String.compare name "formal" = 0)
-                                      &&(String.compare typ "float" = 0)
-                                      &&(loc.line == 5) then true else false
-
-let check_test9_third x = 
-match x with (name, loc, typ, id) -> if (String.compare name "local" = 0)
-                                      &&(String.compare typ "float" = 0)
-                                      &&(loc.line == 4) then true else false
-
-let check_test9_fourth x = 
-match x with (name, loc, typ, id) -> if (String.compare name "local" = 0)
-                                      &&(String.compare typ "float" = 0)
-                                      &&(loc.line == 5) then true else false
-
-let check_test10_first x = 
-match x with (name, loc, typ, id) -> if (String.compare name "global" = 0)
-                                      &&(String.compare typ "char" = 0)
-                                      &&(loc.line == 4) then true else false
-
-let check_test10_second x = 
-match x with (name, loc, typ, id) -> if (String.compare name "global" = 0)
-                                      &&(String.compare typ "char" = 0)
-                                      &&(loc.line == 8) then true else false
-
-let check_test10_third x = 
-match x with (name, loc, typ, id) -> if (String.compare name "global" = 0)
-                                      &&(String.compare typ "char" = 0)
-                                      &&(loc.line == 17) then true else false
-
-let check_test11_first_and_second x = 
-match x with (name, loc, typ, id) -> if (String.compare name "new_var" = 0)
-                                      &&(String.compare typ "struct var" = 0)
-                                      &&(loc.line == 8) then true else false
-
-let check_test11_third x = 
-match x with (name, loc, typ, id) -> if (String.compare name "new_var" = 0)
-                                      &&(String.compare typ "struct var" = 0)
-                                      &&(loc.line == 13) then true else false
-
-let check_test11_fourth x = 
-match x with (name, loc, typ, id) -> if (String.compare name "copy_var" = 0)
-                                      &&(String.compare typ "struct var" = 0)
-                                      &&(loc.line == 13) then true else false
-                                      
-let check_test12_first x = 
-match x with (name, loc, typ, id) -> if (String.compare name "i" = 0)
-                                      &&(String.compare typ "int" = 0)
-                                      &&(loc.line == 4) then true else false
-
-let check_test12_second x = 
-match x with (name, loc, typ, id) -> if (String.compare name "i" = 0)
-                                      &&(String.compare typ "int" = 0)
-                                      &&(loc.line == 5) then true else false
-
-let check_test12_third x = 
-match x with (name, loc, typ, id) -> if (String.compare name "i" = 0)
-                                      &&(String.compare typ "int" = 0)
-                                      &&(loc.line == 10) then true else false
-
-let check_test13_first x = 
-match x with (name, loc, typ, id) -> if (String.compare name "global" = 0)
-                                      &&(String.compare typ "int" = 0)
-                                      &&(loc.line == 5) then true else false
-
-let check_test13_second x = 
-match x with (name, loc, typ, id) -> if (String.compare name "j" = 0)
-                                      &&(String.compare typ "int" = 0)
-                                      &&(loc.line == 5) then true else false
-
-let check_test13_third x = 
-match x with (name, loc, typ, id) -> if (String.compare name "global" = 0)
-                                      &&(String.compare typ "int" = 0)
-                                      &&(loc.line == 16) then true else false
-
-let check_test13_fourth x = 
-match x with (name, loc, typ, id) -> if (String.compare name "x" = 0)
-                                      &&(String.compare typ "int" = 0)
-                                      &&(loc.line == 11) then true else false
-
-let check_test14_first x = 
-match x with (name, loc, typ, id) -> if (String.compare name "j" = 0)
-                                      &&(String.compare typ "int" = 0)
-                                      &&(loc.line == 4) then true else false
-
-let check_test14_second x = 
-match x with (name, loc, typ, id) -> if (String.compare name "global" = 0)
-                                      &&(String.compare typ "int" = 0)
-                                      &&(loc.line == 13) then true else false
-
-let check_test14_third x = 
-match x with (name, loc, typ, id) -> if (String.compare name "global" = 0)
-                                      &&(String.compare typ "int" = 0)
-                                      &&(loc.line == 17) then true else false
-
-let check_test14_fourth x = 
-match x with (name, loc, typ, id) -> if (String.compare name "x" = 0)
-                                      &&(String.compare typ "int" = 0)
-                                      &&(loc.line == 17) then true else false
+let check_result res res_name res_typ res_line =
+match res with (name, loc, typ, id) -> if (String.compare name res_name = 0)
+                                      &&(String.compare typ res_typ = 0)
+                                      &&(loc.line == res_line) then true else false
 
 let funcvar_tests = "test suite for func_Var" >::: [
   "search lhost1"  >:: (fun _ -> assert_equal (search_lhost lhost1 "x" location1 (-1)) result1);
@@ -200,40 +90,40 @@ let funcvar_tests = "test suite for func_Var" >::: [
   "search statement-list1" >:: (fun _ -> assert_equal (search_stmt_list_for_var stmt_list "x" (-1)) result5);
   "test find_uses_in_fun_all_glob" >:: (fun _ -> let result = find_uses_in_fun_all_glob "main" (Frontc.parse "test.c" ())
                                                   in assert_equal (List.length result) 2;
-                                                     assert_bool "check result of first" (check_test8_first (List.hd result));
-                                                     assert_bool "check result of second" (check_test8_second (List.nth result 1)));
+                                                     assert_bool "check result of first" (check_result (List.hd result) "x" "int" 7);
+                                                     assert_bool "check result of second" (check_result (List.nth result 1) "y" "char" 8));
   "test find_uses_in_fun_all" >:: (fun _ -> let result = find_uses_in_fun_all "niceFunction" (Frontc.parse "test1.c" ())
                                             in assert_equal (List.length result) 4;
-                                               assert_bool "check result of first" (check_test9_first (List.hd result));
-                                               assert_bool "check result of second" (check_test9_second (List.nth result 1));
-                                               assert_bool "check result of third" (check_test9_third (List.nth result 2));
-                                               assert_bool "check result of fourth" (check_test9_fourth (List.nth result 3)));
+                                               assert_bool "check result of first" (check_result (List.hd result) "global" "int" 5);
+                                               assert_bool "check result of second" (check_result (List.nth result 1) "formal" "float" 5);
+                                               assert_bool "check result of third" (check_result (List.nth result 2) "local" "float" 4);
+                                               assert_bool "check result of fourth" (check_result (List.nth result 3) "local" "float" 5));
   "test find_uses" >:: (fun _ -> let result = find_uses "global" (-1) (Frontc.parse "test2.c" ())
                                  in assert_equal (List.length result) 3;
-                                    assert_bool "check result of first" (check_test10_first (List.hd result));
-                                    assert_bool "check result of second" (check_test10_second (List.nth result 1));
-                                    assert_bool "check result of third" (check_test10_third (List.nth result 2)));
+                                    assert_bool "check result of first" (check_result (List.hd result) "global" "char" 4);
+                                    assert_bool "check result of second" (check_result (List.nth result 1) "global" "char" 8);
+                                    assert_bool "check result of third" (check_result (List.nth result 2) "global" "char" 17));
    "test find_uses_all" >:: (fun _ -> let result = find_uses_all (Frontc.parse "test3.c" ())
                                       in assert_equal (List.length result) 4;
-                                         assert_bool "check result of first" (check_test11_first_and_second (List.hd result));
-                                         assert_bool "check result of second" (check_test11_first_and_second (List.nth result 1));
-                                         assert_bool "check result of third" (check_test11_third (List.nth result 2));
-                                         assert_bool "check result of fourth" (check_test11_fourth (List.nth result 3)));    
+                                         assert_bool "check result of first" (check_result (List.hd result) "new_var" "struct var" 8);
+                                         assert_bool "check result of second" (check_result (List.nth result 1) "new_var" "struct var" 8);
+                                         assert_bool "check result of third" (check_result (List.nth result 2) "new_var" "struct var" 13);
+                                         assert_bool "check result of fourth" (check_result (List.nth result 3) "copy_var" "struct var" 13));    
    "test find_uses_in_cond" >:: (fun _ -> let result = find_uses_in_cond "i" (-1) (Frontc.parse "test4.c" ())
                                           in assert_equal (List.length result) 3;
-                                             assert_bool "check result of first" (check_test12_first (List.hd result));
-                                             assert_bool "check result of second" (check_test12_second (List.nth result 1));
-                                             assert_bool "check result of third" (check_test12_third (List.nth result 2)));
+                                             assert_bool "check result of first" (check_result (List.hd result) "i" "int" 4);
+                                             assert_bool "check result of second" (check_result (List.nth result 1) "i" "int" 5);
+                                             assert_bool "check result of third" (check_result (List.nth result 2) "i" "int" 10));
    "test find_uses_in_cond_all" >:: (fun _ -> let result = find_uses_in_cond_all (Frontc.parse "test5.c" ())
                                               in assert_equal (List.length result) 4;
-                                                 assert_bool "check result of first" (check_test13_first (List.hd result));
-                                                 assert_bool "check result of second" (check_test13_second (List.nth result 1));
-                                                 assert_bool "check result of third" (check_test13_third (List.nth result 2));
-                                                 assert_bool "check result of fourth" (check_test13_fourth (List.nth result 3)));
+                                                 assert_bool "check result of first" (check_result (List.hd result) "global" "int" 5);
+                                                 assert_bool "check result of second" (check_result (List.nth result 1) "j" "int" 5);
+                                                 assert_bool "check result of third" (check_result (List.nth result 2) "global" "int" 16);
+                                                 assert_bool "check result of fourth" (check_result (List.nth result 3) "x" "int" 11));
    "test find_uses_in_noncond_all" >:: (fun _ -> let result = find_uses_in_noncond_all (Frontc.parse "test5.c" ())
                                                  in assert_equal (List.length result) 6;
-                                                    assert_bool "check result of first" (check_test14_first (List.hd result));
-                                                    assert_bool "check resut of second" (check_test14_second (List.nth result 1));
-                                                    assert_bool "check result of third" (check_test14_third (List.nth result 3));
-                                                    assert_bool "check result of fourth" (check_test14_fourth (List.nth result 5)));                                  
+                                                    assert_bool "check result of first" (check_result (List.hd result) "j" "int" 4);
+                                                    assert_bool "check resut of second" (check_result (List.nth result 1) "global" "int" 13);
+                                                    assert_bool "check result of third" (check_result (List.nth result 3) "global" "int" 17);
+                                                    assert_bool "check result of fourth" (check_result (List.nth result 5) "x" "int" 17));                                  
 ]

@@ -68,3 +68,13 @@ in match fundec_res with None -> []
 let find_uses typename file = 
 let list = FuncVar.find_uses_all file
 in List.filter (fun (name, loc, typ, id) -> (String.compare typ typename = 0)) list
+
+(* Finds all uses of a datatype in conditions *)
+let find_uses_in_cond typename file =
+let list = FuncVar.find_uses_in_cond_all file
+in List.filter (fun (name, loc, typ, id) -> (String.compare typ typename = 0)) list
+
+(* Finds all uses of a datatype in non-conditions *)
+let find_uses_in_noncond typename file =
+let list = FuncVar.find_uses_in_noncond_all file
+in List.filter (fun (name, loc, typ, id) -> (String.compare typ typename = 0)) list
