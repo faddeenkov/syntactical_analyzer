@@ -21,7 +21,7 @@ in ignore (visitCilExpr visitor exp); !result
 let search_lhost host name loc varid = 
 match host with Var(info) -> if is_equal_varname_varid info name varid then (info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::[] else []
                 (* Should I consider Mem too? *)
-            | Mem(exp) -> Printf.printf "It's a pointer\n"; search_expression exp name loc varid
+            | Mem(exp) -> search_expression exp name loc varid
  
 let rec search_offset os name loc varid =
 match os with NoOffset -> []
@@ -35,8 +35,8 @@ match list with x::xs -> (search_expression x name loc varid)@(search_expression
 
 (* Finds a variable in a list of instructions *)
 let rec search_instr_list_for_var list name varid = 
-match list with Set((lhost, offset), exp, loc)::xs ->  (search_lhost lhost name loc varid)@(search_offset offset name loc varid)@(search_expression exp name loc varid)@(search_instr_list_for_var xs name varid)
-                | VarDecl(info, loc)::xs -> if is_equal_varname_varid info name varid then (info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::(search_instr_list_for_var xs name varid) else (search_instr_list_for_var xs name varid)
+match list with Set((lhost, offset), exp, loc)::xs -> (search_lhost lhost name loc varid)@(search_offset offset name loc varid)@(search_expression exp name loc varid)@(search_instr_list_for_var xs name varid)
+                | VarDecl(info, loc)::xs -> Printf.printf "A VarDecl was found with %s\n" info.vname; if is_equal_varname_varid info name varid then (info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::(search_instr_list_for_var xs name varid) else (search_instr_list_for_var xs name varid)
                 | Call (Some(lhost,offset), exp, exp_list, loc)::xs -> (search_lhost lhost name loc varid)@(search_offset offset name loc varid)@(search_expression exp name loc varid)@(search_expression_list exp_list name loc varid)@(search_instr_list_for_var xs name varid)
                 | Call (None, exp, exp_list, loc)::xs -> (search_expression exp name loc varid)@(search_expression_list exp_list name loc varid)@(search_instr_list_for_var xs name varid)
                 (* Should I consider Asm too? *)
@@ -215,3 +215,20 @@ in let rec iter_list list new_list =
 match list with x::xs -> iter_list xs (remove_result new_list x)
             | [] -> new_list
 in iter_list cond_result no_struc_result
+
+(* Finds all variable-declarations in a function *)
+let find_decl_in_fun varname varid funname file =
+let fundec_opt = find_fundec file.globals funname
+in let get_formals_locals dec = dec.sformals@dec.slocals
+in let rec iter_list list = 
+match list with x::xs -> if (is_equal_varname_varid x varname varid) then (x.vname, x.vdecl, (String.trim (Pretty.sprint 1 (d_type () x.vtype))), x.vid)::(iter_list xs) else iter_list xs
+            | [] -> []
+in match fundec_opt with None -> []
+                    | Some(fundec) -> iter_list (get_formals_locals fundec)
+
+(* Finds all global variable declarations *)
+let find_decl_all_glob file = 
+let rec iter_list list = 
+match list with GVar(info, _, loc)::xs -> (info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::(iter_list xs)          | _::xs -> iter_list xs
+            | [] -> []
+in iter_list file.globals

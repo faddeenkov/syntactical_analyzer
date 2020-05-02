@@ -1,6 +1,6 @@
 {   "select":["name","location"],
-    "type": "datatype",
-    "target": {"name" : "int"},
-    "find":"uses",
-    "structure": "non-cond",
+    "type": "var",
+    "target": {"id" : 300},
+    "find":"decl",
+    "structure": {"fun_name" : "main"},
     "constraint": "$none"}
