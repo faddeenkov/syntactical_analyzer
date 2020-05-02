@@ -36,7 +36,7 @@ match list with x::xs -> (search_expression x name loc varid)@(search_expression
 (* Finds a variable in a list of instructions *)
 let rec search_instr_list_for_var list name varid = 
 match list with Set((lhost, offset), exp, loc)::xs -> (search_lhost lhost name loc varid)@(search_offset offset name loc varid)@(search_expression exp name loc varid)@(search_instr_list_for_var xs name varid)
-                | VarDecl(info, loc)::xs -> Printf.printf "A VarDecl was found with %s\n" info.vname; if is_equal_varname_varid info name varid then (info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::(search_instr_list_for_var xs name varid) else (search_instr_list_for_var xs name varid)
+                | VarDecl(info, loc)::xs -> if is_equal_varname_varid info name varid then (info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::(search_instr_list_for_var xs name varid) else (search_instr_list_for_var xs name varid)
                 | Call (Some(lhost,offset), exp, exp_list, loc)::xs -> (search_lhost lhost name loc varid)@(search_offset offset name loc varid)@(search_expression exp name loc varid)@(search_expression_list exp_list name loc varid)@(search_instr_list_for_var xs name varid)
                 | Call (None, exp, exp_list, loc)::xs -> (search_expression exp name loc varid)@(search_expression_list exp_list name loc varid)@(search_instr_list_for_var xs name varid)
                 (* Should I consider Asm too? *)
@@ -216,7 +216,7 @@ match list with x::xs -> iter_list xs (remove_result new_list x)
             | [] -> new_list
 in iter_list cond_result no_struc_result
 
-(* Finds all variable-declarations in a function *)
+(* Finds the declaration of a variable in a function *)
 let find_decl_in_fun varname varid funname file =
 let fundec_opt = find_fundec file.globals funname
 in let get_formals_locals dec = dec.sformals@dec.slocals
@@ -226,9 +226,37 @@ match list with x::xs -> if (is_equal_varname_varid x varname varid) then (x.vna
 in match fundec_opt with None -> []
                     | Some(fundec) -> iter_list (get_formals_locals fundec)
 
+(* Finds all declarations in a function *)
+let find_decl_in_fun_all funname file =
+let fundec_opt = find_fundec file.globals funname
+in let rec iter_list list =
+match list with x::xs -> (x.vname, x.vdecl, (String.trim (Pretty.sprint 1 (d_type () x.vtype))), x.vid)::(iter_list xs)
+            | [] -> []
+in match fundec_opt with None -> []
+                    | Some(fundec) -> iter_list (fundec.sformals@fundec.slocals)
+
 (* Finds all global variable declarations *)
 let find_decl_all_glob file = 
 let rec iter_list list = 
 match list with GVar(info, _, loc)::xs -> (info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::(iter_list xs)          | _::xs -> iter_list xs
             | [] -> []
 in iter_list file.globals
+
+(* Finds the declarations of a variable globally and in all functions  *)
+let find_decl varname varid file = 
+let rec iter_global_decls result =
+match result with (name, loc, typ, id)::xs -> if (String.compare varname name = 0)|| id = varid then (name, loc, typ, id)::[] else iter_global_decls xs
+            | [] -> []
+in let rec iter_functions globals = 
+match globals with GFun(dec, loc)::xs -> (find_decl_in_fun varname varid dec.svar.vname file)@(iter_functions xs)
+                | _ ::xs -> iter_functions xs
+                | [] -> []
+in (iter_global_decls (find_decl_all_glob file))@(iter_functions file.globals)
+
+(* Finds all declaration globally and in all functions *)
+let find_decl_all file =
+let rec iter_list list = 
+match list with GFun(dec, loc)::xs -> (find_decl_in_fun_all dec.svar.vname file)@(iter_list xs)
+            | _::xs -> iter_list xs
+            | [] -> []
+in (find_decl_all_glob file)@(iter_list file.globals)

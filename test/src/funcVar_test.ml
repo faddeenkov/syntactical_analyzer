@@ -125,5 +125,11 @@ let funcvar_tests = "test suite for func_Var" >::: [
                                                     assert_bool "check result of first" (check_result (List.hd result) "j" "int" 4);
                                                     assert_bool "check resut of second" (check_result (List.nth result 1) "global" "int" 13);
                                                     assert_bool "check result of third" (check_result (List.nth result 3) "global" "int" 17);
-                                                    assert_bool "check result of fourth" (check_result (List.nth result 5) "x" "int" 17));                                  
+                                                    assert_bool "check result of fourth" (check_result (List.nth result 5) "x" "int" 17)); 
+   "test find_decl_all" >:: (fun _ -> let result = find_decl_all (Frontc.parse "test5.c" ())
+                                       in assert_equal (List.length result) 3;
+                                          assert_bool "check result of first" (check_result (List.hd result) "global" "int" 1);
+                                          assert_bool "check result of second" (check_result (List.nth result 1) "j" "int" 4);
+                                          assert_bool "check result of third" (check_result (List.nth result 2) "x" "int" 10)
+   )                              
 ]
