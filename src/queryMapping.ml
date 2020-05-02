@@ -10,7 +10,7 @@ let loc_default = {line = -1; file = ""; byte = -1}
 
 (* Resolution of datatype-oriented queries *)
 let resolve_query_datatype_decl_none query cilfile = 
-match query.tar with Name_t(name) -> (FuncDatatype.find_decl name cilfile)::[]
+match query.tar with Name_t(name) -> FuncDatatype.find_decl name cilfile
                 | AllGlobVar_t -> FuncDatatype.find_decl_all_glob cilfile
                 | All_t -> FuncDatatype.find_decl_all cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
@@ -37,9 +37,18 @@ match query.str with Fun_s(funname) -> resolve_query_datatype_uses_fun query cil
                 | NonCond_s -> resolve_query_datatype_uses_noncond query cilfile
                 | None_s -> resolve_query_datatype_uses_none query cilfile
 
+let resolve_query_datatype_defs_none query cilfile = 
+match query.tar with Name_t(name) -> FuncDatatype.find_def name cilfile
+                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+
+let resolve_query_datatype_defs query cilfile =
+match query.str with None_s -> resolve_query_datatype_defs_none query cilfile
+                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+
 let resolve_query_datatype query cilfile = 
 match query.f with Decl_f -> if ((query.str = None_s)) then (resolve_query_datatype_decl_none query cilfile) else (Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[])
                 | Uses_f -> resolve_query_datatype_uses query cilfile
+                | Defs_f -> resolve_query_datatype_defs query cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
 (* Resolution of variable-oriented queries *)
@@ -93,6 +102,7 @@ match query.tar with AllGlobVar_t -> FuncVar.find_decl_all_glob cilfile
 let resolve_query_var_decl query cilfile =
 match query.str with Fun_s(funname) -> resolve_query_var_decl_fun query cilfile funname
                 | None_s -> resolve_query_var_decl_none query cilfile
+                | NonCond_s -> resolve_query_var_decl_none query cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_var query cilfile = 
