@@ -1,6 +1,6 @@
 {   "select":["name","location"],
-    "type": "datatype",
-    "target": {"name" : "uni"},
-    "find":"defs",
+    "type": "fun",
+    "target": "$all",
+    "find":"returns",
     "structure": "$none",
     "constraint": "$none"}

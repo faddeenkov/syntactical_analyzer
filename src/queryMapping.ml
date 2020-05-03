@@ -1,5 +1,6 @@
 open FuncDatatype
 open FuncVar
+open FuncFunction
 open Cil
 open JsonParser
 
@@ -110,8 +111,22 @@ match query.f with Uses_f -> resolve_query_var_uses query cilfile
                 | Decl_f -> resolve_query_var_decl query cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
+let resolve_query_fun_return_none query cilfile =
+match query.tar with Name_t(name) -> FuncFunction.find_returns name (-1) cilfile
+                | ID_t(id) -> FuncFunction.find_returns "" id cilfile
+                | All_t -> FuncFunction.find_returns_all cilfile
+                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+
+let resolve_query_fun_return query cilfile = 
+match query.str with None_s -> resolve_query_fun_return_none query cilfile
+                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+
+let resolve_query_fun query cilfile =
+match query.f with Returns_f -> resolve_query_fun_return query cilfile
+                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+
 (* Main mapping function *)
 let map_query query cilfile = if (query.lim != None_c) then (Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]) else (
 match query.k with Datatype_k -> resolve_query_datatype query cilfile
                 | Var_k -> resolve_query_var query cilfile
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[] )
+                | Fun_k -> resolve_query_fun query cilfile )

@@ -15,4 +15,5 @@ int g(){
 
 void h(){
     global = '?';
+    return;
 }
