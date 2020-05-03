@@ -13,5 +13,9 @@ let funcfunction_tests = "test suite for func_Function" >::: [
                                          (* Here is an implicit return-statement in function f in test2.c *)
                                          assert_bool "check result of first" (check_result (List.nth result 1) "" "int" 9);
                                          assert_bool "check result of second" (check_result (List.nth result 2) "" "int" 12);
-                                         assert_bool "check result of third" (check_result (List.nth result 3) "" "void" 18))
+                                         assert_bool "check result of third" (check_result (List.nth result 3) "" "void" 18));
+"test find_def_all" >:: (fun _ -> let result = find_def_all (Frontc.parse "test6.c" ())
+                                  in assert_equal (List.length result) 2;
+                                     assert_bool "check result of first" (check_result (List.hd result) "f"  "void f (other_int x, float y)" 5);
+                                     assert_bool "check result of second" (check_result (List.nth result 1) "main" "void main ()" 12))
 ]

@@ -1,6 +1,6 @@
 {   "select":["name","location"],
     "type": "fun",
     "target": "$all",
-    "find":"returns",
+    "find":"defs",
     "structure": "$none",
     "constraint": "$none"}

@@ -27,3 +27,29 @@ match list with GFun(fundec, _)::xs -> (find_returns "" fundec.svar.vid file)@(i
             | _::xs -> iter_list xs
             | [] -> []
 in iter_list file.globals
+
+let create_sig fundec file = 
+let return_type = 
+match (find_returns "" fundec.svar.vid file) with (_, _, typ, _)::xs -> typ
+                                                | [] -> Printf.printf "This should never happen\n"; ""
+in let rec input_type list = 
+match list with x::[] -> (String.trim (Pretty.sprint 1 (d_type () x.vtype)))^" "^x.vname
+            | x::xs -> (String.trim (Pretty.sprint 1 (d_type () x.vtype)))^" "^x.vname^", "^(input_type xs)
+            | [] -> ""
+in return_type^" "^fundec.svar.vname^" ("^(input_type fundec.sformals)^")"
+
+(* Finds all definitions of a function *)
+let find_def funname funid file =
+let rec iter_list list =
+match list with GFun(dec, loc)::xs -> if is_equal_funname_funid dec.svar funname funid then (dec.svar.vname, loc, create_sig dec file, dec.svar.vid)::(iter_list xs) else iter_list xs
+            | _::xs -> iter_list xs
+            | [] -> []
+in iter_list file.globals
+
+(* Finds all definitions of all functions *)
+let find_def_all file = 
+let rec iter_list list =
+match list with GFun(fundec, _)::xs -> (find_def "" fundec.svar.vid file)@(iter_list xs)
+            | _::xs -> iter_list xs
+            | [] -> []
+in iter_list file.globals
