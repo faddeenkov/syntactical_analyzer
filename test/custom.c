@@ -32,8 +32,12 @@ BYTE x[] = {'b'};
 int f (BYTE b){
     glob_var = 123.456;
     BYTE c = b-1;
+    if(b == 1){
+        f(b-1);
+    }
     return b;
 }
+
 
 int main(){
     typedef char zeichen;
@@ -67,14 +71,14 @@ int main(){
     } **/
 
     for(int i = 0; i < 10; i++){
-       
+       int a[i + 3];
     }
 
     for(int i = 0; i < 20; i++){
 
     }
-
-    int k = f(x+4-x2);
+    
+    return f(x+4-x2);
 
     BYTE arr[] = {2};
     switch(x[0]){

@@ -131,9 +131,19 @@ let resolve_query_fun_defs query cilfile =
 match query.str with None_s -> resolve_query_fun_defs_none query cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
+let resolve_query_fun_uses_none query cilfile =
+match query.tar with Name_t(name) -> FuncFunction.find_uses name (-1) cilfile
+                | ID_t(id) -> FuncFunction.find_uses "" id cilfile 
+                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+
+let resolve_query_fun_uses query cilfile = 
+match query.str with None_s -> resolve_query_fun_uses_none query cilfile
+                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+
 let resolve_query_fun query cilfile =
 match query.f with Returns_f -> resolve_query_fun_return query cilfile
                 | Defs_f -> resolve_query_fun_defs query cilfile
+                | Uses_f -> resolve_query_fun_uses query cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
 (* Main mapping function *)

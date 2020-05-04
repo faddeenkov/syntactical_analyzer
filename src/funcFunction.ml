@@ -53,3 +53,29 @@ match list with GFun(fundec, _)::xs -> (find_def "" fundec.svar.vid file)@(iter_
             | _::xs -> iter_list xs
             | [] -> []
 in iter_list file.globals
+
+let rec find_fundec funname funid list =
+match list with GFun(dec, _)::xs -> if is_equal_funname_funid dec.svar funname funid then Some (dec) else find_fundec funname funid xs
+            | _::xs -> find_fundec funname funid xs
+            | [] -> None
+
+class fun_find_uses funname funid file result : nopCilVisitor =
+object(self)
+inherit nopCilVisitor
+method vglob global = DoChildren
+method vfunc fundec = DoChildren
+method vblock block = DoChildren
+method vstmt stmt = DoChildren
+method vinst instr = 
+match instr with Call(_, Lval(Var(varinfo) ,NoOffset), list,loc) -> 
+if is_equal_funname_funid varinfo funname funid then ( match (find_fundec funname funid file.globals) with None -> SkipChildren
+                                                                        | Some (dec) -> result := (!result)@((varinfo.vname, loc, create_sig dec file, varinfo.vid)::[]); SkipChildren) else SkipChildren
+              
+            | _ -> SkipChildren
+end
+
+(* Finds all calls of a function *)
+let find_uses funname funid file = 
+let result = ref []
+in let visitor = new fun_find_uses funname funid file result
+in ignore (visitCilFileSameGlobals visitor file); !result 
