@@ -29,6 +29,8 @@ enum anonym; //GEnumTagDecl
 
 BYTE x[] = {'b'};
 
+void useless(){}
+
 int f (BYTE b){
     glob_var = 123.456;
     BYTE c = b-1;
@@ -59,7 +61,7 @@ int main(){
     int x2;
     x2 = 7;
     
-
+    useless();
 
     /**
      * __try{
@@ -103,7 +105,7 @@ glob_var = 3.0;
         }
     }
 
-    if(test == 7){
+    if(f(2) == 7){
         return f(x2);
     }
     else{

@@ -21,6 +21,10 @@ let funcfunction_tests = "test suite for func_Function" >::: [
 "test find_uses" >:: (fun _ -> let result = find_uses "is_divisible" (-1) (Frontc.parse "test7.c" ())
                                  in assert_equal (List.length result) 2;
                                     assert_bool "check result of first" (check_result (List.hd result) "is_divisible" "int is_divisible (int a, int b)" 3);
-                                    assert_bool "check result of second" (check_result (List.nth result 1) "is_divisible" "int is_divisible (int a, int b)" 9)) 
+                                    assert_bool "check result of second" (check_result (List.nth result 1) "is_divisible" "int is_divisible (int a, int b)" 9));
+"test find_uses_in_fun_all" >:: (fun _ -> let result = find_uses_in_fun_all "too_complicated_calculation" (Frontc.parse "test8.c" ())
+                                          in assert_equal (List.length result) 2;
+                                             assert_bool "check result of first" (check_result (List.hd result) "double_number" "int double_number (int num)" 10);
+                                             assert_bool "check result of second" (check_result (List.nth result 1) "increase_number" "int increase_number (int num)" 10)) 
 
  ]

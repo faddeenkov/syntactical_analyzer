@@ -1,6 +1,6 @@
 {   "select":["name","location"],
     "type": "fun",
-    "target": {"name" : "f"},
+    "target": "$all",
     "find":"uses",
-    "structure": "$none",
+    "structure": {"fun_name" : "main"},
     "constraint": "$none"}

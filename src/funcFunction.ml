@@ -74,8 +74,45 @@ if is_equal_funname_funid varinfo funname funid then ( match (find_fundec funnam
             | _ -> SkipChildren
 end
 
-(* Finds all calls of a function *)
+(* Finds all calls of a function in all functions *)
 let find_uses funname funid file = 
 let result = ref []
 in let visitor = new fun_find_uses funname funid file result
 in ignore (visitCilFileSameGlobals visitor file); !result 
+
+(* Find all calls of all functions in all functions *)
+let find_uses_all file = 
+let rec iter_list list = 
+match list with GFun(fundec, _)::xs -> (find_uses "" fundec.svar.vid file)@(iter_list xs)
+            | _ ::xs -> iter_list xs
+            | [] -> []
+in iter_list file.globals
+
+class fun_find_uses_in_fun funname funid funstrucname file result : nopCilVisitor =
+object(self)
+inherit nopCilVisitor
+method vglob global = DoChildren
+method vfunc fundec = if is_equal_funname_funid fundec.svar funstrucname (-1) then DoChildren else SkipChildren
+method vblock block = DoChildren
+method vstmt stmt = DoChildren
+method vinst instr = 
+match instr with Call(_, Lval(Var(varinfo) ,NoOffset), list,loc) -> 
+if is_equal_funname_funid varinfo funname funid then ( match (find_fundec funname funid file.globals) with None -> SkipChildren
+                                                                        | Some (dec) -> result := (!result)@((varinfo.vname, loc, create_sig dec file, varinfo.vid)::[]); SkipChildren) else SkipChildren
+              
+            | _ -> SkipChildren
+end
+
+(* Finds calls of a function in a function *)
+let find_uses_in_fun funname funid funstrucname file =
+let result = ref []
+in let visitor = new fun_find_uses_in_fun funname funid funstrucname file result
+in ignore (visitCilFileSameGlobals visitor file); !result
+
+(* Finds all calls of all functions in a function *)
+let find_uses_in_fun_all funstrucname file =
+let rec iter_list list =
+match list with GFun(fundec, _)::xs -> (find_uses_in_fun "" fundec.svar.vid funstrucname file)@(iter_list xs)
+            | _::xs -> iter_list xs
+            | [] -> []
+in iter_list file.globals

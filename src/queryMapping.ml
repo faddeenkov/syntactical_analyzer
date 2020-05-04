@@ -134,10 +134,18 @@ match query.str with None_s -> resolve_query_fun_defs_none query cilfile
 let resolve_query_fun_uses_none query cilfile =
 match query.tar with Name_t(name) -> FuncFunction.find_uses name (-1) cilfile
                 | ID_t(id) -> FuncFunction.find_uses "" id cilfile 
+                | All_t -> FuncFunction.find_uses_all cilfile
+                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+
+let resolve_query_fun_uses_fun query cilfile funname =
+match query.tar with Name_t(name) -> FuncFunction.find_uses_in_fun name (-1) funname cilfile
+                | ID_t(id) -> FuncFunction.find_uses_in_fun "" id funname cilfile
+                | All_t -> FuncFunction.find_uses_in_fun_all funname cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun_uses query cilfile = 
 match query.str with None_s -> resolve_query_fun_uses_none query cilfile
+                | Fun_s(funname) -> resolve_query_fun_uses_fun query cilfile funname 
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun query cilfile =
