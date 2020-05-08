@@ -260,3 +260,29 @@ match list with GFun(dec, loc)::xs -> (find_decl_in_fun_all dec.svar.vname file)
             | _::xs -> iter_list xs
             | [] -> []
 in (find_decl_all_glob file)@(iter_list file.globals)
+
+class var_find_def_in_fun varname varid funname result : nopCilVisitor =
+object(self)
+inherit nopCilVisitor
+method vglob global = DoChildren
+method vfunc fundec = if (String.compare fundec.svar.vname funname = 0) then DoChildren else SkipChildren
+method vblock block = DoChildren
+method vstmt stmt = DoChildren
+method vinst instr = 
+match instr with Set((Var(info),_), exp, loc) -> if is_equal_varname_varid info varname varid then (result := (!result)@((info.vname, loc, String.trim (Pretty.sprint 1 (d_type () info.vtype)), info.vid)::[]); SkipChildren) else SkipChildren
+            | _ -> SkipChildren
+end
+
+(* Finds definitions of a variable in a function *)
+let find_defs_in_fun varname varid funname file =
+let result = ref []
+in let visitor = new var_find_def_in_fun varname varid funname result
+in visitCilFileSameGlobals visitor file; !result
+
+(* Finds definitions of all variables in a function *)
+let find_defs_in_fun_all_glob funname file =
+let rec iter_list list =
+match list with GVar(info, _, _)::xs -> (find_defs_in_fun "" info.vid funname file)@(iter_list xs)
+            | _::xs -> iter_list xs
+            | [] -> []
+in iter_list file.globals

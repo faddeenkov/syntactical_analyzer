@@ -89,9 +89,10 @@ let funcvar_tests = "test suite for func_Var" >::: [
   "search instruction-list1" >:: (fun _ -> assert_equal (search_instr_list_for_var instr_list "x" (-1)) result4);
   "search statement-list1" >:: (fun _ -> assert_equal (search_stmt_list_for_var stmt_list "x" (-1)) result5);
   "test find_uses_in_fun_all_glob" >:: (fun _ -> let result = find_uses_in_fun_all_glob "main" (Frontc.parse "test.c" ())
-                                                  in assert_equal (List.length result) 2;
+                                                  in assert_equal (List.length result) 3;
                                                      assert_bool "check result of first" (check_result (List.hd result) "x" "int" 7);
-                                                     assert_bool "check result of second" (check_result (List.nth result 1) "y" "char" 8));
+                                                     assert_bool "check result of second" (check_result (List.nth result 1) "x" "int" 10);
+                                                     assert_bool "check result of third" (check_result (List.nth result 2) "y" "char" 8));
   "test find_uses_in_fun_all" >:: (fun _ -> let result = find_uses_in_fun_all "niceFunction" (Frontc.parse "test1.c" ())
                                             in assert_equal (List.length result) 4;
                                                assert_bool "check result of first" (check_result (List.hd result) "global" "int" 5);
@@ -130,6 +131,9 @@ let funcvar_tests = "test suite for func_Var" >::: [
                                        in assert_equal (List.length result) 3;
                                           assert_bool "check result of first" (check_result (List.hd result) "global" "int" 1);
                                           assert_bool "check result of second" (check_result (List.nth result 1) "j" "int" 4);
-                                          assert_bool "check result of third" (check_result (List.nth result 2) "x" "int" 10)
-   )                              
+                                          assert_bool "check result of third" (check_result (List.nth result 2) "x" "int" 10));
+   "test find_defs_in_fun_all_glob" >:: (fun _ -> let result = find_defs_in_fun_all_glob "main" (Frontc.parse "test.c" ())
+                                                  in assert_equal (List.length result) 2;
+                                                     assert_bool "check result of first" (check_result (List.hd result) "x" "int" 10);
+                                                     assert_bool "check result of second" (check_result (List.nth result 1) "y" "char" 8))                              
 ]

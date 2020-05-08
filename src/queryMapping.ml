@@ -106,9 +106,20 @@ match query.str with Fun_s(funname) -> resolve_query_var_decl_fun query cilfile 
                 | NonCond_s -> resolve_query_var_decl_none query cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
+let resolve_query_var_defs_fun query cilfile funname =
+match query.tar with Name_t(name) -> FuncVar.find_defs_in_fun name (-1) funname cilfile
+                | ID_t(id) -> FuncVar.find_defs_in_fun "" id funname cilfile
+                | AllGlobVar_t -> FuncVar.find_defs_in_fun_all_glob funname cilfile
+                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+
+let resolve_query_var_defs query cilfile =
+match query.str with Fun_s(funname) -> resolve_query_var_defs_fun query cilfile funname
+                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+
 let resolve_query_var query cilfile = 
 match query.f with Uses_f -> resolve_query_var_uses query cilfile
                 | Decl_f -> resolve_query_var_decl query cilfile
+                | Defs_f -> resolve_query_var_defs query cilfile 
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun_return_none query cilfile =
