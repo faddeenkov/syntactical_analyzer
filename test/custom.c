@@ -40,6 +40,9 @@ int f (BYTE b){
     return b;
 }
 
+int g (int x2){
+    return f(x2);
+}
 
 int main(){
     typedef char zeichen;
@@ -71,6 +74,7 @@ int main(){
     __finally{
 
     } **/
+    g(x2);
 
     for(int i = 0; i < 10; i++){
        int a[i + 3];

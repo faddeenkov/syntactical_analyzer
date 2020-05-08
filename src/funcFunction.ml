@@ -139,6 +139,21 @@ in let result = ref []
 in match fundec_opt with None -> []
 | Some(fundec) ->  ignore(visitCilFileSameGlobals (new fun_find_usesvar_in_fun fundec funstrucname varname (-1) file result) file); !result
 
+(* Finds calls of all function with a var in argument in a function *)
+let find_usesvar_in_fun_all funstrucname varname file =
+let rec iter_list list = 
+match list with GFun(dec, _)::xs -> (find_usesvar_in_fun "" dec.svar.vid funstrucname varname file)@(iter_list xs)
+        | _::xs -> iter_list xs
+        | [] -> []
+in iter_list file.globals
+
+(* Finds all calls of a function with a var in argument in all functions *)
+let find_usesvar funname funid varname file =
+let rec iter_list list =
+match list with GFun(dec, _)::xs -> (find_usesvar_in_fun funname funid dec.svar.vname varname file)@(iter_list xs)
+        | _::xs -> iter_list xs
+        | [] -> []
+in iter_list file.globals
 
 
 
@@ -148,6 +163,7 @@ in match fundec_opt with None -> []
 
 
 
+(* Following part is not ready *)
 (* Generates ID-list of all tmp__-vars in funstrucname *)
 class fun_find_cil_gen_tmp funname funid funstrucname file result : nopCilVisitor =
 object(self)

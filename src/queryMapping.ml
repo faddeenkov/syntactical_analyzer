@@ -156,9 +156,17 @@ match query.str with None_s -> resolve_query_fun_uses_none query cilfile
 let resolve_query_fun_usesvar_fun query cilfile varname strucfunname =
 match query.tar with Name_t(funname) -> FuncFunction.find_usesvar_in_fun funname (-1) strucfunname varname cilfile
                 | ID_t(id) -> FuncFunction.find_usesvar_in_fun "" id strucfunname varname cilfile 
+                | All_t -> FuncFunction.find_usesvar_in_fun_all strucfunname varname cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+
+let resolve_query_fun_usesvar_none query cilfile varname =
+match query.tar with Name_t(funname) -> FuncFunction.find_usesvar funname (-1) varname cilfile
+                | ID_t(id) -> FuncFunction.find_usesvar "" id varname cilfile
+                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+
 let resolve_query_fun_usesvar query cilfile varname =
 match query.str with Fun_s(strucfunname) -> resolve_query_fun_usesvar_fun query cilfile varname strucfunname
+                | None_s -> resolve_query_fun_usesvar_none query cilfile varname
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun query cilfile =

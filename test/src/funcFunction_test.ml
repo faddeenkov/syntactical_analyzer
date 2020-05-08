@@ -25,6 +25,10 @@ let funcfunction_tests = "test suite for func_Function" >::: [
 "test find_uses_in_fun_all" >:: (fun _ -> let result = find_uses_in_fun_all "too_complicated_calculation" (Frontc.parse "test8.c" ())
                                           in assert_equal (List.length result) 2;
                                              assert_bool "check result of first" (check_result (List.hd result) "double_number" "int double_number (int num)" 10);
-                                             assert_bool "check result of second" (check_result (List.nth result 1) "increase_number" "int increase_number (int num)" 10)) 
+                                             assert_bool "check result of second" (check_result (List.nth result 1) "increase_number" "int increase_number (int num)" 10));
+"test find_usesvar_in_fun" >:: (fun _ -> let result = find_usesvar_in_fun "f" (-1) "main" "num2" (Frontc.parse "test9.c" ())
+                                         in assert_equal (List.length result) 2;
+                                            assert_bool "check result of first" (check_result (List.hd result) "f" "int f (int a)" 11);
+                                            assert_bool "check result of second" (check_result (List.nth result 1) "f" "int f (int a)" 15)) 
 
  ]

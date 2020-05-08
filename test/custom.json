@@ -2,5 +2,5 @@
     "type": "fun",
     "target": {"name" : "f"},
     "find": {"uses_with_var" : "x2"},
-    "structure": {"fun_name" : "main"},
+    "structure": "$none",
     "constraint": "$none"}
