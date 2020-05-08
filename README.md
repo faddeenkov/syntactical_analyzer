@@ -1,5 +1,5 @@
 # Syntactical analyzer
-
+This project is still in progress.
 
 ## Installation
 
@@ -32,3 +32,17 @@ dune build
 ```bash
 dune build --profile release
 ```
+The executable takes two arguments: path of the JSON-file and path of the C-file.
+
+## Query Language
+The following JSON-grammar describes the current (more or less supported) structure of a query:
+```bash
+{
+"select" : "$ALL",
+"type" : "var" | "fun" | "datatype",
+"target" : {"name" : S} | {"id" : I} | "$ALL" | "$ALL_GLOB_VAR", # where S is a string and I is an integer
+"find" : "uses" | "decl" | "defs" | {"uses_with_var" : S} | "returns",
+"structure" : {"fun_name" : S} | "cond" | "non-cond" | "$NONE"
+}
+```
+Note that the use of some parameters is restricted to some types. (e.g it does not make sense to search for returns in a datatype ;) )
