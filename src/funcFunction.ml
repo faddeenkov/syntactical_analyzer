@@ -155,6 +155,14 @@ match list with GFun(dec, _)::xs -> (find_usesvar_in_fun funname funid dec.svar.
         | [] -> []
 in iter_list file.globals
 
+(* Finds all calls of all functions with a var in argument in all functions *)
+let find_usesvar_all varname file =
+let rec iter_list list = 
+match list with GFun(dec,_)::xs -> (find_usesvar "" dec.svar.vid varname file)@(iter_list xs)
+        | _::xs -> iter_list xs
+        | [] -> []
+in iter_list file.globals
+
 
 
 
