@@ -61,7 +61,7 @@ int main(){
     int x2;
     x2 = 7;
     
-    useless();
+    //useless();
 
     /**
      * __try{
@@ -80,7 +80,11 @@ int main(){
 
     }
     
-    return f(x+4-x2);
+    //no tmp__-file generation here
+    if(f(x2) == 7){
+        return 3;
+    }
+    
 
     BYTE arr[] = {2};
     switch(x[0]){

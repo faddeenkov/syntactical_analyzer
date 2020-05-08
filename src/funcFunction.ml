@@ -116,3 +116,68 @@ match list with GFun(fundec, _)::xs -> (find_uses_in_fun "" fundec.svar.vid funs
             | _::xs -> iter_list xs
             | [] -> []
 in iter_list file.globals
+
+let loc_default = {line = -1; file = ""; byte = -1}
+
+class fun_find_usesvar_in_fun fundec funstrucname varname varid file result : nopCilVisitor =
+object(self)
+inherit nopCilVisitor
+method vglob global = DoChildren
+method vfunc dec = if is_equal_funname_funid dec.svar funstrucname (-1) then DoChildren else SkipChildren
+method vblock block = DoChildren
+method vstmt stmt = DoChildren
+method vinst instr =
+match instr with Call(_, exp, list, loc) -> (match exp with Lval(Var(varinfo), _) -> if is_equal_funname_funid varinfo fundec.svar.vname fundec.svar.vid then (if List.length (FuncVar.search_expression_list list varname loc_default varid) > 0 then (result := (!result)@((varinfo.vname, loc, create_sig fundec file, varinfo.vid)::[]); SkipChildren) else SkipChildren) else SkipChildren
+                                                        | _ -> Printf.printf "some other exp in call\n"; SkipChildren)
+                 | _ -> SkipChildren
+end 
+
+(* Finds calls of a function with a var in argument in a function *)
+let find_usesvar_in_fun funname funid funstrucname varname file =
+let fundec_opt = find_fundec funname funid file.globals
+in let result = ref []
+in match fundec_opt with None -> []
+| Some(fundec) ->  ignore(visitCilFileSameGlobals (new fun_find_usesvar_in_fun fundec funstrucname varname (-1) file result) file); !result
+
+
+
+
+
+
+
+
+
+
+(* Generates ID-list of all tmp__-vars in funstrucname *)
+class fun_find_cil_gen_tmp funname funid funstrucname file result : nopCilVisitor =
+object(self)
+inherit nopCilVisitor
+method vglob global = DoChildren
+method vfunc fundec = if is_equal_funname_funid fundec.svar funstrucname (-1) then DoChildren else SkipChildren
+method vblock block = DoChildren
+method vstmt stmt = DoChildren
+method vinst instr = 
+match instr with Call(Some((Var(tmpinfo), _)), Lval(Var(varinfo) ,_), list,loc) -> 
+if is_equal_funname_funid varinfo funname funid then (if (String.length tmpinfo.vname > 4)&&(String.compare "tmp__" (String.sub tmpinfo.vname 0 5) = 0) then (result := (!result)@((tmpinfo.vid, loc, varinfo.vname, varinfo.vid)::[]); SkipChildren) else SkipChildren)  else SkipChildren
+            | Call(_,_, _, _) -> Printf.printf "Some other call\n"; SkipChildren
+            | _ -> SkipChildren
+end
+(* Output: tmp__-ID, funloc, funname, funid *)
+
+let rec printout_idlist list =
+match list with (tmpid, funloc, funname, funid)::xs -> (Printf.printf "tmpid:%i line: %i funname: %s funid: %i\n" tmpid funloc.line funname funid); printout_idlist xs
+                | [] -> ()
+
+(* Finds calls of a function in conditions in a function DOES NOT WORK YET *)
+let find_uses_in_cond_in_fun funname funid funstrucname file =
+let result = ref []
+in let visitor = new fun_find_cil_gen_tmp funname funid funstrucname file result
+in let id_list = ignore (visitCilFileSameGlobals visitor file); !result
+in let rec iter_ids list fundec_struc fundec_target funname funid =  Printf.printf "list.length: %i\n" (List.length list);
+match list with x::xs -> (match FuncVar.cond_search_uses_stmt_list fundec_struc.sbody.bstmts "" x with [] -> Printf.printf "no result\n"; iter_ids xs fundec_struc fundec_target funname funid
+                                                                                            | (name, loc, typ, id)::ys -> Printf.printf "result of cond-search\n"; (funname, loc, create_sig fundec_target file, funid)::(iter_ids xs fundec_struc fundec_target funname funid))
+        | [] -> []
+in let fundec_struc_target = (find_fundec funstrucname (-1) file.globals, find_fundec funname funid file.globals)
+in printout_idlist id_list; match fundec_struc_target with (Some(struc_fundec), Some(target_fundec)) ->  (match id_list with (_,_, real_funname, real_funid)::_ -> iter_ids (List.map (fun (tmpid, _,_,_) -> tmpid) id_list) struc_fundec target_fundec real_funname real_funid
+                                                                                                | [] -> [])
+                            | _ -> []

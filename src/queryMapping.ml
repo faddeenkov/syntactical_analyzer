@@ -143,15 +143,29 @@ match query.tar with Name_t(name) -> FuncFunction.find_uses_in_fun name (-1) fun
                 | All_t -> FuncFunction.find_uses_in_fun_all funname cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
+let resolve_query_fun_uses_cond query cilfile = 
+match query.tar with (* Name_t(name) -> FuncFunction.find_uses_in_cond_in_fun name (-1) "main" cilfile
+                |*) _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+
 let resolve_query_fun_uses query cilfile = 
 match query.str with None_s -> resolve_query_fun_uses_none query cilfile
                 | Fun_s(funname) -> resolve_query_fun_uses_fun query cilfile funname 
+                | Cond_s -> resolve_query_fun_uses_cond query cilfile
+                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+
+let resolve_query_fun_usesvar_fun query cilfile varname strucfunname =
+match query.tar with Name_t(funname) -> FuncFunction.find_usesvar_in_fun funname (-1) strucfunname varname cilfile
+                | ID_t(id) -> FuncFunction.find_usesvar_in_fun "" id strucfunname varname cilfile 
+                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+let resolve_query_fun_usesvar query cilfile varname =
+match query.str with Fun_s(strucfunname) -> resolve_query_fun_usesvar_fun query cilfile varname strucfunname
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun query cilfile =
 match query.f with Returns_f -> resolve_query_fun_return query cilfile
                 | Defs_f -> resolve_query_fun_defs query cilfile
                 | Uses_f -> resolve_query_fun_uses query cilfile
+                | UsesWithVar_f(varname) -> resolve_query_fun_usesvar query cilfile varname
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
 (* Main mapping function *)
