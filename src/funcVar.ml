@@ -279,10 +279,44 @@ let result = ref []
 in let visitor = new var_find_def_in_fun varname varid funname result
 in visitCilFileSameGlobals visitor file; !result
 
-(* Finds definitions of all variables in a function *)
+(* Finds definitions of all global variables in a function *)
 let find_defs_in_fun_all_glob funname file =
 let rec iter_list list =
 match list with GVar(info, _, _)::xs -> (find_defs_in_fun "" info.vid funname file)@(iter_list xs)
+            | _::xs -> iter_list xs
+            | [] -> []
+in iter_list file.globals
+
+(* Finds definitions of all variables in a functions *)
+let find_defs_in_fun_all funname file =
+let fundec_opt = find_fundec file.globals funname 
+in let get_formals_locals dec = dec.sformals@dec.slocals
+in let rec iter_list list =
+match list with x::xs -> (find_defs_in_fun "" x.vid funname file)@(iter_list xs)
+            | [] -> []
+in match fundec_opt with None -> []
+                    | Some(fundec) -> (find_defs_in_fun_all_glob funname file)@(iter_list (get_formals_locals fundec))
+
+(* Finds definitions of a variable in all functions *)
+let find_defs varname varid file = 
+let rec iter_list list =
+match list with GFun(dec, _)::xs -> (find_defs_in_fun varname varid dec.svar.vname file)@(iter_list xs)
+            | _::xs -> iter_list xs
+            | [] -> []
+in iter_list file.globals
+
+(* Finds definitions of all global variables in all functions *)
+let find_defs_all_glob file =
+let rec iter_list list =
+match list with GFun(dec,_)::xs -> (find_defs_in_fun_all_glob dec.svar.vname file)@(iter_list xs)
+            | _::xs -> iter_list xs
+            | [] -> []
+in iter_list file.globals
+
+(* Finds definitions of all variables in all functions *)
+let find_defs_all file =
+let rec iter_list list =
+match list with GFun(dec, _)::xs -> (find_defs_in_fun_all dec.svar.vname file)@(iter_list xs)
             | _::xs -> iter_list xs
             | [] -> []
 in iter_list file.globals
