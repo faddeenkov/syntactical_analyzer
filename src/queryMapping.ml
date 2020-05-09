@@ -164,7 +164,8 @@ match query.tar with Name_t(name) -> FuncFunction.find_uses_in_fun name (-1) fun
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun_uses_cond query cilfile = 
-match query.tar with All_t -> FuncFunction.find_uses_cond_all  cilfile
+match query.tar with Name_t(name) -> FuncFunction.find_uses_cond name (-1) cilfile
+                | ID_t(id) -> FuncFunction.find_uses_cond "" id cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun_uses query cilfile = 

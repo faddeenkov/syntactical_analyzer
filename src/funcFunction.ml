@@ -163,7 +163,7 @@ match list with GFun(dec,_)::xs -> (find_usesvar "" dec.svar.vid varname file)@(
         | [] -> []
 in iter_list file.globals
 
-class find_calls_with_tmp file result : nopCilVisitor =
+class find_calls_with_tmp file result funname funid : nopCilVisitor =
 object
 inherit nopCilVisitor
 method vglob global = DoChildren
@@ -171,14 +171,14 @@ method vfunc dec = DoChildren
 method vblock block = DoChildren
 method vstmt stmt = DoChildren
 method vinst instr = 
-match instr with Call(lval_opt, Lval(Var(varinfo) ,_), _, loc) -> (match lval_opt with Some((Var(tmpinfo), _)) -> if (String.length tmpinfo.vname > 2)&&(String.compare "tmp" (String.sub tmpinfo.vname 0 3) = 0) then result := (!result)@((tmpinfo.vid, varinfo.vid)::[]); SkipChildren
-                                                                                | _ -> SkipChildren)
+match instr with Call(lval_opt, Lval(Var(varinfo) ,_), _, loc) -> if is_equal_funname_funid varinfo funname funid then (match lval_opt with Some((Var(tmpinfo), _)) -> if (String.length tmpinfo.vname > 2)&&(String.compare "tmp" (String.sub tmpinfo.vname 0 3) = 0) then result := (!result)@((tmpinfo.vid, varinfo.vid)::[]); SkipChildren
+                                                                                | _ -> SkipChildren) else SkipChildren
         | _ -> SkipChildren
 end
 
-let find_lval_of_calls file =
+let find_lval_of_calls funname funid file =
 let result = ref []
-in let visitor = new find_calls_with_tmp file result
+in let visitor = new find_calls_with_tmp file result funname funid
 in visitCilFileSameGlobals visitor file; !result
 
 let create_fun_res name id file loc =
@@ -186,9 +186,9 @@ let fundec_opt = find_fundec name id file.globals
 in match fundec_opt with None -> ("", loc_default, "", -1)
                 | Some(fundec) -> (fundec.svar.vname, loc, create_sig fundec file , fundec.svar.vid)
 
-(* Finds all calls of all function in a condition in all functions*)
-let find_uses_cond_all file =
-let id_list = find_lval_of_calls file
+(* Finds all calls of a function in a condition in all functions *)
+let find_uses_cond funname funid file =
+let id_list = find_lval_of_calls funname funid file
 in let rec iter_list list = 
 match list with (tmp, func)::xs -> (match FuncVar.find_uses_in_cond "" tmp file with (name, loc, typ, id)::ys -> (create_fun_res "" func file loc)::(iter_list xs)
                                                                         | [] -> iter_list xs)

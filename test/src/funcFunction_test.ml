@@ -34,6 +34,13 @@ let funcfunction_tests = "test suite for func_Function" >::: [
                                       in assert_equal (List.length result) 3;
                                          assert_bool "check result of first" (check_result (List.hd result) "f" "int f (int a, int b)" 10);
                                          assert_bool "check result of second" (check_result (List.nth result 1) "g" "int g (int b)" 14);
-                                         assert_bool "check result of third" (check_result (List.nth result 2) "h" "void h (double x, int z)" 15)) 
+                                         assert_bool "check result of third" (check_result (List.nth result 2) "h" "void h (double x, int z)" 15));
+"test find_uses_cond" >:: (fun _ -> let result = find_uses_cond "f" (-1) (Frontc.parse "test11.c" ())
+                                    in assert_equal (List.length result) 5;
+                                       assert_bool "check result of first" (check_result (List.hd result) "f" "int f (int a)" 2);
+                                       assert_bool "check result of second" (check_result (List.nth result 1) "f" "int f (int a)" 5);
+                                       assert_bool "check result of third" (check_result (List.nth result 2) "f" "int f (int a)" 13);
+                                       assert_bool "check result of fourth" (check_result (List.nth result 3) "f" "int f (int a)" 17);
+                                       assert_bool "check result of fifth" (check_result (List.nth result 4) "f" "int f (int a)" 24);) 
 
  ]
