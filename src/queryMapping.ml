@@ -110,7 +110,7 @@ let resolve_query_var_defs_fun query cilfile funname =
 match query.tar with Name_t(name) -> FuncVar.find_defs_in_fun name (-1) funname cilfile
                 | ID_t(id) -> FuncVar.find_defs_in_fun "" id funname cilfile
                 | AllGlobVar_t -> FuncVar.find_defs_in_fun_all_glob funname cilfile
-                | All_t -> FuncVar.find_defs_in_fun_all funname cilfile
+                | All_t -> FuncVar.find_defs_in_fun_all funname cilfile 
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_var_defs_none query cilfile =
@@ -164,8 +164,8 @@ match query.tar with Name_t(name) -> FuncFunction.find_uses_in_fun name (-1) fun
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun_uses_cond query cilfile = 
-match query.tar with (* Name_t(name) -> FuncFunction.find_uses_in_cond_in_fun name (-1) "main" cilfile
-                |*) _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+match query.tar with All_t -> FuncFunction.find_uses_cond_all  cilfile
+                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun_uses query cilfile = 
 match query.str with None_s -> resolve_query_fun_uses_none query cilfile

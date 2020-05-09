@@ -1,6 +1,6 @@
 {   "select":["name","location"],
-    "type": "var",
-    "target": "$all",
-    "find": "defs",
-    "structure": "$none",
+    "type": "fun",
+    "target": {"name" : "f"},
+    "find": "uses",
+    "structure": "cond",
     "constraint": "$none"}

@@ -64,7 +64,7 @@ int main(){
     int x2;
     x2 = 7;
     
-    //useless();
+    useless();
 
     /**
      * __try{

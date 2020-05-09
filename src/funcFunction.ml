@@ -163,45 +163,34 @@ match list with GFun(dec,_)::xs -> (find_usesvar "" dec.svar.vid varname file)@(
         | [] -> []
 in iter_list file.globals
 
-
-
-
-
-
-
-
-
-(* Following part is not ready *)
-(* Generates ID-list of all tmp__-vars in funstrucname *)
-class fun_find_cil_gen_tmp funname funid funstrucname file result : nopCilVisitor =
-object(self)
+class find_calls_with_tmp file result : nopCilVisitor =
+object
 inherit nopCilVisitor
 method vglob global = DoChildren
-method vfunc fundec = if is_equal_funname_funid fundec.svar funstrucname (-1) then DoChildren else SkipChildren
+method vfunc dec = DoChildren
 method vblock block = DoChildren
 method vstmt stmt = DoChildren
 method vinst instr = 
-match instr with Call(Some((Var(tmpinfo), _)), Lval(Var(varinfo) ,_), list,loc) -> 
-if is_equal_funname_funid varinfo funname funid then (if (String.length tmpinfo.vname > 4)&&(String.compare "tmp__" (String.sub tmpinfo.vname 0 5) = 0) then (result := (!result)@((tmpinfo.vid, loc, varinfo.vname, varinfo.vid)::[]); SkipChildren) else SkipChildren)  else SkipChildren
-            | Call(_,_, _, _) -> Printf.printf "Some other call\n"; SkipChildren
-            | _ -> SkipChildren
+match instr with Call(lval_opt, Lval(Var(varinfo) ,_), _, loc) -> (match lval_opt with Some((Var(tmpinfo), _)) -> if (String.length tmpinfo.vname > 2)&&(String.compare "tmp" (String.sub tmpinfo.vname 0 3) = 0) then result := (!result)@((tmpinfo.vid, varinfo.vid)::[]); SkipChildren
+                                                                                | _ -> SkipChildren)
+        | _ -> SkipChildren
 end
-(* Output: tmp__-ID, funloc, funname, funid *)
 
-let rec printout_idlist list =
-match list with (tmpid, funloc, funname, funid)::xs -> (Printf.printf "tmpid:%i line: %i funname: %s funid: %i\n" tmpid funloc.line funname funid); printout_idlist xs
-                | [] -> ()
-
-(* Finds calls of a function in conditions in a function DOES NOT WORK YET *)
-let find_uses_in_cond_in_fun funname funid funstrucname file =
+let find_lval_of_calls file =
 let result = ref []
-in let visitor = new fun_find_cil_gen_tmp funname funid funstrucname file result
-in let id_list = ignore (visitCilFileSameGlobals visitor file); !result
-in let rec iter_ids list fundec_struc fundec_target funname funid =  Printf.printf "list.length: %i\n" (List.length list);
-match list with x::xs -> (match FuncVar.cond_search_uses_stmt_list fundec_struc.sbody.bstmts "" x with [] -> Printf.printf "no result\n"; iter_ids xs fundec_struc fundec_target funname funid
-                                                                                            | (name, loc, typ, id)::ys -> Printf.printf "result of cond-search\n"; (funname, loc, create_sig fundec_target file, funid)::(iter_ids xs fundec_struc fundec_target funname funid))
-        | [] -> []
-in let fundec_struc_target = (find_fundec funstrucname (-1) file.globals, find_fundec funname funid file.globals)
-in printout_idlist id_list; match fundec_struc_target with (Some(struc_fundec), Some(target_fundec)) ->  (match id_list with (_,_, real_funname, real_funid)::_ -> iter_ids (List.map (fun (tmpid, _,_,_) -> tmpid) id_list) struc_fundec target_fundec real_funname real_funid
-                                                                                                | [] -> [])
-                            | _ -> []
+in let visitor = new find_calls_with_tmp file result
+in visitCilFileSameGlobals visitor file; !result
+
+let create_fun_res name id file loc =
+let fundec_opt = find_fundec name id file.globals
+in match fundec_opt with None -> ("", loc_default, "", -1)
+                | Some(fundec) -> (fundec.svar.vname, loc, create_sig fundec file , fundec.svar.vid)
+
+(* Finds all calls of all function in a condition in all functions*)
+let find_uses_cond_all file =
+let id_list = find_lval_of_calls file
+in let rec iter_list list = 
+match list with (tmp, func)::xs -> (match FuncVar.find_uses_in_cond "" tmp file with (name, loc, typ, id)::ys -> (create_fun_res "" func file loc)::(iter_list xs)
+                                                                        | [] -> iter_list xs)
+        | _ -> []
+in iter_list id_list
