@@ -169,7 +169,7 @@ match query.tar with Name_t(name) -> FuncFunction.find_uses_cond name (-1) cilfi
                 | All_t -> FuncFunction.find_uses_all cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
-let resolve_query_fun_noncond query cilfile =
+let resolve_query_fun_uses_noncond query cilfile =
 match query.tar with Name_t(name) -> FuncFunction.find_uses_noncond name (-1) cilfile
                 | ID_t(id) -> FuncFunction.find_uses_noncond "" id cilfile
                 | All_t -> FuncFunction.find_uses_noncond_all cilfile
@@ -179,7 +179,7 @@ let resolve_query_fun_uses query cilfile =
 match query.str with None_s -> resolve_query_fun_uses_none query cilfile
                 | Fun_s(funname) -> resolve_query_fun_uses_fun query cilfile funname 
                 | Cond_s -> resolve_query_fun_uses_cond query cilfile
-                | NonCond_s -> resolve_query_fun_noncond query cilfile
+                | NonCond_s -> resolve_query_fun_uses_noncond query cilfile
 
 let resolve_query_fun_usesvar_fun query cilfile varname strucfunname =
 match query.tar with Name_t(funname) -> FuncFunction.find_usesvar_in_fun funname (-1) strucfunname varname cilfile
@@ -193,10 +193,23 @@ match query.tar with Name_t(funname) -> FuncFunction.find_usesvar funname (-1) v
                 | All_t -> FuncFunction.find_usesvar_all varname cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
+let resolve_query_fun_usesvar_cond query cilfile varname =
+match query.tar with Name_t(funname) -> FuncFunction.find_usesvar_cond funname (-1) varname cilfile
+                | ID_t(id) -> FuncFunction.find_usesvar_cond "" id varname cilfile
+                | All_t -> FuncFunction.find_usesvar_cond_all varname cilfile
+                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+
+let resolve_query_fun_usesvar_noncond query cilfile varname =
+match query.tar with Name_t(funname) -> FuncFunction.find_usesvar_noncond funname (-1) varname cilfile
+                | ID_t(id) -> FuncFunction.find_usesvar_noncond "" id varname cilfile
+                | All_t -> FuncFunction.find_usesvar_noncond_all varname cilfile
+                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+
 let resolve_query_fun_usesvar query cilfile varname =
 match query.str with Fun_s(strucfunname) -> resolve_query_fun_usesvar_fun query cilfile varname strucfunname
                 | None_s -> resolve_query_fun_usesvar_none query cilfile varname
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | Cond_s -> resolve_query_fun_usesvar_cond query cilfile varname
+                | NonCond_s -> resolve_query_fun_usesvar_noncond query cilfile varname
 
 let resolve_query_fun query cilfile =
 match query.f with Returns_f -> resolve_query_fun_return query cilfile

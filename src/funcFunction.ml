@@ -221,3 +221,53 @@ match list with GFun(dec, _)::xs -> (find_uses_noncond "" dec.svar.vid file)@(it
                 | _::xs -> iter_list xs
                 | [] -> []
 in iter_list file.globals
+
+class find_calls_usesvar_with_tmp file result funname funid varname : nopCilVisitor =
+object
+inherit nopCilVisitor
+method vglob global = DoChildren
+method vfunc dec = DoChildren
+method vblock block = DoChildren
+method vstmt stmt = DoChildren
+method vinst instr = 
+match instr with Call(lval_opt, Lval(Var(varinfo) ,_), arg_list, loc) -> if (is_equal_funname_funid varinfo funname funid)&&(List.length (FuncVar.search_expression_list arg_list varname loc (-1)) > 0) then (match lval_opt with Some((Var(tmpinfo), _)) -> if (String.length tmpinfo.vname > 2)&&(String.compare "tmp" (String.sub tmpinfo.vname 0 3) = 0) then result := (!result)@((tmpinfo.vid, varinfo.vid)::[]); SkipChildren
+                                                                                | _ -> SkipChildren) else SkipChildren
+        | _ -> SkipChildren
+end
+
+let find_lval_of_calls_usesvar funname funid varname file =
+let result = ref []
+in let visitor = new find_calls_usesvar_with_tmp file result funname funid varname
+in visitCilFileSameGlobals visitor file; !result
+
+(* Finds calls of a function with a variable as argument in conditions *)
+let find_usesvar_cond funname funid varname file =
+let id_list = find_lval_of_calls_usesvar funname funid varname file 
+in let rec iter_list list = 
+match list with (tmp, func)::xs -> (match FuncVar.find_uses_in_cond "" tmp file with (name, loc, typ, id)::ys -> (create_fun_res "" func file loc)::(iter_list xs)
+                                                                        | [] -> iter_list xs)
+        | _ -> []
+in iter_list id_list
+
+(* Finds calls of all functions with a variable as argument in conditions *)
+let find_usesvar_cond_all varname file =
+let rec iter_list list =
+match list with GFun(dec,_)::xs -> (find_usesvar_cond "" dec.svar.vid varname file)@(iter_list xs) 
+        | _::xs -> iter_list xs
+        | [] -> []
+in iter_list file.globals
+
+(* Finds calls of a function with a variable as argument in non-conditions *)
+let find_usesvar_noncond funname funid varname file =
+let rec iter_list biglist smalllist =
+match smalllist with x::xs -> iter_list (remove_result biglist x) xs
+                | _ -> biglist
+in iter_list (find_usesvar funname funid varname file) (find_usesvar_cond funname funid varname file)
+
+(* Finds calls of all functions with a variable as argument in non-conditions *)
+let find_usesvar_noncond_all varname file =
+let rec iter_list list =
+match list with GFun(dec, _)::xs -> (find_usesvar_noncond "" dec.svar.vid varname file)@(iter_list xs)
+        | _::xs -> iter_list xs
+        | [] -> []
+in iter_list file.globals

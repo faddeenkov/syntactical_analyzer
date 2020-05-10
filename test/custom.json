@@ -1,6 +1,6 @@
 {   "select":["name","location"],
     "type": "fun",
     "target": "$all",
-    "find": "uses",
+    "find": {"uses_with_var" : "x2"},
     "structure": "non-cond",
     "constraint": "$none"}

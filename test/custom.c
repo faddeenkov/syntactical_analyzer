@@ -120,6 +120,6 @@ glob_var = 3.0;
         return x2 - x[0];
     }
 
-    test = 3;
+    test = g(x2);
 
 }

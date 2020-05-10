@@ -45,6 +45,14 @@ let funcfunction_tests = "test suite for func_Function" >::: [
 "test find_uses_noncond_all" >:: (fun _ -> let result = find_uses_noncond_all (Frontc.parse "test10.c" ())
                                            in assert_equal (List.length result) 2;
                                               assert_bool "check result of first" (check_result (List.hd result) "f" "int f (int a, int b)" 10);
-                                              assert_bool "check result of second" (check_result (List.nth result 1) "h" "void h (double x, int z)" 15)) 
+                                              assert_bool "check result of second" (check_result (List.nth result 1) "h" "void h (double x, int z)" 15));
+"test find_usesvar_cond_all" >:: (fun _ -> let result = find_usesvar_cond_all "a" (Frontc.parse "test12.c" ())
+                                           in assert_equal (List.length result) 2;
+                                              assert_bool "check result of first" (check_result (List.hd result) "f" "int f (int x)" 7);
+                                              assert_bool "check result of second" (check_result (List.nth result 1) "g" "int g (int a, int b)" 15));
+"test find_usesvar_noncond_all" >:: (fun _ -> let result = find_usesvar_noncond_all "z" (Frontc.parse "test10.c" ())
+                                              in assert_equal (List.length result) 2;
+                                                 assert_bool "check result of first" (check_result (List.hd result) "f" "int f (int a, int b)" 10);
+                                                 assert_bool "check result of second" (check_result (List.nth result 1) "h" "void h (double x, int z)" 15)) 
 
  ]
