@@ -166,13 +166,20 @@ match query.tar with Name_t(name) -> FuncFunction.find_uses_in_fun name (-1) fun
 let resolve_query_fun_uses_cond query cilfile = 
 match query.tar with Name_t(name) -> FuncFunction.find_uses_cond name (-1) cilfile
                 | ID_t(id) -> FuncFunction.find_uses_cond "" id cilfile
+                | All_t -> FuncFunction.find_uses_all cilfile
+                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+
+let resolve_query_fun_noncond query cilfile =
+match query.tar with Name_t(name) -> FuncFunction.find_uses_noncond name (-1) cilfile
+                | ID_t(id) -> FuncFunction.find_uses_noncond "" id cilfile
+                | All_t -> FuncFunction.find_uses_noncond_all cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun_uses query cilfile = 
 match query.str with None_s -> resolve_query_fun_uses_none query cilfile
                 | Fun_s(funname) -> resolve_query_fun_uses_fun query cilfile funname 
                 | Cond_s -> resolve_query_fun_uses_cond query cilfile
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | NonCond_s -> resolve_query_fun_noncond query cilfile
 
 let resolve_query_fun_usesvar_fun query cilfile varname strucfunname =
 match query.tar with Name_t(funname) -> FuncFunction.find_usesvar_in_fun funname (-1) strucfunname varname cilfile

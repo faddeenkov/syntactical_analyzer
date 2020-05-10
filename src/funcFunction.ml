@@ -194,3 +194,30 @@ match list with (tmp, func)::xs -> (match FuncVar.find_uses_in_cond "" tmp file 
                                                                         | [] -> iter_list xs)
         | _ -> []
 in iter_list id_list
+
+(* Finds all calls of all functions in a condition in all functions *)
+let find_uses_cond_all file = 
+let rec iter_list list =
+match list with GFun(dec, _)::xs -> (find_uses_cond "" dec.svar.vid file)@(iter_list xs)
+        | _::xs -> iter_list xs
+        | [] -> []
+in iter_list file.globals
+
+let rec remove_result list res =
+match list with x::xs -> if x = res then (remove_result xs res) else x::(remove_result xs res)
+            | [] -> []
+
+(* Finds calls of a function in non-condition in all functions *)
+let find_uses_noncond funname funid file =
+let rec iter_list biglist smalllist =
+match smalllist with x::xs -> iter_list (remove_result biglist x) xs
+                | _ -> biglist
+in iter_list (find_uses funname funid file) (find_uses_cond funname funid file)
+
+(* Finds calls of all functions in non-condition in all functions *)
+let find_uses_noncond_all file =
+let rec iter_list list =
+match list with GFun(dec, _)::xs -> (find_uses_noncond "" dec.svar.vid file)@(iter_list xs)
+                | _::xs -> iter_list xs
+                | [] -> []
+in iter_list file.globals

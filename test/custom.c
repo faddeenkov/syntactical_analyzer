@@ -74,7 +74,7 @@ int main(){
     __finally{
 
     } **/
-    g(x2);
+    g(f(x2));
 
     for(int i = 0; i < 10; i++){
        int a[i + 3];
