@@ -74,7 +74,7 @@ int main(){
     __finally{
 
     } **/
-    g(f(x2));
+    g(x2 + z);
 
     for(int i = 0; i < 10; i++){
        int a[i + 3];
@@ -96,7 +96,7 @@ int main(){
             x2 = 1;
         break;
         case 7:
-            x[0] = x2;
+            x[0] = x2 / z;
         break;
         default:
         break;
