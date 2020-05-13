@@ -1,0 +1,6 @@
+{
+    "select" : "$all",
+    "type" : "fun",
+    "target" : {"or" : ["g", "h"]},
+    "find" : "returns"
+}

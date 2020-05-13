@@ -22,5 +22,15 @@ let mapping_tests = "test suite for queryMapper" >::: [
                                           assert_bool "check result of first" (check_result (List.hd result) "a" "int" 17);
                                           assert_bool "check result of second" (check_result (List.nth result 1) "b" "int" 17);
                                           assert_bool "check result of third" (check_result (List.nth result 2) "a" "int" 18);
-                                          assert_bool "check result of fourth" (check_result (List.nth result 3) "b" "int" 18))
+                                          assert_bool "check result of fourth" (check_result (List.nth result 3) "b" "int" 18));
+"test or-target datatype_defs" >:: (fun _ -> let result = map_query (parse_json_file "test8.json") (Frontc.parse "test14.c" ())
+                                             in assert_equal (List.length result) 3;
+                                                assert_bool "check result of first" (check_result (List.hd result) "" "student" 1);
+                                                assert_bool "check result of second" (check_result (List.nth result 1) "" "SomeUnion" 12);
+                                                assert_bool "check result of third" (check_result (List.nth result 2) "" "State" 10));
+"test or-target fun_returns" >:: (fun _ -> let result = map_query (parse_json_file "test9.json") (Frontc.parse "test2.c" ())
+                                           in assert_equal (List.length result) 3;
+                                              assert_bool "check result of first" (check_result (List.hd result) "" "int" 9);
+                                              assert_bool "check result of second" (check_result (List.nth result 1) "" "int" 12);
+                                              assert_bool "check result of third" (check_result (List.nth result 2) "" "void" 18))
 ] 

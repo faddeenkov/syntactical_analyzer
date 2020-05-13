@@ -1,0 +1,6 @@
+{
+    "select" : "$all",
+    "type" : "datatype",
+    "target" : {"or" : ["student", "SomeUnion", "State", "anonym"]},
+    "find" : "defs"
+}
