@@ -110,21 +110,26 @@ in
 match fundec_opt with None -> []
                 | Some(fundec) -> (find_uses_in_fun_all_glob funname file)@(iter_list (List.map (fun x -> x.vid) fundec.sformals))@(iter_list (List.map (fun x -> x.vid) fundec.slocals))
 
+let rec find_var_in_globals varname varid list =
+match list with GVar(info, _, loc)::xs -> if is_equal_varname_varid info varname varid then [(info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)] else find_var_in_globals varname varid xs
+            | _::xs -> find_var_in_globals varname varid xs
+            | [] -> []
+
 (* Find all uses of a variable in all functions *)
 let find_uses varname varid file = 
 let rec find_uses_in_all_fun l = 
 match l with GFun(dec, _)::xs -> (find_uses_in_fun varname varid dec.svar.vname file)@(find_uses_in_all_fun xs)
             | _ ::xs -> find_uses_in_all_fun xs
             | [] -> []
-in find_uses_in_all_fun file.globals
+in (find_var_in_globals varname varid file.globals)@(find_uses_in_all_fun file.globals)
 
 (* Finds all uses of global variables in all functions *)
-let find_uses_all_glob file =
+let find_uses_all_glob file = 
 let rec iter_functions list = 
 match list with GFun(dec,_)::xs -> (find_uses_in_fun_all_glob dec.svar.vname file)@(iter_functions xs)
             | _ ::xs -> iter_functions xs
             | [] -> []
-in iter_functions file.globals
+in List.flatten ((List.map (fun x -> find_var_in_globals "" x file.globals) (find_all_glob_vars file.globals)))@(iter_functions file.globals)
 
 (* Finds uses of all variables in all functions *)
 let find_uses_all file =
@@ -132,7 +137,7 @@ let rec iter_functions list =
 match list with GFun(dec,_)::xs -> (find_uses_in_fun_all dec.svar.vname file)@(iter_functions xs)
             | _ ::xs -> iter_functions xs
             | [] -> []
-in iter_functions file.globals
+in List.flatten ((List.map (fun x -> find_var_in_globals "" x file.globals) (find_all_glob_vars file.globals)))@(iter_functions file.globals)
 
 let rec cond_search_uses_stmt_list list varname varid =
 match list with x::xs -> (match x.skind with If(exp, b1, b2, loc) -> (search_expression exp varname loc varid)@(cond_search_uses_stmt_list (b1.bstmts@b2.bstmts) varname varid)
@@ -312,7 +317,7 @@ let rec iter_list list =
 match list with GFun(dec, _)::xs -> (find_defs_in_fun varname varid dec.svar.vname file)@(iter_list xs)
             | _::xs -> iter_list xs
             | [] -> []
-in iter_list file.globals
+in (find_var_in_globals varname varid file.globals)@(iter_list file.globals)
 
 (* Finds definitions of all global variables in all functions *)
 let find_defs_all_glob file =
@@ -320,7 +325,7 @@ let rec iter_list list =
 match list with GFun(dec,_)::xs -> (find_defs_in_fun_all_glob dec.svar.vname file)@(iter_list xs)
             | _::xs -> iter_list xs
             | [] -> []
-in iter_list file.globals
+in List.flatten ((List.map (fun x -> find_var_in_globals "" x file.globals) (find_all_glob_vars file.globals)))@(iter_list file.globals)
 
 (* Finds definitions of all variables in all functions *)
 let find_defs_all file =
@@ -328,4 +333,4 @@ let rec iter_list list =
 match list with GFun(dec, _)::xs -> (find_defs_in_fun_all dec.svar.vname file)@(iter_list xs)
             | _::xs -> iter_list xs
             | [] -> []
-in iter_list file.globals
+in List.flatten ((List.map (fun x -> find_var_in_globals "" x file.globals) (find_all_glob_vars file.globals)))@(iter_list file.globals)

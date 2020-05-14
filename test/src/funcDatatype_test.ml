@@ -105,8 +105,9 @@ let funcdatatype_tests = "test suite for func_Datatype" >::: [
     "test find_in_globals" >:: (fun _ -> assert_equal (find_in_globals globals3 "int") [3;4]);
     "test find_fundec" >:: (fun _ -> assert_equal (find_fundec globals3 "factorial") (Some(fundec1)));
     "test find_uses_in_noncond" >:: (fun _ -> let result = find_uses_in_noncond "other_int" (Frontc.parse "test6.c" ())
-                                              in assert_equal (List.length result) 3;
-                                                 assert_bool "check result of first" (check_result (List.hd result) "global" "other_int" 7);
-                                                 assert_bool "check result of second" (check_result (List.nth result 1) "loc" "other_int" 13);
-                                                 assert_bool "check result of third" (check_result (List.nth result 2) "loc" "other_int" 16))
+                                              in assert_equal (List.length result) 4;
+                                                 assert_bool "check result of first" (check_result (List.hd result) "global" "other_int" 3);
+                                                 assert_bool "check result of second" (check_result (List.nth result 1) "global" "other_int" 7);
+                                                 assert_bool "check result of third" (check_result (List.nth result 2) "loc" "other_int" 13);
+                                                 assert_bool "check result of fourth" (check_result (List.nth result 3) "loc" "other_int" 16))
 ]
