@@ -3,10 +3,19 @@ open Cil
 (* Helper functions *)
 let is_equal_varname_varid varinfo name id = if ((String.compare varinfo.vname name = 0) || (varinfo.vid = id)) then true else false
 
+(* class var_search_in_expr varname varid loc result : nopCilVisitor =
+object(self)
+inherit nopCilVisitor
+method vvrbl info = (if (is_equal_varname_varid info varname varid) then (result := (!result)@((info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::[])) else ()); 
+(match info.vtype with TArray(_, Some(exp), _) -> result := (!result)@(visitCilExpr self exp) | _ -> ()); SkipChildren
+method vlval (h,o) = DoChildren
+method vexpr exp = DoChildren
+end *)
+
 class var_search_in_expr varname varid loc result : nopCilVisitor =
 object(self)
 inherit nopCilVisitor
-method vvrbl info = if (is_equal_varname_varid info varname varid) then (result := (!result)@((info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::[]); SkipChildren) else SkipChildren
+method vvrbl info = (if (is_equal_varname_varid info varname varid) then (result := (!result)@((info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::[])) else ());  SkipChildren
 method vlval (h,o) = DoChildren
 method vexpr exp = DoChildren
 end
@@ -36,7 +45,7 @@ match list with x::xs -> (search_expression x name loc varid)@(search_expression
 (* Finds a variable in a list of instructions *)
 let rec search_instr_list_for_var list name varid = 
 match list with Set((lhost, offset), exp, loc)::xs -> (search_lhost lhost name loc varid)@(search_offset offset name loc varid)@(search_expression exp name loc varid)@(search_instr_list_for_var xs name varid)
-                | VarDecl(info, loc)::xs -> if is_equal_varname_varid info name varid then (info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::(search_instr_list_for_var xs name varid) else (search_instr_list_for_var xs name varid)
+                | VarDecl(info, loc)::xs ->  (match info.vtype with TArray(_, Some(exp), _) -> search_expression exp name loc varid | _ -> [])@(if is_equal_varname_varid info name varid then (info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::(search_instr_list_for_var xs name varid) else (search_instr_list_for_var xs name varid))
                 | Call (Some(lhost,offset), exp, exp_list, loc)::xs -> (search_lhost lhost name loc varid)@(search_offset offset name loc varid)@(search_expression exp name loc varid)@(search_expression_list exp_list name loc varid)@(search_instr_list_for_var xs name varid)
                 | Call (None, exp, exp_list, loc)::xs -> (search_expression exp name loc varid)@(search_expression_list exp_list name loc varid)@(search_instr_list_for_var xs name varid)
                 (* Should I consider Asm too? *)

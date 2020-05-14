@@ -57,7 +57,9 @@ int main(){
 
     int *ptr = &i;
 
-    x[0] = 'a';
+    x[i] = 'a';
+
+    int arr[i + 3];
 
     BYTE z = x[0];
 
@@ -76,9 +78,10 @@ int main(){
     } **/
     g(x2 + z);
 
-    for(int i = 0; i < 10; i++){
+   /**
+    *  for(int i = 0; i < 10; i++){
        int a[i + 3];
-    }
+    } **/
 
     for(int i = 0; i < 20; i++){
 

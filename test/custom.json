@@ -1,6 +1,6 @@
 {   "select":["name","location"],
-    "type": "datatype",
-    "target": {"or" : ["mystery", "anonym"]},
-    "find": "decl",
+    "type": "var",
+    "target": {"name" : "i"},
+    "find": "uses",
     "structure": "$none",
     "constraint": "$none"}

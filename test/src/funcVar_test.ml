@@ -139,5 +139,9 @@ let funcvar_tests = "test suite for func_Var" >::: [
    "test find_defs_all" >:: (fun _ -> let result = find_defs_all (Frontc.parse "test3.c" ())
                                       in assert_equal (List.length result) 2;
                                          assert_bool "check result of first" (check_result (List.hd result) "new_var" "struct var" 8);
-                                         assert_bool "check result of second" (check_result (List.nth result 1) "copy_var" "struct var" 13))                              
+                                         assert_bool "check result of second" (check_result (List.nth result 1) "copy_var" "struct var" 13));
+   "test find vars in variable-length array-declaration" >:: (fun _ -> let result = find_uses "i" (-1) (Frontc.parse "test15.c" ())
+                                                                       in assert_equal (List.length result) 2;
+                                                                          assert_bool "check result of first" (check_result (List.hd result) "i" "int" 6);
+                                                                          assert_bool "check result of second" (check_result (List.nth result 1) "i" "int" 7))                              
 ]
