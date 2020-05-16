@@ -80,8 +80,11 @@ int main(){
 
     for(int i = 0; i < 10; i++){
        int a[i + 3];
+       if(f(i)){
+        x2 = 3;
+       }
     } 
-
+    f(i);
     for(int i = 0; i < 20; i++){
 
     }

@@ -1,5 +1,5 @@
 {   "select":["name","location"],
-    "type": "var",
-    "target": "$all",
-    "find": "defs",
+    "type": "fun",
+    "target": {"name" : "f"},
+    "find": {"uses_with_var" : "i"},
     "structure": "$none"}
