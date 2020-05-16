@@ -11,15 +11,15 @@ apt update
 apt install opam
 opam init
 opam switch create . ocaml-base-compiler.4.09.0
-eval %(opam env)
+eval $(opam env)
 ```
-Install following opam-packages: dune, zarith, ounit,  yojson and ppx_deriving_yojson with 
+Install the following opam-packages: dune, zarith, ounit,  yojson and ppx_deriving_yojson with 
 ```bash
 opam install [package]
 ```
 For some of these packages (for example zarith) you will need to install m4 and libgmp-dev with:
 ```bash
-sudo apt install [package]
+apt install [package]
 ```
 
 ## Usage
@@ -40,9 +40,9 @@ The following JSON-grammar describes the current (more or less supported) struct
 {
 "select" : "$ALL",
 "type" : "var" | "fun" | "datatype",
-"target" : {"name" : S} | {"id" : I} | "$ALL" | "$ALL_GLOB_VAR", # where S is a string and I is an integer
+"target" : {"name" : S} | {"id" : I} | "$ALL" | "$ALL_GLOB_VAR" | {"and" : [S, S, ...]} | {"or" : [S, ...]}, # where S is a string and I is an integer
 "find" : "uses" | "decl" | "defs" | {"uses_with_var" : S} | "returns",
 "structure" : {"fun_name" : S} | "cond" | "non-cond" | "$NONE"
 }
 ```
-Note that the use of some parameters is restricted to some types. (e.g it does not make sense to search for returns in a datatype ;) )
+Note that the use of some parameters is restricted to some types.

@@ -12,10 +12,13 @@ method vlval (h,o) = DoChildren
 method vexpr exp = DoChildren
 end *)
 
+let is_underscore_equal varinfo varname =
+((String.length varinfo.vname) >= (String.length varname)+3) && (String.compare (String.sub varinfo.vname 0 ((String.length varname) +3)) (varname^"___") = 0)
+
 class var_search_in_expr varname varid loc result : nopCilVisitor =
 object(self)
 inherit nopCilVisitor
-method vvrbl info = (if (is_equal_varname_varid info varname varid) then (result := (!result)@((info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::[])) else ());  SkipChildren
+method vvrbl info = (if (is_equal_varname_varid info varname varid) || (is_underscore_equal info varname) then (result := (!result)@((info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::[])) else ());  SkipChildren
 method vlval (h,o) = DoChildren
 method vexpr exp = DoChildren
 end
@@ -235,7 +238,7 @@ let find_decl_in_fun varname varid funname file =
 let fundec_opt = find_fundec file.globals funname
 in let get_formals_locals dec = dec.sformals@dec.slocals
 in let rec iter_list list = 
-match list with x::xs -> if (is_equal_varname_varid x varname varid) then (x.vname, x.vdecl, (String.trim (Pretty.sprint 1 (d_type () x.vtype))), x.vid)::(iter_list xs) else iter_list xs
+match list with x::xs -> if (is_equal_varname_varid x varname varid) || (is_underscore_equal x varname) then (x.vname, x.vdecl, (String.trim (Pretty.sprint 1 (d_type () x.vtype))), x.vid)::(iter_list xs) else iter_list xs
             | [] -> []
 in match fundec_opt with None -> []
                     | Some(fundec) -> iter_list (get_formals_locals fundec)
@@ -283,7 +286,7 @@ method vfunc fundec = if (String.compare fundec.svar.vname funname = 0) then DoC
 method vblock block = DoChildren
 method vstmt stmt = DoChildren
 method vinst instr = 
-match instr with Set((Var(info),_), exp, loc) -> if is_equal_varname_varid info varname varid then (result := (!result)@((info.vname, loc, String.trim (Pretty.sprint 1 (d_type () info.vtype)), info.vid)::[]); SkipChildren) else SkipChildren
+match instr with Set((Var(info),_), exp, loc) -> if (is_equal_varname_varid info varname varid) || (is_underscore_equal info varname) then (result := (!result)@((info.vname, loc, String.trim (Pretty.sprint 1 (d_type () info.vtype)), info.vid)::[]); SkipChildren) else SkipChildren
             | _ -> SkipChildren
 end
 
