@@ -1,11 +1,11 @@
-{   "select" : ["type", "iD", "nAmE"],
+{   "select" : [["type"], ["id"], ["name"]],
 
-    "type" : "fun",
+    "type" : ["fun"],
 
-    "target" : {"ID" : 4447},
+    "target" : ["id", 4447],
 
-    "find" : {"uses_with_VAR" : "tmp"},
+    "find" : ["uses_with_var", "tmp"],
 
-    "constraint" : {"constr" : "tmp == 'E'"}
+    "constraint" : ["constr", "tmp == 'E'"]
 
 }

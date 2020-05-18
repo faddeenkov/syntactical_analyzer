@@ -1,9 +1,9 @@
-{   "select" : ["NAME", "ID", "LOCATION"],
+{   "select" : [["name"], ["id"], ["location"]],
 
-    "type" : "datatype",
+    "type" : ["datatype"],
     
-    "target" : {"name" : "int"},
+    "target" : ["name", "int"],
     
-    "find" : "uses",
+    "find" : ["uses"],
     
-    "structure" : {"fun_name" : "mergeSort"}}
+    "structure" : ["fun_name" , "mergeSort"]}

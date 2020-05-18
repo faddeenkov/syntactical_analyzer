@@ -1,5 +1,5 @@
-{"select" : ["LOCATION"],
- "type" : "fun",
- "target": "$all",
- "find": "returns",
- "structure": "$none"}
+{"select" : [["location"]],
+ "type" : ["fun"],
+ "target": ["all"],
+ "find": ["returns"],
+ "structure": ["none"]}

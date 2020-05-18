@@ -1,6 +1,6 @@
 {
-    "select" : "$ALL",
-    "type" : "fun",
-    "target" : {"and" : ["double_number", "increase_number"]},
-    "find" : "uses"
+    "select" : [["name"]],
+    "type" : ["fun"],
+    "target" : ["and", ["double_number", "increase_number"]],
+    "find" : ["uses"]
 }

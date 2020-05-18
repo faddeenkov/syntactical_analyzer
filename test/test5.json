@@ -1,6 +1,6 @@
 {
-    "select" : "$all",
-    "type" : "var",
-    "target" : {"and" : ["copy_var", "new_var"]},
-    "find" : "uses"
+    "select" : [["name"]],
+    "type" : ["var"],
+    "target" : ["and", ["copy_var", "new_var"]],
+    "find" : ["uses"]
 }

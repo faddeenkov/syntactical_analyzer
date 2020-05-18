@@ -27,12 +27,12 @@ in print_result result
 
 (* This tests to_yojson *)
 let testToJson () =
-let query = {sel = [Name_sel; Location_sel]; 
-            k = Var_k;
-            tar = Or_t(["x";"y"]);
-            f = Decl_f;
-            str = None_s;
-            lim = Constraint_c("x==y")}
+let query = {sel = [Name_sel]; 
+            k = Fun_k;
+            tar = All_t;
+            f = UsesWithVar_f("x");
+            str = Fun_s("a function");
+            lim = None_c}
 in Printf.printf "%s\n" (Yojson.Safe.to_string (query_to_yojson query))
 
 (* Replace function name with jsonDeriverTest find_uses_in_funTest or executeQuery *)

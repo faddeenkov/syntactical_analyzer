@@ -1,6 +1,6 @@
-{"select": "$ALL",
-"type": "var",
-"target": {"and" : ["a","b"]},
-"find": "uses",
-"structure" : {"fun_name" : "ggt"},
-"constraint": {"constr" : "a/b == 2"}}
+{"select": [["name"], ["location"], ["type"], ["id"]],
+"type": ["var"],
+"target": ["and", ["a","b"]],
+"find": ["uses"],
+"structure" : ["fun_name", "ggt"],
+"constraint": ["constr", "a/b == 2"]}

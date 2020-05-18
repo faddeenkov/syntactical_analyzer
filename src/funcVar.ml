@@ -32,7 +32,6 @@ in ignore (visitCilExpr visitor exp); !result
 (* Finds a variable in a lhost *)
 let search_lhost host name loc varid = 
 match host with Var(info) -> if is_equal_varname_varid info name varid then (info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::[] else []
-                (* Should I consider Mem too? *)
             | Mem(exp) -> search_expression exp name loc varid
  
 let rec search_offset os name loc varid =

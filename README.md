@@ -38,11 +38,11 @@ The executable takes two arguments: path of the JSON-file and path of the C-file
 The following JSON-grammar describes the current (more or less supported) structure of a query:
 ```bash
 {
-"select" : "$ALL",
-"type" : "var" | "fun" | "datatype",
-"target" : {"name" : S} | {"id" : I} | "$ALL" | "$ALL_GLOB_VAR" | {"and" : [S, S, ...]} | {"or" : [S, ...]}, # where S is a string and I is an integer
-"find" : "uses" | "decl" | "defs" | {"uses_with_var" : S} | "returns",
-"structure" : {"fun_name" : S} | "cond" | "non-cond" | "$NONE"
+"select" : [["name"], ["location"], ["type"], ["id"]],
+"type" : ["var"] | ["fun"] | ["datatype"],
+"target" : ["name", S] | ["id", I] | ["all"] | ["all_glob_var"] | ["and", [S, S, ...]] | ["or", [S, ...]], # where S is a string and I is an integer
+"find" : ["uses"] | ["decl"] | ["defs"] | ["uses_with_var", S] | ["returns"],
+"structure" : ["fun_name", S] | ["cond"] | ["non-cond"] | ["none"]
 }
 ```
 Note that the use of some parameters is restricted to some types.

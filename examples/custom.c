@@ -55,6 +55,10 @@ int main(){
     struct student *someone = &person;
     char c = (*someone).name[i];
 
+    int i2 = 4;
+
+    someone->roll -= i2;
+
     int *ptr = &i;
 
     x[i] = 'a';
