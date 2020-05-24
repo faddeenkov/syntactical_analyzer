@@ -13,13 +13,6 @@ let rec delete_duplicates list acc =
 match list with x::xs -> delete_duplicates (delete_elem xs x) (x::acc)
             | [] -> acc
 
-let is_cil_generated varinfo = match Hashtbl.find_opt absolutenv varinfo.vname with 
-Some (_) -> Printf.printf "%s is not cil-generated\n" varinfo.vname; false
-| None -> Printf.printf "%s is cil-generated\n" varinfo.vname; true
-
-let is_underscore_equal varinfo varname =
-(*(is_cil_generated varinfo) &&*) ((String.length varinfo.vname) >= (String.length varname)+3) && (String.compare (String.sub varinfo.vname 0 ((String.length varname) +3)) (varname^"___") = 0) 
-
 let find_all_cil_generated info varname loc =
 let stringList = delete_duplicates (List.map (fun x -> match x with (EnvVar(envinfo),_) -> envinfo.vname | _ -> "") (Hashtbl.find_all absolutenv varname)) []
 in let rec iter_list list = match list with x::xs -> if (String.compare x info.vname = 0) then (info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::(iter_list xs) else iter_list xs
@@ -248,7 +241,7 @@ let find_decl_in_fun varname varid funname file =
 let fundec_opt = find_fundec file.globals funname
 in let get_formals_locals dec = dec.sformals@dec.slocals
 in let rec iter_list list = 
-match list with x::xs -> if (is_equal_varname_varid x varname varid) || (is_underscore_equal x varname) then (x.vname, x.vdecl, (String.trim (Pretty.sprint 1 (d_type () x.vtype))), x.vid)::(iter_list xs) else iter_list xs
+match list with x::xs -> if (x.vid = varid) then (x.vname, x.vdecl, (String.trim (Pretty.sprint 1 (d_type () x.vtype))), x.vid)::(iter_list xs) else (find_all_cil_generated x varname x.vdecl)@iter_list xs
             | [] -> []
 in match fundec_opt with None -> []
                     | Some(fundec) -> iter_list (get_formals_locals fundec)
@@ -296,7 +289,7 @@ method vfunc fundec = if (String.compare fundec.svar.vname funname = 0) then DoC
 method vblock block = DoChildren
 method vstmt stmt = DoChildren
 method vinst instr = 
-match instr with Set((Var(info),_), exp, loc) -> if (is_equal_varname_varid info varname varid) || (is_underscore_equal info varname) then (result := (!result)@((info.vname, loc, String.trim (Pretty.sprint 1 (d_type () info.vtype)), info.vid)::[]); SkipChildren) else SkipChildren
+match instr with Set((Var(info),_), exp, loc) -> if (info.vid = varid) then (result := (!result)@((info.vname, loc, String.trim (Pretty.sprint 1 (d_type () info.vtype)), info.vid)::[]); SkipChildren) else (result := (!result)@(find_all_cil_generated info varname loc); SkipChildren)
             | _ -> SkipChildren
 end
 
