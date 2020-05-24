@@ -81,13 +81,13 @@ match res with (name, loc, typ, id) -> if (String.compare name res_name = 0)
                                       &&(loc.line == res_line) then true else false
 
 let funcvar_tests = "test suite for func_Var" >::: [
-  "search lhost1"  >:: (fun _ -> assert_equal (search_lhost lhost1 "x" location1 (-1)) result1);
+  (* "search lhost1"  >:: (fun _ -> assert_equal (search_lhost lhost1 "x" location1 (-1)) result1);
   "search lhost1 by id" >:: (fun _ -> assert_equal (search_lhost lhost1 "" location1 0) result1);
   "search expression1" >:: (fun _ -> assert_equal (search_expression expression1 "x" location1 (-1)) result1);
   "search expression2" >:: (fun _ -> assert_equal (search_expression expression3 "y" location2 (-1)) result2);
   "search expression-list1" >:: (fun _ -> assert_equal (search_expression_list expr_list "x" location1 (-1)) result4);
   "search instruction-list1" >:: (fun _ -> assert_equal (search_instr_list_for_var instr_list "x" (-1)) result4);
-  "search statement-list1" >:: (fun _ -> assert_equal (search_stmt_list_for_var stmt_list "x" (-1)) result5);
+  "search statement-list1" >:: (fun _ -> assert_equal (search_stmt_list_for_var stmt_list "x" (-1)) result5); *)
   "test find_uses_in_fun_all_glob" >:: (fun _ -> let result = find_uses_in_fun_all_glob "main" (Frontc.parse "test.c" ())
                                                   in assert_equal (List.length result) 3;
                                                      assert_bool "check result of first" (check_result (List.hd result) "x" "int" 7);
@@ -152,5 +152,6 @@ let funcvar_tests = "test suite for func_Var" >::: [
                                   in assert_equal (List.length result) 3;
                                      assert_bool "check result of first" (check_result (List.hd result) "global" "char" 1);
                                      assert_bool "check result of second" (check_result (List.nth result 1) "global" "char" 4);
-                                     assert_bool "check result of third" (check_result (List.nth result 2) "global" "char" 17))                              
+                                     assert_bool "check result of third" (check_result (List.nth result 2) "global" "char" 17));
+   (*"test correct differentiation of user-defined and cil-generated variables" >:: (fun _ -> )*)                              
 ]

@@ -1,5 +1,5 @@
 {   "select":[["name"],["location"]],
-    "type": ["fun"],
-    "target": ["name", "f"],
-    "find": ["uses_with_var", "a"],
-    "structure": ["fun_name", "g"]}
+    "type": ["var"],
+    "target": ["name", "i___1"],
+    "find": ["uses"],
+    "structure": ["none"]}

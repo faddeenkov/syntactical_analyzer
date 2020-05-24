@@ -1,24 +1,35 @@
 open Cil
+open Cabs2cil
+open Hashtbl
 
 (* Helper functions *)
 let is_equal_varname_varid varinfo name id = if ((String.compare varinfo.vname name = 0) || (varinfo.vid = id)) then true else false
 
-(* class var_search_in_expr varname varid loc result : nopCilVisitor =
-object(self)
-inherit nopCilVisitor
-method vvrbl info = (if (is_equal_varname_varid info varname varid) then (result := (!result)@((info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::[])) else ()); 
-(match info.vtype with TArray(_, Some(exp), _) -> result := (!result)@(visitCilExpr self exp) | _ -> ()); SkipChildren
-method vlval (h,o) = DoChildren
-method vexpr exp = DoChildren
-end *)
+let rec delete_elem list s = 
+match list with x::xs -> if (String.compare x s = 0) then (delete_elem xs s) else x::(delete_elem xs s)
+            | [] -> []
+
+let rec delete_duplicates list acc = 
+match list with x::xs -> delete_duplicates (delete_elem xs x) (x::acc)
+            | [] -> acc
+
+let is_cil_generated varinfo = match Hashtbl.find_opt absolutenv varinfo.vname with 
+Some (_) -> Printf.printf "%s is not cil-generated\n" varinfo.vname; false
+| None -> Printf.printf "%s is cil-generated\n" varinfo.vname; true
 
 let is_underscore_equal varinfo varname =
-((String.length varinfo.vname) >= (String.length varname)+3) && (String.compare (String.sub varinfo.vname 0 ((String.length varname) +3)) (varname^"___") = 0)
+(*(is_cil_generated varinfo) &&*) ((String.length varinfo.vname) >= (String.length varname)+3) && (String.compare (String.sub varinfo.vname 0 ((String.length varname) +3)) (varname^"___") = 0) 
+
+let find_all_cil_generated info varname loc =
+let stringList = delete_duplicates (List.map (fun x -> match x with (EnvVar(envinfo),_) -> envinfo.vname | _ -> "") (Hashtbl.find_all absolutenv varname)) []
+in let rec iter_list list = match list with x::xs -> if (String.compare x info.vname = 0) then (info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::(iter_list xs) else iter_list xs
+                                        | [] -> []
+in iter_list stringList
 
 class var_search_in_expr varname varid loc result : nopCilVisitor =
 object(self)
-inherit nopCilVisitor
-method vvrbl info = (if (is_equal_varname_varid info varname varid) || (is_underscore_equal info varname) then (result := (!result)@((info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::[])) else ());  SkipChildren
+inherit nopCilVisitor (*//TODO: das Suchen mit absolutenv nicht bei der find_uses-Funktion, sondern hier realisieren*)
+method vvrbl info = (if info.vid = varid then (result := (!result)@((info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::[])) else result := (!result)@(find_all_cil_generated info varname loc));  SkipChildren
 method vlval (h,o) = DoChildren
 method vexpr exp = DoChildren
 end

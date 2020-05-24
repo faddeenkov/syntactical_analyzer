@@ -41,6 +41,11 @@ int f (BYTE b){
 }
 
 int g (int x2){
+    int i = 2;
+    int i___0 = 3;
+    for (int i = 4; i < 10; i++){
+        i___0 = 0;
+    }
     return f(x2);
 }
 
