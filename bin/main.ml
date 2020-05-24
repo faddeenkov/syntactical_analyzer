@@ -2,6 +2,7 @@ open Mylib.JsonParser
 open Mylib.QueryMapping
 open Mylib.FuncVar
 open Mylib.FuncDatatype
+open Mylib.ResultPrinter
 open Yojson.Safe
 open Cil
 
@@ -9,21 +10,18 @@ let jsonFile = Sys.argv.(1)
 let sourceFile = Sys.argv.(2)
 
 exception Error of string
-
+(*
 let rec print_result list =
 match list with (name, loc, kind, id)::xs -> Printf.printf "name:%s, loc.line=%d, loc.file=%s, loc.byte:%d, kind:%s, id:%d \n" name loc.line loc.file loc.byte kind id; print_result xs
-            | [] -> ()
+            | [] -> () *)
 
 let find_type_uses_in_funTest () = print_result (Mylib.FuncDatatype.find_uses_in_fun ("int") ("main") (Frontc.parse sourceFile ()))
 
 (* This actually parses and executes the query *)
 let executeQuery () = 
-let result = map_query (parse_json_file jsonFile) (Frontc.parse sourceFile ())
-in
-let rec print_result list =
-match list with (name, loc, kind, id)::xs -> Printf.printf "name:%s, loc.line=%d, loc.file=%s, loc.byte:%d, kind:%s, id:%d \n" name loc.line loc.file loc.byte kind id; print_result xs
-            | [] -> ()
-in print_result result
+let query = parse_json_file jsonFile
+in let result = map_query (query) (Frontc.parse sourceFile ())
+in Printf.printf "%s" (print_result result query)
 
 (* This tests to_yojson *)
 let testToJson () =

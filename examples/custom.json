@@ -1,5 +1,5 @@
 {   "select":[["name"],["location"]],
     "type": ["var"],
-    "target": ["name", "i___1"],
+    "target": ["name", "i"],
     "find": ["uses"],
     "structure": ["none"]}
