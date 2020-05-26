@@ -1,3 +1,3 @@
-[submodule "cil"]
-	path = cil
-	url = https://github.com/goblint/cil.git
+[submodule "cil_fork"]
+	path = cil_fork
+	url = git@github.com:faddeenkov/cil_fork.git
