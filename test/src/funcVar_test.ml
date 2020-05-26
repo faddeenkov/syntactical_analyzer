@@ -80,6 +80,9 @@ match res with (name, loc, typ, id) -> if (String.compare name res_name = 0)
                                       &&(String.compare typ res_typ = 0)
                                       &&(loc.line == res_line) then true else false
 
+let rec print_out result = match result with (name, loc, _, _)::xs -> Printf.printf "name: %s line:%i\n" name loc.line; print_out xs
+| [] -> ()
+
 let funcvar_tests = "test suite for func_Var" >::: [
   (* "search lhost1"  >:: (fun _ -> assert_equal (search_lhost lhost1 "x" location1 (-1)) result1);
   "search lhost1 by id" >:: (fun _ -> assert_equal (search_lhost lhost1 "" location1 0) result1);

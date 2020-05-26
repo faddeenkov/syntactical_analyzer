@@ -60,8 +60,8 @@ let funcfunction_tests = "test suite for func_Function" >::: [
                                                  assert_bool "check result of second" (check_result (List.nth result 1) "h" "void h (double x, int z)" 15));
 "test find_usesvar so that it finds CIL-renamed vars too" >:: (fun _ -> let result = find_usesvar "f" (-1) "i" (Frontc.parse "test16.c" ())
                                                                in 
-                                                                  assert_bool "check result of first" (check_result (List.hd result) "f" "void f (int x)" 9);
-                                                                  assert_bool "check result of second" (check_result (List.nth result 1) "f" "void f (int x)" 11);
-                                                                  assert_bool "check result of third" (check_result (List.nth result 2) "f" "void f (int x)" 14)) 
+                                                                  assert_bool "check result of first" (check_result (List.hd result) "f" "void f (int x)" 14);
+                                                                  assert_bool "check result of second" (check_result (List.nth result 1) "f" "void f (int x)" 9);
+                                                                  assert_bool "check result of third" (check_result (List.nth result 2) "f" "void f (int x)" 11)) 
 
  ]

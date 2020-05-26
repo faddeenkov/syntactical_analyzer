@@ -38,4 +38,4 @@ in let create_entry (name, loc, typ, id) = (create_name name)^(create_location l
 in let rec create_printout list = 
 match list with x::xs -> (create_entry x)^(create_printout xs)
             | [] -> ""
-in create_printout result
+in if (print_name || print_loc || print_typ || print_id) then create_printout result else ""

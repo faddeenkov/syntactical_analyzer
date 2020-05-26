@@ -47,8 +47,6 @@ type constr = Constraint_c of string [@name "constr"]
 | None_c [@name "none"]
 [@@deriving yojson]
 
-exception SyntaxError of string
-
 (* Type-definition of a query for mapping use *)
 type query = {sel : select; [@key "select"]
               k : kind; [@key "type"] 

@@ -13,16 +13,17 @@ let rec delete_duplicates list acc =
 match list with x::xs -> delete_duplicates (delete_elem xs x) (x::acc)
             | [] -> acc
 
+(*
 let find_all_cil_generated info varname loc =
 let stringList = delete_duplicates (List.map (fun x -> match x with (EnvVar(envinfo),_) -> envinfo.vname | _ -> "") (Hashtbl.find_all absolutenv varname)) []
 in let rec iter_list list = match list with x::xs -> if (String.compare x info.vname = 0) then (info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::(iter_list xs) else iter_list xs
                                         | [] -> []
-in iter_list stringList
+in iter_list stringList *)
 
 class var_search_in_expr varname varid loc result : nopCilVisitor =
 object(self)
-inherit nopCilVisitor (*//TODO: das Suchen mit absolutenv nicht bei der find_uses-Funktion, sondern hier realisieren*)
-method vvrbl info = (if info.vid = varid then (result := (!result)@((info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::[])) else result := (!result)@(find_all_cil_generated info varname loc));  SkipChildren
+inherit nopCilVisitor 
+method vvrbl info = (if is_equal_varname_varid info varname varid then (result := (!result)@((info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::[])) else ());  SkipChildren
 method vlval (h,o) = DoChildren
 method vexpr exp = DoChildren
 end
@@ -77,7 +78,11 @@ match list with x::xs -> (match x.skind with Instr(ins_list) -> search_instr_lis
             | [] -> []
 
 (* Finds all uses of a variable in a function-body *)
-let find_uses_in_fun_var dec name varid = search_stmt_list_for_var dec.sbody.bstmts name varid
+let find_uses_in_fun_var dec name varid = 
+let rec iter_list list = 
+match list with x::xs -> (search_stmt_list_for_var dec.sbody.bstmts x (-1))@(iter_list xs)
+                | [] -> []
+in if varid != (-1) then search_stmt_list_for_var dec.sbody.bstmts name varid else iter_list (delete_duplicates (Hashtbl.find_all varnameMapping name) [])
 
 (* Finds the function in which a variable shall be found *)
 let rec find_uses_in_fun_find_fun list name varname varid = 
@@ -161,13 +166,17 @@ match list with x::xs -> (match x.skind with If(exp, b1, b2, loc) -> (search_exp
 (* Finds all uses of a variable in conditions of a function *)
 let find_uses_in_cond_in_fun varname varid funname file =
 let fundec_opt = find_fundec file.globals funname
+in let rec iter_list list fundec =
+match list with x::xs -> (cond_search_uses_stmt_list fundec.sbody.bstmts x (-1))@(iter_list xs fundec)
+            | [] -> []
 in match fundec_opt with None -> []
-| Some(fundec) -> cond_search_uses_stmt_list fundec.sbody.bstmts varname varid
+| Some(fundec) -> if varid != (-1) then cond_search_uses_stmt_list fundec.sbody.bstmts varname varid
+else iter_list (delete_duplicates (Hashtbl.find_all varnameMapping varname) []) fundec
 
 (* Finds all uses of a variable in conditions in all functions *)
 let find_uses_in_cond varname varid file = 
 let rec iter_functions list = 
-match list with GFun(dec,_)::xs -> (cond_search_uses_stmt_list dec.sbody.bstmts varname varid)@(iter_functions xs)
+match list with GFun(dec,_)::xs -> (find_uses_in_cond_in_fun varname varid dec.svar.vname file)@(iter_functions xs)
             | _ ::xs -> iter_functions xs
             | [] -> []
 in iter_functions file.globals
@@ -240,11 +249,18 @@ in iter_list cond_result no_struc_result
 let find_decl_in_fun varname varid funname file =
 let fundec_opt = find_fundec file.globals funname
 in let get_formals_locals dec = dec.sformals@dec.slocals
-in let rec iter_list list = 
-match list with x::xs -> if (x.vid = varid) then (x.vname, x.vdecl, (String.trim (Pretty.sprint 1 (d_type () x.vtype))), x.vid)::(iter_list xs) else (find_all_cil_generated x varname x.vdecl)@iter_list xs
+in let rec iter_list_id list = 
+match list with x::xs -> if (x.vid = varid) then (x.vname, x.vdecl, (String.trim (Pretty.sprint 1 (d_type () x.vtype))), x.vid)::(iter_list_id xs) else iter_list_id xs
             | [] -> []
+in let rec iter_list_name list name =
+match list with x::xs -> if (String.compare x.vname name = 0) then (x.vname, x.vdecl, (String.trim (Pretty.sprint 1 (d_type () x.vtype))), x.vid)::(iter_list_name xs name) else iter_list_name xs name
+            | [] -> []
+in let rec iter_namelist name_list varinfo_list =
+match name_list with x::xs -> (iter_list_name varinfo_list x)@(iter_namelist xs varinfo_list)
+                | [] -> []
 in match fundec_opt with None -> []
-                    | Some(fundec) -> iter_list (get_formals_locals fundec)
+                    | Some(fundec) -> if varid != (-1) then iter_list_id (get_formals_locals fundec)
+else iter_namelist (delete_duplicates (Hashtbl.find_all varnameMapping varname) []) (get_formals_locals fundec)
 
 (* Finds all declarations in a function *)
 let find_decl_in_fun_all funname file =
@@ -289,15 +305,19 @@ method vfunc fundec = if (String.compare fundec.svar.vname funname = 0) then DoC
 method vblock block = DoChildren
 method vstmt stmt = DoChildren
 method vinst instr = 
-match instr with Set((Var(info),_), exp, loc) -> if (info.vid = varid) then (result := (!result)@((info.vname, loc, String.trim (Pretty.sprint 1 (d_type () info.vtype)), info.vid)::[]); SkipChildren) else (result := (!result)@(find_all_cil_generated info varname loc); SkipChildren)
+match instr with Set((Var(info),_), exp, loc) -> if (is_equal_varname_varid info varname varid) then (result := (!result)@((info.vname, loc, String.trim (Pretty.sprint 1 (d_type () info.vtype)), info.vid)::[]); SkipChildren) else SkipChildren
             | _ -> SkipChildren
 end
 
 (* Finds definitions of a variable in a function *)
 let find_defs_in_fun varname varid funname file =
-let result = ref []
+let result = ref [] 
+in let rec iter_list list =
+match list with x::xs -> visitCilFileSameGlobals (new var_find_def_in_fun x (-1) funname result) file; iter_list xs
+            | [] -> !result
 in let visitor = new var_find_def_in_fun varname varid funname result
-in visitCilFileSameGlobals visitor file; !result
+in if varid != (-1) then (visitCilFileSameGlobals visitor file; !result)
+else iter_list (delete_duplicates (Hashtbl.find_all varnameMapping varname) [])
 
 (* Finds definitions of all global variables in a function *)
 let find_defs_in_fun_all_glob funname file =

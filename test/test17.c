@@ -7,8 +7,8 @@ void main(int i){
     int i___0 = 3;
 
     i = 7;
-
-    if(f(5) == 4) i++;
+    int z = f(5) + 1;
+    if(z == 4) i++;
 
     int tmp = 3;
 }

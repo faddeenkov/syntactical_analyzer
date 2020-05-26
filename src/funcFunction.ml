@@ -1,6 +1,17 @@
 open Cil
+open Cabs2cil
+open Hashtbl
 
 let is_equal_funname_funid varinfo name id = if ((String.compare varinfo.vname name = 0) || (varinfo.vid = id)) then true else false
+
+let rec delete_elem list s = 
+match list with x::xs -> if (String.compare x s = 0) then (delete_elem xs s) else x::(delete_elem xs s)
+            | [] -> []
+
+let rec delete_duplicates list acc = 
+match list with x::xs -> delete_duplicates (delete_elem xs x) (x::acc)
+            | [] -> acc
+
 
 class fun_find_returns funname funid result : nopCilVisitor =
 object(self)
@@ -136,8 +147,11 @@ end
 let find_usesvar_in_fun funname funid funstrucname varname file =
 let fundec_opt = find_fundec funname funid file.globals
 in let result = ref []
+in let rec iter_list list fundec =
+match list with x::xs -> ignore(visitCilFileSameGlobals (new fun_find_usesvar_in_fun fundec funstrucname x (-1) file result) file); iter_list xs fundec
+        | [] -> !result
 in match fundec_opt with None -> []
-| Some(fundec) ->  ignore(visitCilFileSameGlobals (new fun_find_usesvar_in_fun fundec funstrucname varname (-1) file result) file); !result
+| Some(fundec) ->  iter_list (delete_duplicates (Hashtbl.find_all varnameMapping varname) []) fundec
 
 (* Finds calls of all function with a var in argument in a function *)
 let find_usesvar_in_fun_all funstrucname varname file =
@@ -230,7 +244,7 @@ method vfunc dec = DoChildren
 method vblock block = DoChildren
 method vstmt stmt = DoChildren
 method vinst instr = 
-match instr with Call(lval_opt, Lval(Var(varinfo) ,_), arg_list, loc) -> if (is_equal_funname_funid varinfo funname funid)&&(List.length (FuncVar.search_expression_list arg_list varname loc (-1)) > 0) then (match lval_opt with Some((Var(tmpinfo), _)) -> if (String.length tmpinfo.vname > 2)&&(String.compare "tmp" (String.sub tmpinfo.vname 0 3) = 0) then result := (!result)@((tmpinfo.vid, varinfo.vid)::[]); SkipChildren
+match instr with Call(lval_opt, Lval(Var(varinfo) ,_), arg_list, loc) -> if (is_equal_funname_funid varinfo funname funid)&&(List.length (List.flatten (List.map (fun x -> FuncVar.search_expression_list arg_list x loc (-1)) (Hashtbl.find_all varnameMapping varname))) > 0) then (match lval_opt with Some((Var(tmpinfo), _)) -> if (String.length tmpinfo.vname > 2)&&(String.compare "tmp" (String.sub tmpinfo.vname 0 3) = 0) then result := (!result)@((tmpinfo.vid, varinfo.vid)::[]); SkipChildren
                                                                                 | _ -> SkipChildren) else SkipChildren
         | _ -> SkipChildren
 end
