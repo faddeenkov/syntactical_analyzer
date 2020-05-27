@@ -156,5 +156,16 @@ let funcvar_tests = "test suite for func_Var" >::: [
                                      assert_bool "check result of first" (check_result (List.hd result) "global" "char" 1);
                                      assert_bool "check result of second" (check_result (List.nth result 1) "global" "char" 4);
                                      assert_bool "check result of third" (check_result (List.nth result 2) "global" "char" 17));
-   (*"test correct differentiation of user-defined and cil-generated variables" >:: (fun _ -> )*)                              
+   "test correct differentiation of user-defined and cil-generated variables 1" >:: 
+   (fun _ -> let result = find_uses "i" (-1) (Frontc.parse "test17.c" ())
+            in assert_equal (List.length result) 6; (* i++ is causing duplicates *)
+               assert_bool "check result of first" (check_result (List.hd result) "i" "double" 9);
+               assert_bool "check result of second" (check_result (List.nth result 1) "i" "double" 10);
+               assert_bool "check result of third" (check_result (List.nth result 2) "i___0" "int" 4);
+               assert_bool "check result of fourth" (check_result (List.nth result 3) "i___0" "int" 4));
+   "test correct differentiation of user-defined and cil-generated variables 2" >::
+   (fun _ -> let result = find_uses "i___0" (-1) (Frontc.parse "test17.c" ())
+            in assert_equal (List.length result) 2;
+               assert_bool "check result of first" (check_result (List.hd result) "i___1" "int" 7);
+               assert_bool "check result of second" (check_result (List.nth result 1) "i___1" "int" 11))
 ]

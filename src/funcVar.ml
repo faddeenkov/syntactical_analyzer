@@ -82,7 +82,7 @@ let find_uses_in_fun_var dec name varid =
 let rec iter_list list = 
 match list with x::xs -> (search_stmt_list_for_var dec.sbody.bstmts x (-1))@(iter_list xs)
                 | [] -> []
-in if varid != (-1) then search_stmt_list_for_var dec.sbody.bstmts name varid else iter_list (delete_duplicates (Hashtbl.find_all varnameMapping name) [])
+in (*Hashtbl.iter (fun a b -> Printf.printf "%s is mapped to %s\n" a b) varnameMapping ;*) if varid != (-1) then search_stmt_list_for_var dec.sbody.bstmts name varid else iter_list (delete_duplicates (Hashtbl.find_all varnameMapping name) [])
 
 (* Finds the function in which a variable shall be found *)
 let rec find_uses_in_fun_find_fun list name varname varid = 
