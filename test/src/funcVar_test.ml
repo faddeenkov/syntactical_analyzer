@@ -167,5 +167,9 @@ let funcvar_tests = "test suite for func_Var" >::: [
    (fun _ -> let result = find_uses "i___0" (-1) (Frontc.parse "test17.c" ()) false
             in assert_equal (List.length result) 2;
                assert_bool "check result of first" (check_result (List.hd result) "i___1" "int" 7);
-               assert_bool "check result of second" (check_result (List.nth result 1) "i___1" "int" 11))
+               assert_bool "check result of second" (check_result (List.nth result 1) "i___1" "int" 11));
+   "test correct differentiation of user-defined and cil-generated variables 3" >::
+   (fun _ -> let result = find_uses "tmp" (-1) (Frontc.parse "test17.c" ()) false
+            in assert_equal (List.length result) 1;
+               assert_bool "check result" (check_result (List.hd result) "tmp___0" "int" 13))
 ]

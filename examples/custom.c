@@ -103,7 +103,8 @@ int main(){
         return 3;
     }
     
-
+    char tmp = 'c';
+    
     BYTE arr[] = {2};
     switch(x[0]){
         case 1:
