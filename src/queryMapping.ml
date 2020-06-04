@@ -91,36 +91,36 @@ match query.f with Decl_f -> if ((query.str = None_s)) then (resolve_query_datat
 
 (* Resolution of variable-oriented queries *)
 let resolve_query_var_uses_fun query cilfile funname = 
-match query.tar with Name_t(name) -> FuncVar.find_uses_in_fun name (-1) funname cilfile
-                | ID_t(id) -> FuncVar.find_uses_in_fun "" id funname cilfile
-                | AllGlobVar_t -> FuncVar.find_uses_in_fun_all_glob funname cilfile
-                | All_t -> FuncVar.find_uses_in_fun_all funname cilfile
-                | And_t(list) -> and_several_lists (List.map (fun x -> FuncVar.find_uses_in_fun x (-1) funname cilfile) list)
-                | Or_t(list) -> List.flatten (List.map (fun x -> FuncVar.find_uses_in_fun x (-1) funname cilfile) list)
+match query.tar with Name_t(name) -> FuncVar.find_uses_in_fun name (-1) funname cilfile false
+                | ID_t(id) -> FuncVar.find_uses_in_fun "" id funname cilfile false
+                | AllGlobVar_t -> FuncVar.find_uses_in_fun_all_glob funname cilfile false
+                | All_t -> FuncVar.find_uses_in_fun_all funname cilfile false
+                | And_t(list) -> and_several_lists (List.map (fun x -> FuncVar.find_uses_in_fun x (-1) funname cilfile false) list)
+                | Or_t(list) -> List.flatten (List.map (fun x -> FuncVar.find_uses_in_fun x (-1) funname cilfile false) list)
 
 let resolve_query_var_uses_none query cilfile =
-match query.tar with Name_t(name) -> FuncVar.find_uses name (-1) cilfile
-                | ID_t(id) -> FuncVar.find_uses "" id cilfile
-                | AllGlobVar_t -> FuncVar.find_uses_all_glob cilfile
-                | All_t -> FuncVar.find_uses_all cilfile
-                | And_t(list) -> and_several_lists (List.map (fun x -> FuncVar.find_uses x (-1) cilfile) list)
-                | Or_t(list) -> List.flatten (List.map (fun x -> FuncVar.find_uses x (-1) cilfile) list)
+match query.tar with Name_t(name) -> FuncVar.find_uses name (-1) cilfile false
+                | ID_t(id) -> FuncVar.find_uses "" id cilfile false
+                | AllGlobVar_t -> FuncVar.find_uses_all_glob cilfile false
+                | All_t -> FuncVar.find_uses_all cilfile false
+                | And_t(list) -> and_several_lists (List.map (fun x -> FuncVar.find_uses x (-1) cilfile false) list)
+                | Or_t(list) -> List.flatten (List.map (fun x -> FuncVar.find_uses x (-1) cilfile false) list)
 
 let resolve_query_var_uses_cond query cilfile =
-match query.tar with Name_t(name) -> FuncVar.find_uses_in_cond name (-1) cilfile
-                | ID_t(id) -> FuncVar.find_uses_in_cond "" id cilfile
-                | AllGlobVar_t -> FuncVar.find_uses_in_cond_all_glob cilfile
-                | All_t -> FuncVar.find_uses_in_cond_all cilfile
-                | And_t(list) -> and_several_lists (List.map (fun x -> FuncVar.find_uses_in_cond x (-1) cilfile) list)
-                | Or_t(list) -> List.flatten (List.map (fun x -> FuncVar.find_uses_in_cond x (-1) cilfile) list)
+match query.tar with Name_t(name) -> FuncVar.find_uses_in_cond name (-1) cilfile false
+                | ID_t(id) -> FuncVar.find_uses_in_cond "" id cilfile false
+                | AllGlobVar_t -> FuncVar.find_uses_in_cond_all_glob cilfile false
+                | All_t -> FuncVar.find_uses_in_cond_all cilfile false
+                | And_t(list) -> and_several_lists (List.map (fun x -> FuncVar.find_uses_in_cond x (-1) cilfile false) list)
+                | Or_t(list) -> List.flatten (List.map (fun x -> FuncVar.find_uses_in_cond x (-1) cilfile false) list)
 
 let resolve_query_var_uses_noncond query cilfile =
-match query.tar with Name_t(name) -> FuncVar.find_uses_in_noncond name (-1) cilfile
-                | ID_t(id) -> FuncVar.find_uses_in_noncond "" id cilfile
-                | AllGlobVar_t -> FuncVar.find_uses_in_noncond_all_glob cilfile
-                | All_t -> FuncVar.find_uses_in_noncond_all cilfile
-                | And_t(list) -> and_several_lists (List.map (fun x -> FuncVar.find_uses_in_noncond x (-1) cilfile) list)
-                | Or_t(list) -> List.flatten (List.map (fun x -> FuncVar.find_uses_in_noncond x (-1) cilfile) list)
+match query.tar with Name_t(name) -> FuncVar.find_uses_in_noncond name (-1) cilfile false
+                | ID_t(id) -> FuncVar.find_uses_in_noncond "" id cilfile false
+                | AllGlobVar_t -> FuncVar.find_uses_in_noncond_all_glob cilfile false
+                | All_t -> FuncVar.find_uses_in_noncond_all cilfile false
+                | And_t(list) -> and_several_lists (List.map (fun x -> FuncVar.find_uses_in_noncond x (-1) cilfile false) list)
+                | Or_t(list) -> List.flatten (List.map (fun x -> FuncVar.find_uses_in_noncond x (-1) cilfile false) list)
 
 let resolve_query_var_uses query cilfile = 
 match query.str with Fun_s(funname) -> resolve_query_var_uses_fun query cilfile funname

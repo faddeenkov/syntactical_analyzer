@@ -48,7 +48,7 @@ match globals with GFun(fundec, _)::xs -> if (String.compare fundec.svar.vname n
                 | _::xs -> find_fundec xs name
 
 let rec find_typevar_uses_in_fun list funname file = 
-match list with x::xs -> (FuncVar.find_uses_in_fun "" x funname file)@(find_typevar_uses_in_fun xs funname file)
+match list with x::xs -> (FuncVar.find_uses_in_fun "" x funname file false)@(find_typevar_uses_in_fun xs funname file)
             | [] -> []
 
 (* Finds uses of a datatype in a function *)
@@ -59,15 +59,15 @@ in match fundec_res with None -> []
 
 (* Finds all uses of a datatype in all functions *)
 let find_uses typename file = 
-let list = FuncVar.find_uses_all file
+let list = FuncVar.find_uses_all file false
 in List.filter (fun (name, loc, typ, id) -> (String.compare typ typename = 0)) list
 
 (* Finds all uses of a datatype in conditions *)
 let find_uses_in_cond typename file =
-let list = FuncVar.find_uses_in_cond_all file
+let list = FuncVar.find_uses_in_cond_all file false
 in List.filter (fun (name, loc, typ, id) -> (String.compare typ typename = 0)) list
 
 (* Finds all uses of a datatype in non-conditions *)
 let find_uses_in_noncond typename file =
-let list = FuncVar.find_uses_in_noncond_all file
+let list = FuncVar.find_uses_in_noncond_all file false
 in List.filter (fun (name, loc, typ, id) -> (String.compare typ typename = 0)) list

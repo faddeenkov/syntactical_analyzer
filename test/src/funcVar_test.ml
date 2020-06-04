@@ -91,42 +91,42 @@ let funcvar_tests = "test suite for func_Var" >::: [
   "search expression-list1" >:: (fun _ -> assert_equal (search_expression_list expr_list "x" location1 (-1)) result4);
   "search instruction-list1" >:: (fun _ -> assert_equal (search_instr_list_for_var instr_list "x" (-1)) result4);
   "search statement-list1" >:: (fun _ -> assert_equal (search_stmt_list_for_var stmt_list "x" (-1)) result5); *)
-  "test find_uses_in_fun_all_glob" >:: (fun _ -> let result = find_uses_in_fun_all_glob "main" (Frontc.parse "test.c" ())
+  "test find_uses_in_fun_all_glob" >:: (fun _ -> let result = find_uses_in_fun_all_glob "main" (Frontc.parse "test.c" ()) false
                                                   in assert_equal (List.length result) 3;
                                                      assert_bool "check result of first" (check_result (List.hd result) "x" "int" 7);
                                                      assert_bool "check result of second" (check_result (List.nth result 1) "x" "int" 10);
                                                      assert_bool "check result of third" (check_result (List.nth result 2) "y" "char" 8));
-  "test find_uses_in_fun_all" >:: (fun _ -> let result = find_uses_in_fun_all "niceFunction" (Frontc.parse "test1.c" ())
+  "test find_uses_in_fun_all" >:: (fun _ -> let result = find_uses_in_fun_all "niceFunction" (Frontc.parse "test1.c" ()) false
                                             in assert_equal (List.length result) 4;
                                                assert_bool "check result of first" (check_result (List.hd result) "global" "int" 5);
                                                assert_bool "check result of second" (check_result (List.nth result 1) "formal" "float" 5);
                                                assert_bool "check result of third" (check_result (List.nth result 2) "local" "float" 4);
                                                assert_bool "check result of fourth" (check_result (List.nth result 3) "local" "float" 5));
-  "test find_uses" >:: (fun _ -> let result = find_uses "global" (-1) (Frontc.parse "test2.c" ())
+  "test find_uses" >:: (fun _ -> let result = find_uses "global" (-1) (Frontc.parse "test2.c" ()) false
                                  in assert_equal (List.length result) 4;
                                     assert_bool "check result of first" (check_result (List.hd result) "global" "char" 1);
                                     assert_bool "check result of second" (check_result (List.nth result 1) "global" "char" 4);
                                     assert_bool "check result of third" (check_result (List.nth result 2) "global" "char" 8);
                                     assert_bool "check result of fourth" (check_result (List.nth result 3) "global" "char" 17));
-   "test find_uses_all" >:: (fun _ -> let result = find_uses_all (Frontc.parse "test3.c" ())
+   "test find_uses_all" >:: (fun _ -> let result = find_uses_all (Frontc.parse "test3.c" ()) false
                                       in assert_equal (List.length result) 5;
                                          assert_bool "check result of first" (check_result (List.hd result) "new_var" "struct var" 5);
                                          assert_bool "check result of second" (check_result (List.nth result 1) "new_var" "struct var" 8);
                                          assert_bool "check result of third" (check_result (List.nth result 2) "new_var" "struct var" 8);
                                          assert_bool "check result of fourth" (check_result (List.nth result 3) "new_var" "struct var" 13);
                                          assert_bool "check result of fifth" (check_result (List.nth result 4) "copy_var" "struct var" 13));    
-   "test find_uses_in_cond" >:: (fun _ -> let result = find_uses_in_cond "i" (-1) (Frontc.parse "test4.c" ())
+   "test find_uses_in_cond" >:: (fun _ -> let result = find_uses_in_cond "i" (-1) (Frontc.parse "test4.c" ()) false
                                           in assert_equal (List.length result) 3;
                                              assert_bool "check result of first" (check_result (List.hd result) "i" "int" 4);
                                              assert_bool "check result of second" (check_result (List.nth result 1) "i" "int" 5);
                                              assert_bool "check result of third" (check_result (List.nth result 2) "i" "int" 10));
-   "test find_uses_in_cond_all" >:: (fun _ -> let result = find_uses_in_cond_all (Frontc.parse "test5.c" ())
+   "test find_uses_in_cond_all" >:: (fun _ -> let result = find_uses_in_cond_all (Frontc.parse "test5.c" ()) false
                                               in assert_equal (List.length result) 4;
                                                  assert_bool "check result of first" (check_result (List.hd result) "global" "int" 5);
                                                  assert_bool "check result of second" (check_result (List.nth result 1) "j" "int" 5);
                                                  assert_bool "check result of third" (check_result (List.nth result 2) "global" "int" 16);
                                                  assert_bool "check result of fourth" (check_result (List.nth result 3) "x" "int" 11));
-   "test find_uses_in_noncond_all" >:: (fun _ -> let result = find_uses_in_noncond_all (Frontc.parse "test5.c" ())
+   "test find_uses_in_noncond_all" >:: (fun _ -> let result = find_uses_in_noncond_all (Frontc.parse "test5.c" ()) false
                                                  in assert_equal (List.length result) 7;
                                                     assert_bool "check result of first" (check_result (List.hd result) "global" "int" 1);
                                                     assert_bool "check result of second" (check_result (List.nth result 1) "j" "int" 4);
@@ -147,7 +147,7 @@ let funcvar_tests = "test suite for func_Var" >::: [
                                          assert_bool "check result of first" (check_result (List.hd result) "new_var" "struct var" 5);
                                          assert_bool "check result of second" (check_result (List.nth result 1) "new_var" "struct var" 8);
                                          assert_bool "check result of third" (check_result (List.nth result 2) "copy_var" "struct var" 13));
-   "test find vars in variable-length array-declaration" >:: (fun _ -> let result = find_uses "i" (-1) (Frontc.parse "test15.c" ())
+   "test find vars in variable-length array-declaration" >:: (fun _ -> let result = find_uses "i" (-1) (Frontc.parse "test15.c" ()) false
                                                                        in assert_equal (List.length result) 2;
                                                                           assert_bool "check result of first" (check_result (List.hd result) "i" "int" 6);
                                                                           assert_bool "check result of second" (check_result (List.nth result 1) "i" "int" 7));
@@ -157,14 +157,14 @@ let funcvar_tests = "test suite for func_Var" >::: [
                                      assert_bool "check result of second" (check_result (List.nth result 1) "global" "char" 4);
                                      assert_bool "check result of third" (check_result (List.nth result 2) "global" "char" 17));
    "test correct differentiation of user-defined and cil-generated variables 1" >:: 
-   (fun _ -> let result = find_uses "i" (-1) (Frontc.parse "test17.c" ())
+   (fun _ -> let result = find_uses "i" (-1) (Frontc.parse "test17.c" ()) false
             in assert_equal (List.length result) 6; (* i++ is causing duplicates *)
                assert_bool "check result of first" (check_result (List.hd result) "i" "double" 9);
                assert_bool "check result of second" (check_result (List.nth result 1) "i" "double" 10);
                assert_bool "check result of third" (check_result (List.nth result 2) "i___0" "int" 4);
                assert_bool "check result of fourth" (check_result (List.nth result 3) "i___0" "int" 4));
    "test correct differentiation of user-defined and cil-generated variables 2" >::
-   (fun _ -> let result = find_uses "i___0" (-1) (Frontc.parse "test17.c" ())
+   (fun _ -> let result = find_uses "i___0" (-1) (Frontc.parse "test17.c" ()) false
             in assert_equal (List.length result) 2;
                assert_bool "check result of first" (check_result (List.hd result) "i___1" "int" 7);
                assert_bool "check result of second" (check_result (List.nth result 1) "i___1" "int" 11))

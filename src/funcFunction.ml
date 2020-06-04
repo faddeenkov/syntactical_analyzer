@@ -138,7 +138,7 @@ method vfunc dec = if is_equal_funname_funid dec.svar funstrucname (-1) then DoC
 method vblock block = DoChildren
 method vstmt stmt = DoChildren
 method vinst instr =
-match instr with Call(_, exp, list, loc) -> (match exp with Lval(Var(varinfo), _) -> if is_equal_funname_funid varinfo fundec.svar.vname fundec.svar.vid then (if List.length (FuncVar.search_expression_list list varname loc_default varid) > 0 then (result := (!result)@((varinfo.vname, loc, create_sig fundec file, varinfo.vid)::[]); SkipChildren) else SkipChildren) else SkipChildren
+match instr with Call(_, exp, list, loc) -> (match exp with Lval(Var(varinfo), _) -> if is_equal_funname_funid varinfo fundec.svar.vname fundec.svar.vid then (if List.length (FuncVar.search_expression_list list varname loc_default varid true) > 0 then (result := (!result)@((varinfo.vname, loc, create_sig fundec file, varinfo.vid)::[]); SkipChildren) else SkipChildren) else SkipChildren
                                                         | _ -> Printf.printf "some other exp in call\n"; SkipChildren)
                  | _ -> SkipChildren
 end 
@@ -204,7 +204,7 @@ in match fundec_opt with None -> ("", loc_default, "", -1)
 let find_uses_cond funname funid file =
 let id_list = find_lval_of_calls funname funid file
 in let rec iter_list list = 
-match list with (tmp, func)::xs -> (match FuncVar.find_uses_in_cond "" tmp file with (name, loc, typ, id)::ys -> (create_fun_res "" func file loc)::(iter_list xs)
+match list with (tmp, func)::xs -> (match FuncVar.find_uses_in_cond "" tmp file true with (name, loc, typ, id)::ys -> (create_fun_res "" func file loc)::(iter_list xs)
                                                                         | [] -> iter_list xs)
         | _ -> []
 in iter_list id_list
@@ -244,7 +244,7 @@ method vfunc dec = DoChildren
 method vblock block = DoChildren
 method vstmt stmt = DoChildren
 method vinst instr = 
-match instr with Call(lval_opt, Lval(Var(varinfo) ,_), arg_list, loc) -> if (is_equal_funname_funid varinfo funname funid)&&(List.length (List.flatten (List.map (fun x -> FuncVar.search_expression_list arg_list x loc (-1)) (Hashtbl.find_all varnameMapping varname))) > 0) then (match lval_opt with Some((Var(tmpinfo), _)) -> if (String.length tmpinfo.vname > 2)&&(String.compare "tmp" (String.sub tmpinfo.vname 0 3) = 0) then result := (!result)@((tmpinfo.vid, varinfo.vid)::[]); SkipChildren
+match instr with Call(lval_opt, Lval(Var(varinfo) ,_), arg_list, loc) -> if (is_equal_funname_funid varinfo funname funid)&&(List.length (List.flatten (List.map (fun x -> FuncVar.search_expression_list arg_list x loc (-1) true) (Hashtbl.find_all varnameMapping varname))) > 0) then (match lval_opt with Some((Var(tmpinfo), _)) -> if (String.length tmpinfo.vname > 2)&&(String.compare "tmp" (String.sub tmpinfo.vname 0 3) = 0) then result := (!result)@((tmpinfo.vid, varinfo.vid)::[]); SkipChildren
                                                                                 | _ -> SkipChildren) else SkipChildren
         | _ -> SkipChildren
 end
@@ -258,7 +258,7 @@ in visitCilFileSameGlobals visitor file; !result
 let find_usesvar_cond funname funid varname file =
 let id_list = find_lval_of_calls_usesvar funname funid varname file 
 in let rec iter_list list = 
-match list with (tmp, func)::xs -> (match FuncVar.find_uses_in_cond "" tmp file with (name, loc, typ, id)::ys -> (create_fun_res "" func file loc)::(iter_list xs)
+match list with (tmp, func)::xs -> (match FuncVar.find_uses_in_cond "" tmp file true with (name, loc, typ, id)::ys -> (create_fun_res "" func file loc)::(iter_list xs)
                                                                         | [] -> iter_list xs)
         | _ -> []
 in iter_list id_list
