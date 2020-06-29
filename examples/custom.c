@@ -99,7 +99,7 @@ int main(){
     }
     
     //no tmp__-file generation here
-    if(f(x2) == 7){
+    if(f(x2 - 3) == 7){
         return 3;
     }
     

@@ -16,9 +16,7 @@ match list with x::xs -> delete_duplicates (delete_elem xs x) (x::acc)
 class fun_find_returns funname funid result : nopCilVisitor =
 object(self)
 inherit nopCilVisitor
-method vglob global = DoChildren
 method vfunc fundec = if is_equal_funname_funid fundec.svar funname funid then DoChildren else SkipChildren
-method vblock block = DoChildren
 method vstmt stmt = 
 match stmt.skind with Return(Some(exp), loc) -> result := (!result)@(("", loc, String.trim (Pretty.sprint 1 (d_type () (typeOf exp))), (-1))::[]); DoChildren
                     | Return(None, loc) -> result := (!result)@(("", loc, "void", (-1))::[]); DoChildren
@@ -73,10 +71,6 @@ match list with GFun(dec, _)::xs -> if is_equal_funname_funid dec.svar funname f
 class fun_find_uses funname funid file result : nopCilVisitor =
 object(self)
 inherit nopCilVisitor
-method vglob global = DoChildren
-method vfunc fundec = DoChildren
-method vblock block = DoChildren
-method vstmt stmt = DoChildren
 method vinst instr = 
 match instr with Call(_, Lval(Var(varinfo) ,NoOffset), list,loc) -> 
 if is_equal_funname_funid varinfo funname funid then ( match (find_fundec funname funid file.globals) with None -> SkipChildren
@@ -102,10 +96,7 @@ in iter_list file.globals
 class fun_find_uses_in_fun funname funid funstrucname file result : nopCilVisitor =
 object(self)
 inherit nopCilVisitor
-method vglob global = DoChildren
 method vfunc fundec = if is_equal_funname_funid fundec.svar funstrucname (-1) then DoChildren else SkipChildren
-method vblock block = DoChildren
-method vstmt stmt = DoChildren
 method vinst instr = 
 match instr with Call(_, Lval(Var(varinfo) ,NoOffset), list,loc) -> 
 if is_equal_funname_funid varinfo funname funid then ( match (find_fundec funname funid file.globals) with None -> SkipChildren
@@ -133,10 +124,7 @@ let loc_default = {line = -1; file = ""; byte = -1}
 class fun_find_usesvar_in_fun fundec funstrucname varname varid file result : nopCilVisitor =
 object(self)
 inherit nopCilVisitor
-method vglob global = DoChildren
 method vfunc dec = if is_equal_funname_funid dec.svar funstrucname (-1) then DoChildren else SkipChildren
-method vblock block = DoChildren
-method vstmt stmt = DoChildren
 method vinst instr =
 match instr with Call(_, exp, list, loc) -> (match exp with Lval(Var(varinfo), _) -> if is_equal_funname_funid varinfo fundec.svar.vname fundec.svar.vid then (if List.length (FuncVar.search_expression_list list varname loc_default varid true) > 0 then (result := (!result)@((varinfo.vname, loc, create_sig fundec file, varinfo.vid)::[]); SkipChildren) else SkipChildren) else SkipChildren
                                                         | _ -> Printf.printf "some other exp in call\n"; SkipChildren)
@@ -180,10 +168,6 @@ in iter_list file.globals
 class find_calls_with_tmp file result funname funid : nopCilVisitor =
 object
 inherit nopCilVisitor
-method vglob global = DoChildren
-method vfunc dec = DoChildren
-method vblock block = DoChildren
-method vstmt stmt = DoChildren
 method vinst instr = 
 match instr with Call(lval_opt, Lval(Var(varinfo) ,_), _, loc) -> if is_equal_funname_funid varinfo funname funid then (match lval_opt with Some((Var(tmpinfo), _)) -> if (String.length tmpinfo.vname > 2)&&(String.compare "tmp" (String.sub tmpinfo.vname 0 3) = 0) then result := (!result)@((tmpinfo.vid, varinfo.vid)::[]); SkipChildren
                                                                                 | _ -> SkipChildren) else SkipChildren
@@ -239,10 +223,6 @@ in iter_list file.globals
 class find_calls_usesvar_with_tmp file result funname funid varname : nopCilVisitor =
 object
 inherit nopCilVisitor
-method vglob global = DoChildren
-method vfunc dec = DoChildren
-method vblock block = DoChildren
-method vstmt stmt = DoChildren
 method vinst instr = 
 match instr with Call(lval_opt, Lval(Var(varinfo) ,_), arg_list, loc) -> if (is_equal_funname_funid varinfo funname funid)&&(List.length (List.flatten (List.map (fun x -> FuncVar.search_expression_list arg_list x loc (-1) true) (Hashtbl.find_all varnameMapping varname))) > 0) then (match lval_opt with Some((Var(tmpinfo), _)) -> if (String.length tmpinfo.vname > 2)&&(String.compare "tmp" (String.sub tmpinfo.vname 0 3) = 0) then result := (!result)@((tmpinfo.vid, varinfo.vid)::[]); SkipChildren
                                                                                 | _ -> SkipChildren) else SkipChildren

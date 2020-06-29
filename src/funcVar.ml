@@ -26,8 +26,6 @@ class var_search_in_expr varname varid loc result includeCallTmp : nopCilVisitor
 object(self)
 inherit nopCilVisitor 
 method vvrbl info = (if (is_equal_varname_varid info varname varid)&&(includeCallTmp || not (is_temporary info.vid)) then (result := (!result)@((info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::[])) else ());  SkipChildren
-method vlval (h,o) = DoChildren
-method vexpr exp = DoChildren
 end
 
 (* Finds a variable in an expression *)
@@ -302,10 +300,7 @@ in (find_decl_all_glob file)@(iter_list file.globals)
 class var_find_def_in_fun varname varid funname result : nopCilVisitor =
 object(self)
 inherit nopCilVisitor
-method vglob global = DoChildren
 method vfunc fundec = if (String.compare fundec.svar.vname funname = 0) then DoChildren else SkipChildren
-method vblock block = DoChildren
-method vstmt stmt = DoChildren
 method vinst instr = 
 match instr with Set((Var(info),_), exp, loc) -> if (is_equal_varname_varid info varname varid) then (result := (!result)@((info.vname, loc, String.trim (Pretty.sprint 1 (d_type () info.vtype)), info.vid)::[]); SkipChildren) else SkipChildren
             | _ -> SkipChildren
