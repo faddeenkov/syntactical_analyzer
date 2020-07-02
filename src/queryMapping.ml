@@ -77,6 +77,7 @@ match query.str with Fun_s(funname) -> resolve_query_datatype_uses_fun query cil
 let resolve_query_datatype_defs_none query cilfile = 
 match query.tar with Name_t(name) -> FuncDatatype.find_def name cilfile
                 | Or_t(list) -> List.flatten (List.map (fun x -> FuncDatatype.find_def x cilfile) list)
+                | All_t -> FuncDatatype.find_def_all cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_datatype_defs query cilfile =

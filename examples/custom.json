@@ -1,5 +1,4 @@
-{   "select":[["name"],["location"], ["id"]],
-    "type": ["fun"],
-    "target": ["name", "f"],
-    "find": ["uses_with_var", "x2"],
-    "structure": ["cond"]}
+{   "select":[["name"],["location"], ["id"], ["type"]],
+    "type": ["datatype"],
+    "target": ["all"],
+    "find": ["defs"]}

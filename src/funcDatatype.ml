@@ -20,6 +20,16 @@ let find_decl name file = find_decl_iter_list name file.globals
 (* Finds definition of a user-defined type *)
 let find_def name file = find_userdef_iter_list name file.globals
 
+(* Finds all definition of user-defined types *)
+let find_def_all file = 
+let rec iter_list list = 
+match list with GType(info, loc)::xs -> ("", loc, info.tname, -1)::(iter_list xs)
+            | GCompTag(info, loc)::xs -> ("", loc, info.cname, -1)::(iter_list xs)
+            | GEnumTag(info, loc)::xs -> ("", loc, info.ename, -1)::(iter_list xs)
+            | x::xs -> iter_list xs
+            | [] -> []
+in iter_list file.globals
+
 (* Finds all global user-defined types and their type-definition *)
 let rec find_decl_all_glob_iter_list list acc = 
 match list with (GCompTagDecl(info,loc))::xs -> find_decl_all_glob_iter_list xs (("", loc, info.cname, -1)::acc)
