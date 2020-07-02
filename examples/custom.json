@@ -1,4 +1,4 @@
 {   "select":[["name"],["location"], ["id"], ["type"]],
-    "type": ["datatype"],
-    "target": ["all"],
-    "find": ["defs"]}
+    "type": ["var"],
+    "target": ["name", "tmp"],
+    "find": ["uses"]}

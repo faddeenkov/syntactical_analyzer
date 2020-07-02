@@ -37,9 +37,20 @@ match list with GFun(fundec, _)::xs -> (find_returns "" fundec.svar.vid file)@(i
             | [] -> []
 in iter_list file.globals
 
+class fun_find_sig funname funid result : nopCilVisitor =
+object(self)
+inherit nopCilVisitor
+method vfunc fundec = if is_equal_funname_funid fundec.svar funname funid then DoChildren else SkipChildren
+method vstmt stmt = 
+match stmt.skind with Return(Some(exp), loc) -> result := (!result)@(("", loc, String.trim (Pretty.sprint 1 (d_type () (typeOf exp))), (-1))::[]); SkipChildren
+                    | Return(None, loc) -> result := (!result)@(("", loc, "void", (-1))::[]); SkipChildren
+                    | _ -> DoChildren
+end
+
 let create_sig fundec file = 
-let return_type = 
-match (find_returns "" fundec.svar.vid file) with (_, _, typ, _)::xs -> typ
+let result = ref []
+in let return_type = 
+match (ignore(visitCilFileSameGlobals (new fun_find_sig fundec.svar.vname fundec.svar.vid result) file); !result) with (_, _, typ, _)::xs -> typ
                                                 | [] -> Printf.printf "This should never happen\n"; ""
 in let rec input_type list = 
 match list with x::[] -> (String.trim (Pretty.sprint 1 (d_type () x.vtype)))^" "^x.vname
@@ -165,11 +176,13 @@ match list with GFun(dec,_)::xs -> (find_usesvar "" dec.svar.vid varname file)@(
         | [] -> []
 in iter_list file.globals
 
+let is_temporary id = Inthash.mem allTempVars id
+
 class find_calls_with_tmp file result funname funid : nopCilVisitor =
 object
 inherit nopCilVisitor
 method vinst instr = 
-match instr with Call(lval_opt, Lval(Var(varinfo) ,_), _, loc) -> if is_equal_funname_funid varinfo funname funid then (match lval_opt with Some((Var(tmpinfo), _)) -> if (String.length tmpinfo.vname > 2)&&(String.compare "tmp" (String.sub tmpinfo.vname 0 3) = 0) then result := (!result)@((tmpinfo.vid, varinfo.vid)::[]); SkipChildren
+match instr with Call(lval_opt, Lval(Var(varinfo) ,_), _, loc) -> if is_equal_funname_funid varinfo funname funid then (match lval_opt with Some((Var(tmpinfo), _)) -> if (is_temporary tmpinfo.vid) then result := (!result)@((tmpinfo.vid, varinfo.vid)::[]); SkipChildren
                                                                                 | _ -> SkipChildren) else SkipChildren
         | _ -> SkipChildren
 end
