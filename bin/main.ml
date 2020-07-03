@@ -27,4 +27,4 @@ let measure_xruntime x =
 let rec iter_x acc n = if n <= 0 then acc else iter_x ((measure_runtime ()) +. acc) (n-1)
 in Printf.printf "_____________\nAverage running time: %f\n" ((iter_x 0.0 x) /. (float_of_int x))
 
-let _ = measure_xruntime 50
+let _ = executeQuery ()

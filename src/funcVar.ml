@@ -253,7 +253,7 @@ in let rec iter_list_id list =
 match list with x::xs -> if (x.vid = varid) then (x.vname, x.vdecl, (String.trim (Pretty.sprint 1 (d_type () x.vtype))), x.vid)::(iter_list_id xs) else iter_list_id xs
             | [] -> []
 in let rec iter_list_name list name =
-match list with x::xs -> if (String.compare x.vname name = 0) then (x.vname, x.vdecl, (String.trim (Pretty.sprint 1 (d_type () x.vtype))), x.vid)::(iter_list_name xs name) else iter_list_name xs name
+match list with x::xs -> if (String.compare x.vname name = 0)&&(not (is_temporary x.vid)) then (x.vname, x.vdecl, (String.trim (Pretty.sprint 1 (d_type () x.vtype))), x.vid)::(iter_list_name xs name) else iter_list_name xs name
             | [] -> []
 in let rec iter_namelist name_list varinfo_list =
 match name_list with x::xs -> (iter_list_name varinfo_list x)@(iter_namelist xs varinfo_list)
