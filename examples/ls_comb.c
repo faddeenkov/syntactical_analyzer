@@ -1351,8 +1351,279 @@ union __anonunion___u_36 {
    long double __l ;
    int __i[3] ;
 };
-#line 107 "/usr/include/stdint.h"
-typedef unsigned long uint_fast32_t;
+#line 145 "/usr/include/bits/types.h"
+typedef long __clock_t;
+#line 24 "/usr/include/bits/sigset.h"
+typedef int __sig_atomic_t;
+#line 38 "/usr/include/sys/select.h"
+typedef __sigset_t sigset_t;
+#line 28 "/usr/include/bits/ioctl-types.h"
+struct winsize {
+   unsigned short ws_row ;
+   unsigned short ws_col ;
+   unsigned short ws_xpixel ;
+   unsigned short ws_ypixel ;
+};
+#line 32 "/usr/include/bits/setjmp.h"
+typedef long __jmp_buf[8];
+#line 35 "/usr/include/setjmp.h"
+struct __jmp_buf_tag {
+   __jmp_buf __jmpbuf ;
+   int __mask_was_saved ;
+   __sigset_t __saved_mask ;
+};
+#line 49 "/usr/include/setjmp.h"
+typedef struct __jmp_buf_tag jmp_buf[1];
+#line 41 "/usr/include/signal.h"
+typedef __sig_atomic_t sig_atomic_t;
+#line 33 "/usr/include/bits/siginfo.h"
+union sigval {
+   int sival_int ;
+   void *sival_ptr ;
+};
+#line 33 "/usr/include/bits/siginfo.h"
+typedef union sigval sigval_t;
+#line 51 "/usr/include/bits/siginfo.h"
+struct __anonstruct__kill_21 {
+   __pid_t si_pid ;
+   __uid_t si_uid ;
+};
+#line 51 "/usr/include/bits/siginfo.h"
+struct __anonstruct__timer_22 {
+   int si_tid ;
+   int si_overrun ;
+   sigval_t si_sigval ;
+};
+#line 51 "/usr/include/bits/siginfo.h"
+struct __anonstruct__rt_23 {
+   __pid_t si_pid ;
+   __uid_t si_uid ;
+   sigval_t si_sigval ;
+};
+#line 51 "/usr/include/bits/siginfo.h"
+struct __anonstruct__sigchld_24 {
+   __pid_t si_pid ;
+   __uid_t si_uid ;
+   int si_status ;
+   __clock_t si_utime ;
+   __clock_t si_stime ;
+};
+#line 51 "/usr/include/bits/siginfo.h"
+struct __anonstruct__sigfault_25 {
+   void *si_addr ;
+};
+#line 51 "/usr/include/bits/siginfo.h"
+struct __anonstruct__sigpoll_26 {
+   long si_band ;
+   int si_fd ;
+};
+#line 51 "/usr/include/bits/siginfo.h"
+union __anonunion__sifields_20 {
+   int _pad[128UL / sizeof(int ) - 4UL] ;
+   struct __anonstruct__kill_21 _kill ;
+   struct __anonstruct__timer_22 _timer ;
+   struct __anonstruct__rt_23 _rt ;
+   struct __anonstruct__sigchld_24 _sigchld ;
+   struct __anonstruct__sigfault_25 _sigfault ;
+   struct __anonstruct__sigpoll_26 _sigpoll ;
+};
+#line 51 "/usr/include/bits/siginfo.h"
+struct siginfo {
+   int si_signo ;
+   int si_errno ;
+   int si_code ;
+   union __anonunion__sifields_20 _sifields ;
+};
+#line 51 "/usr/include/bits/siginfo.h"
+typedef struct siginfo siginfo_t;
+#line 84 "/usr/include/signal.h"
+typedef void (*__sighandler_t)(int  );
+#line 25 "/usr/include/bits/sigaction.h"
+union __anonunion___sigaction_handler_38 {
+   void (*sa_handler)(int  ) ;
+   void (*sa_sigaction)(int  , siginfo_t * , void * ) ;
+};
+#line 25 "/usr/include/bits/sigaction.h"
+struct sigaction {
+   union __anonunion___sigaction_handler_38 __sigaction_handler ;
+   __sigset_t sa_mask ;
+   int sa_flags ;
+   void (*sa_restorer)(void) ;
+};
+#line 158 "ls.c"
+enum filetype {
+    unknown = 0,
+    fifo = 1,
+    chardev = 2,
+    directory = 3,
+    blockdev = 4,
+    normal = 5,
+    symbolic_link = 6,
+    sock = 7,
+    whiteout = 8,
+    arg_directory = 9
+} ;
+#line 186
+enum acl_type {
+    ACL_T_NONE = 0,
+    ACL_T_SELINUX_ONLY = 1,
+    ACL_T_YES = 2
+} ;
+#line 193 "ls.c"
+struct fileinfo {
+   char *name ;
+   char *linkname ;
+   struct stat stat ;
+   enum filetype filetype ;
+   mode_t linkmode ;
+   char *scontext ;
+   _Bool stat_ok ;
+   _Bool linkok ;
+   enum acl_type acl_type ;
+   _Bool has_capability ;
+};
+#line 232 "ls.c"
+struct bin_str {
+   size_t len ;
+   char const   *string ;
+};
+#line 337 "ls.c"
+struct pending {
+   char *name ;
+   char *realname ;
+   _Bool command_line_arg ;
+   struct pending *next ;
+};
+#line 389
+enum format {
+    long_format = 0,
+    one_per_line = 1,
+    many_per_line = 2,
+    horizontal = 3,
+    with_commas = 4
+} ;
+#line 403
+enum time_style {
+    full_iso_time_style = 0,
+    long_iso_time_style = 1,
+    iso_time_style = 2,
+    locale_time_style = 3
+} ;
+#line 426
+enum time_type {
+    time_mtime = 0,
+    time_ctime = 1,
+    time_atime = 2,
+    time_numtypes = 3
+} ;
+#line 440
+enum sort_type {
+    sort_none = -1,
+    sort_name = 0,
+    sort_extension = 1,
+    sort_size = 2,
+    sort_version = 3,
+    sort_time = 4,
+    sort_numtypes = 5
+} ;
+#line 503
+enum indicator_style {
+    none = 0,
+    slash = 1,
+    file_type___0 = 2,
+    classify = 3
+} ;
+#line 536
+enum color_type {
+    color_never = 0,
+    color_always = 1,
+    color_if_tty = 2
+} ;
+#line 543
+enum Dereference_symlink {
+    DEREF_UNDEFINED = 1,
+    DEREF_NEVER = 2,
+    DEREF_COMMAND_LINE_ARGUMENTS = 3,
+    DEREF_COMMAND_LINE_SYMLINK_TO_DIR = 4,
+    DEREF_ALWAYS = 5
+} ;
+#line 552
+enum indicator_no {
+    C_LEFT = 0,
+    C_RIGHT = 1,
+    C_END = 2,
+    C_RESET = 3,
+    C_NORM = 4,
+    C_FILE = 5,
+    C_DIR = 6,
+    C_LINK = 7,
+    C_FIFO = 8,
+    C_SOCK = 9,
+    C_BLK = 10,
+    C_CHR = 11,
+    C_MISSING = 12,
+    C_ORPHAN = 13,
+    C_EXEC = 14,
+    C_DOOR = 15,
+    C_SETUID = 16,
+    C_SETGID = 17,
+    C_STICKY = 18,
+    C_OTHER_WRITABLE = 19,
+    C_STICKY_OTHER_WRITABLE = 20,
+    C_CAP = 21,
+    C_MULTIHARDLINK = 22,
+    C_CLR_TO_EOL = 23
+} ;
+#line 568 "ls.c"
+struct color_ext_type {
+   struct bin_str ext ;
+   struct bin_str seq ;
+   struct color_ext_type *next ;
+};
+#line 639
+enum __anonenum_ignore_mode_71 {
+    IGNORE_DEFAULT = 0,
+    IGNORE_DOT_AND_DOTDOT = 1,
+    IGNORE_MINIMAL = 2
+} ;
+#line 657 "ls.c"
+struct ignore_pattern {
+   char const   *pattern ;
+   struct ignore_pattern *next ;
+};
+#line 897 "ls.c"
+struct column_info {
+   _Bool valid_len ;
+   size_t line_len ;
+   size_t *col_arr ;
+};
+#line 2086
+enum __anonenum_state_85 {
+    ST_GND = 0,
+    ST_BACKSLASH = 1,
+    ST_OCTAL = 2,
+    ST_HEX = 3,
+    ST_CARET = 4,
+    ST_END = 5,
+    ST_ERROR = 6
+} ;
+#line 2275
+enum parse_state {
+    PS_START = 1,
+    PS_2 = 2,
+    PS_3 = 3,
+    PS_4 = 4,
+    PS_DONE = 5,
+    PS_FAIL = 6
+} ;
+#line 3192 "ls.c"
+typedef void const   *V;
+#line 3193 "ls.c"
+typedef int (*qsortFunc)(V a , V b );
+#line 1 "cil-vWtpcjde.o"
+#pragma merger(0,"/tmp/cil-6cAJ4DMW.i","-pthread")
+#line 2 "version.c"
+char const   *Version  =    "8.13.14-081e2-dirty";
 /* compiler builtin: 
    int __builtin_strcmp(char const   * , char const   * ) ;  */
 /* compiler builtin: 
@@ -1412,8 +1683,8 @@ typedef unsigned long uint_fast32_t;
    void __builtin_va_start(__builtin_va_list  ) ;  */
 /* compiler builtin: 
    unsigned long __builtin_strcspn(char const   * , char const   * ) ;  */
-#line 1 "cil-awdAs5EP.o"
-#pragma merger(0,"/tmp/cil-NJlZrHtj.i","")
+#line 1 "cil-TJdZ3VXW.o"
+#pragma merger(0,"/tmp/cil-BfHiyREQ.i","-pthread")
 #line 1 "set-mode-acl.o"
 #pragma merger(0,"/tmp/cil-cjMIscCZ.i","-g,-O2")
 #line 31 "/usr/include/sys/sysmacros.h"
@@ -4997,7 +5268,7 @@ ptrdiff_t argmatch(char const   *arg , char const   * const  *arglist , char con
 }
 #line 129 "argmatch.c"
 void argmatch_invalid(char const   *context , char const   *value , ptrdiff_t problem ) 
-{ char const   *format ;
+{ char const   *format___0 ;
   char *tmp ;
   char *tmp___0 ;
   char *tmp___1 ;
@@ -5019,13 +5290,13 @@ void argmatch_invalid(char const   *context , char const   *value , ptrdiff_t pr
     tmp___1 = tmp___0;
   }
 #line 132
-  format = (char const   *)tmp___1;
+  format___0 = (char const   *)tmp___1;
 #line 136
   tmp___2 = quote_n(1, context);
 #line 136
   tmp___3 = quotearg_n_style(0, (enum quoting_style )6, value);
 #line 136
-  error(0, 0, format, tmp___3, tmp___2);
+  error(0, 0, format___0, tmp___3, tmp___2);
 #line 138
   return;
 }
@@ -15604,10 +15875,10 @@ _Bool strip_trailing_slashes(char *file )
 #line 1 "dtoastr.o"
 #pragma merger(0,"/tmp/cil-KIKnPJ4S.i","-g,-O2")
 #line 48 "ftoastr.h"
-int dtoastr(char *buf___1 , size_t bufsize___0 , int flags , int width , double x ) ;
+int dtoastr(char *buf___1 , size_t bufsize___0 , int flags , int width___0 , double x ) ;
 #line 99 "ftoastr.c"
-int dtoastr(char *buf___1 , size_t bufsize___0 , int flags , int width , double x ) 
-{ char format[sizeof("%-+ 0*.*Lg")] ;
+int dtoastr(char *buf___1 , size_t bufsize___0 , int flags , int width___0 , double x ) 
+{ char format___0[sizeof("%-+ 0*.*Lg")] ;
   double abs_x ;
   double tmp ;
   int prec ;
@@ -15633,7 +15904,7 @@ int dtoastr(char *buf___1 , size_t bufsize___0 , int flags , int width , double 
 #line 111
   abs_x = tmp;
 #line 114
-  p = format;
+  p = format___0;
 #line 115
   tmp___0 = p;
 #line 115
@@ -15703,8 +15974,8 @@ int dtoastr(char *buf___1 , size_t bufsize___0 , int flags , int width , double 
 #line 130
   while (1) {
 #line 132
-    tmp___5 = snprintf((char * __restrict  )buf___1, bufsize___0, (char const   * __restrict  )(format),
-                       width, prec, x);
+    tmp___5 = snprintf((char * __restrict  )buf___1, bufsize___0, (char const   * __restrict  )(format___0),
+                       width___0, prec, x);
 #line 132
     n = (int )tmp___5;
 #line 133
@@ -20160,7 +20431,7 @@ extern  __attribute__((__nothrow__)) size_t strftime(char * __restrict  __s , si
                                                      char const   * __restrict  __format ,
                                                      struct tm  const  * __restrict  __tp ) ;
 #line 28 "fprintftime.h"
-size_t fprintftime(FILE *s , char const   *format , struct tm  const  *tp , int ut ,
+size_t fprintftime(FILE *s , char const   *format___0 , struct tm  const  *tp , int ut ,
                    int ns ) ;
 #line 299 "strftime.c"
 static void fwrite_lowcase(FILE *fp , char const   *src , size_t len ) 
@@ -20248,7 +20519,7 @@ __inline static int iso_week_days(int yday , int wday )
 }
 }
 #line 423 "strftime.c"
-static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , struct tm  const  *tp ,
+static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format___0 , struct tm  const  *tp ,
                              int ut , int ns ) 
 { size_t maxsize ;
   int hour12 ;
@@ -20268,7 +20539,7 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
   char sign_char ;
   char *bufp ;
   char buf___1[3UL + (((sizeof(time_t ) * 8UL - 1UL) * 146UL) / 485UL + 2UL)] ;
-  int width ;
+  int width___0 ;
   _Bool to_lowcase ;
   _Bool to_uppcase ;
   size_t colons ;
@@ -20451,7 +20722,7 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
     hour12 = 12;
   }
 #line 509
-  f = format;
+  f = format___0;
 #line 509
   while ((int const   )*f != 0) {
 #line 511
@@ -20459,7 +20730,7 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 513
     digits = 0;
 #line 527
-    width = -1;
+    width___0 = -1;
 #line 528
     to_lowcase = (_Bool)0;
 #line 529
@@ -20473,12 +20744,12 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 616
         _n = (size_t )1;
 #line 616
-        if (width < 0) {
+        if (width___0 < 0) {
 #line 616
           tmp = 0;
         } else {
 #line 616
-          tmp = width;
+          tmp = width___0;
         }
 #line 616
         _w = (size_t )tmp;
@@ -20504,7 +20775,7 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 616
             if (_n < _w) {
 #line 616
-              _delta = (size_t )width - _n;
+              _delta = (size_t )width___0 - _n;
 #line 616
               if (pad == 48) {
 #line 616
@@ -20583,31 +20854,31 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 649
     if ((unsigned int )*f - 48U <= 9U) {
 #line 651
-      width = 0;
+      width___0 = 0;
 #line 652
       while (1) {
 #line 654
-        if (width > 214748364) {
+        if (width___0 > 214748364) {
 #line 657
-          width = 2147483647;
+          width___0 = 2147483647;
         } else
 #line 654
-        if (width == 214748364) {
+        if (width___0 == 214748364) {
 #line 654
           if ((int const   )*f - 48 > 7) {
 #line 657
-            width = 2147483647;
+            width___0 = 2147483647;
           } else {
 #line 660
-            width *= 10;
+            width___0 *= 10;
 #line 661
-            width += (int )((int const   )*f - 48);
+            width___0 += (int )((int const   )*f - 48);
           }
         } else {
 #line 660
-          width *= 10;
+          width___0 *= 10;
 #line 661
-          width += (int )((int const   )*f - 48);
+          width___0 += (int )((int const   )*f - 48);
         }
 #line 663
         f ++;
@@ -20651,12 +20922,12 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 708
       _n___0 = (size_t )1;
 #line 708
-      if (width < 0) {
+      if (width___0 < 0) {
 #line 708
         tmp___2 = 0;
       } else {
 #line 708
-        tmp___2 = width;
+        tmp___2 = width___0;
       }
 #line 708
       _w___0 = (size_t )tmp___2;
@@ -20682,7 +20953,7 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 708
           if (_n___0 < _w___0) {
 #line 708
-            _delta___0 = (size_t )width - _n___0;
+            _delta___0 = (size_t )width___0 - _n___0;
 #line 708
             if (pad == 48) {
 #line 708
@@ -20806,12 +21077,12 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 792
       _n___1 = len;
 #line 792
-      if (width < 0) {
+      if (width___0 < 0) {
 #line 792
         tmp___5 = 0;
       } else {
 #line 792
-        tmp___5 = width;
+        tmp___5 = width___0;
       }
 #line 792
       _w___1 = (size_t )tmp___5;
@@ -20837,7 +21108,7 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 792
           if (_n___1 < _w___1) {
 #line 792
-            _delta___1 = (size_t )width - _n___1;
+            _delta___1 = (size_t )width___0 - _n___1;
 #line 792
             if (pad == 48) {
 #line 792
@@ -20924,12 +21195,12 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 826
         _n___2 = len___0 - 1UL;
 #line 826
-        if (width < 0) {
+        if (width___0 < 0) {
 #line 826
           tmp___11 = 0;
         } else {
 #line 826
-          tmp___11 = width;
+          tmp___11 = width___0;
         }
 #line 826
         _w___2 = (size_t )tmp___11;
@@ -20955,7 +21226,7 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 826
             if (_n___2 < _w___2) {
 #line 826
-              _delta___2 = (size_t )width - _n___2;
+              _delta___2 = (size_t )width___0 - _n___2;
 #line 826
               if (pad == 48) {
 #line 826
@@ -21167,9 +21438,9 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
     }
     do_number_sign_and_padding: 
 #line 956
-    if (digits < width) {
+    if (digits < width___0) {
 #line 957
-      digits = width;
+      digits = width___0;
     }
 #line 959
     if (negative_number) {
@@ -21196,12 +21467,12 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 966
           _n___3 = (size_t )1;
 #line 966
-          if (width < 0) {
+          if (width___0 < 0) {
 #line 966
             tmp___16 = 0;
           } else {
 #line 966
-            tmp___16 = width;
+            tmp___16 = width___0;
           }
 #line 966
           _w___3 = (size_t )tmp___16;
@@ -21227,7 +21498,7 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 966
               if (_n___3 < _w___3) {
 #line 966
-                _delta___3 = (size_t )width - _n___3;
+                _delta___3 = (size_t )width___0 - _n___3;
 #line 966
                 if (pad == 48) {
 #line 966
@@ -21303,12 +21574,12 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 982
           i += (size_t )padding;
 #line 983
-          if (width > padding) {
+          if (width___0 > padding) {
 #line 983
-            width -= padding;
+            width___0 -= padding;
           } else {
 #line 983
-            width = 0;
+            width___0 = 0;
           }
 #line 984
           if (sign_char) {
@@ -21317,12 +21588,12 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 985
               _n___4 = (size_t )1;
 #line 985
-              if (width < 0) {
+              if (width___0 < 0) {
 #line 985
                 tmp___18 = 0;
               } else {
 #line 985
-                tmp___18 = width;
+                tmp___18 = width___0;
               }
 #line 985
               _w___4 = (size_t )tmp___18;
@@ -21348,7 +21619,7 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 985
                   if (_n___4 < _w___4) {
 #line 985
-                    _delta___4 = (size_t )width - _n___4;
+                    _delta___4 = (size_t )width___0 - _n___4;
 #line 985
                     if (pad == 48) {
 #line 985
@@ -21405,12 +21676,12 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 993
               _n___5 = (size_t )1;
 #line 993
-              if (width < 0) {
+              if (width___0 < 0) {
 #line 993
                 tmp___20 = 0;
               } else {
 #line 993
-                tmp___20 = width;
+                tmp___20 = width___0;
               }
 #line 993
               _w___5 = (size_t )tmp___20;
@@ -21436,7 +21707,7 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 993
                   if (_n___5 < _w___5) {
 #line 993
-                    _delta___5 = (size_t )width - _n___5;
+                    _delta___5 = (size_t )width___0 - _n___5;
 #line 993
                     if (pad == 48) {
 #line 993
@@ -21500,7 +21771,7 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 997
           i += (size_t )padding;
 #line 998
-          width = 0;
+          width___0 = 0;
         }
       } else
 #line 1003
@@ -21510,12 +21781,12 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 1004
           _n___6 = (size_t )1;
 #line 1004
-          if (width < 0) {
+          if (width___0 < 0) {
 #line 1004
             tmp___22 = 0;
           } else {
 #line 1004
-            tmp___22 = width;
+            tmp___22 = width___0;
           }
 #line 1004
           _w___6 = (size_t )tmp___22;
@@ -21541,7 +21812,7 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 1004
               if (_n___6 < _w___6) {
 #line 1004
-                _delta___6 = (size_t )width - _n___6;
+                _delta___6 = (size_t )width___0 - _n___6;
 #line 1004
                 if (pad == 48) {
 #line 1004
@@ -21591,12 +21862,12 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 1008
       _n___7 = (size_t )((buf___1 + sizeof(buf___1) / sizeof(buf___1[0])) - bufp);
 #line 1008
-      if (width < 0) {
+      if (width___0 < 0) {
 #line 1008
         tmp___24 = 0;
       } else {
 #line 1008
-        tmp___24 = width;
+        tmp___24 = width___0;
       }
 #line 1008
       _w___7 = (size_t )tmp___24;
@@ -21622,7 +21893,7 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 1008
           if (_n___7 < _w___7) {
 #line 1008
-            _delta___7 = (size_t )width - _n___7;
+            _delta___7 = (size_t )width___0 - _n___7;
 #line 1008
             if (pad == 48) {
 #line 1008
@@ -21792,12 +22063,12 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 1064
     number_value = ns;
 #line 1065
-    if (width == -1) {
+    if (width___0 == -1) {
 #line 1066
-      width = 9;
+      width___0 = 9;
     } else {
 #line 1071
-      j = width;
+      j = width___0;
 #line 1071
       while (j < 9) {
 #line 1072
@@ -21807,7 +22078,7 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
       }
     }
 #line 1075
-    digits = width;
+    digits = width___0;
 #line 1075
     number_value = number_value;
 #line 1075
@@ -21818,12 +22089,12 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 1079
       _n___8 = (size_t )1;
 #line 1079
-      if (width < 0) {
+      if (width___0 < 0) {
 #line 1079
         tmp___27 = 0;
       } else {
 #line 1079
-        tmp___27 = width;
+        tmp___27 = width___0;
       }
 #line 1079
       _w___8 = (size_t )tmp___27;
@@ -21849,7 +22120,7 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 1079
           if (_n___8 < _w___8) {
 #line 1079
-            _delta___8 = (size_t )width - _n___8;
+            _delta___8 = (size_t )width___0 - _n___8;
 #line 1079
             if (pad == 48) {
 #line 1079
@@ -21987,12 +22258,12 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 1168
       _n___9 = (size_t )1;
 #line 1168
-      if (width < 0) {
+      if (width___0 < 0) {
 #line 1168
         tmp___30 = 0;
       } else {
 #line 1168
-        tmp___30 = width;
+        tmp___30 = width___0;
       }
 #line 1168
       _w___9 = (size_t )tmp___30;
@@ -22018,7 +22289,7 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 1168
           if (_n___9 < _w___9) {
 #line 1168
-            _delta___9 = (size_t )width - _n___9;
+            _delta___9 = (size_t )width___0 - _n___9;
 #line 1168
             if (pad == 48) {
 #line 1168
@@ -22295,12 +22566,12 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 1322
       _n___10 = tmp___38;
 #line 1322
-      if (width < 0) {
+      if (width___0 < 0) {
 #line 1322
         tmp___39 = 0;
       } else {
 #line 1322
-        tmp___39 = width;
+        tmp___39 = width___0;
       }
 #line 1322
       _w___10 = (size_t )tmp___39;
@@ -22326,7 +22597,7 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 1322
           if (_n___10 < _w___10) {
 #line 1322
-            _delta___10 = (size_t )width - _n___10;
+            _delta___10 = (size_t )width___0 - _n___10;
 #line 1322
             if (pad == 48) {
 #line 1322
@@ -22508,12 +22779,12 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 1426
       _n___11 = (size_t )flen;
 #line 1426
-      if (width < 0) {
+      if (width___0 < 0) {
 #line 1426
         tmp___42 = 0;
       } else {
 #line 1426
-        tmp___42 = width;
+        tmp___42 = width___0;
       }
 #line 1426
       _w___11 = (size_t )tmp___42;
@@ -22539,7 +22810,7 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 #line 1426
           if (_n___11 < _w___11) {
 #line 1426
-            _delta___11 = (size_t )width - _n___11;
+            _delta___11 = (size_t )width___0 - _n___11;
 #line 1426
             if (pad == 48) {
 #line 1426
@@ -22613,13 +22884,13 @@ static size_t strftime_case_(_Bool upcase , FILE *s , char const   *format , str
 }
 }
 #line 1446 "strftime.c"
-size_t fprintftime(FILE *s , char const   *format , struct tm  const  *tp , int ut ,
+size_t fprintftime(FILE *s , char const   *format___0 , struct tm  const  *tp , int ut ,
                    int ns ) 
 { size_t tmp ;
 
   {
 #line 1451
-  tmp = strftime_case_((_Bool)0, s, format, tp, ut, ns);
+  tmp = strftime_case_((_Bool)0, s, format___0, tp, ut, ns);
 #line 1451
   return (tmp);
 }
@@ -23029,14 +23300,14 @@ void fseterr(FILE *fp )
 #line 1 "ftoastr.o"
 #pragma merger(0,"/tmp/cil-T_QGVLoq.i","-g,-O2")
 #line 47 "ftoastr.h"
-int ftoastr(char *buf___1 , size_t bufsize___0 , int flags , int width , float x ) ;
+int ftoastr(char *buf___1 , size_t bufsize___0 , int flags , int width___0 , float x ) ;
 #line 173 "/usr/include/stdlib.h"
 extern  __attribute__((__nothrow__)) float strtof(char const   * __restrict  __nptr ,
                                                   char ** __restrict  __endptr )  __attribute__((__warn_unused_result__,
 __nonnull__(1))) ;
 #line 99 "ftoastr.c"
-int ftoastr(char *buf___1 , size_t bufsize___0 , int flags , int width , float x ) 
-{ char format[sizeof("%-+ 0*.*Lg")] ;
+int ftoastr(char *buf___1 , size_t bufsize___0 , int flags , int width___0 , float x ) 
+{ char format___0[sizeof("%-+ 0*.*Lg")] ;
   float abs_x ;
   float tmp ;
   int prec ;
@@ -23062,7 +23333,7 @@ int ftoastr(char *buf___1 , size_t bufsize___0 , int flags , int width , float x
 #line 111
   abs_x = tmp;
 #line 114
-  p = format;
+  p = format___0;
 #line 115
   tmp___0 = p;
 #line 115
@@ -23132,8 +23403,8 @@ int ftoastr(char *buf___1 , size_t bufsize___0 , int flags , int width , float x
 #line 130
   while (1) {
 #line 132
-    tmp___5 = snprintf((char * __restrict  )buf___1, bufsize___0, (char const   * __restrict  )(format),
-                       width, prec, (double )x);
+    tmp___5 = snprintf((char * __restrict  )buf___1, bufsize___0, (char const   * __restrict  )(format___0),
+                       width___0, prec, (double )x);
 #line 132
     n = (int )tmp___5;
 #line 133
@@ -27805,14 +28076,14 @@ char * __attribute__((__warn_unused_result__)) umaxtostr(uintmax_t i , char *buf
 #line 1 "ldtoastr.o"
 #pragma merger(0,"/tmp/cil-qGn38_1r.i","-g,-O2")
 #line 49 "ftoastr.h"
-int ldtoastr(char *buf___1 , size_t bufsize___0 , int flags , int width , long double x ) ;
+int ldtoastr(char *buf___1 , size_t bufsize___0 , int flags , int width___0 , long double x ) ;
 #line 176 "/usr/include/stdlib.h"
 extern  __attribute__((__nothrow__)) long double strtold(char const   * __restrict  __nptr ,
                                                          char ** __restrict  __endptr )  __attribute__((__warn_unused_result__,
 __nonnull__(1))) ;
 #line 99 "ftoastr.c"
-int ldtoastr(char *buf___1 , size_t bufsize___0 , int flags , int width , long double x ) 
-{ char format[sizeof("%-+ 0*.*Lg")] ;
+int ldtoastr(char *buf___1 , size_t bufsize___0 , int flags , int width___0 , long double x ) 
+{ char format___0[sizeof("%-+ 0*.*Lg")] ;
   long double abs_x ;
   long double tmp ;
   int prec ;
@@ -27838,7 +28109,7 @@ int ldtoastr(char *buf___1 , size_t bufsize___0 , int flags , int width , long d
 #line 111
   abs_x = tmp;
 #line 114
-  p = format;
+  p = format___0;
 #line 115
   tmp___0 = p;
 #line 115
@@ -27908,8 +28179,8 @@ int ldtoastr(char *buf___1 , size_t bufsize___0 , int flags , int width , long d
 #line 130
   while (1) {
 #line 132
-    tmp___5 = snprintf((char * __restrict  )buf___1, bufsize___0, (char const   * __restrict  )(format),
-                       width, prec, x);
+    tmp___5 = snprintf((char * __restrict  )buf___1, bufsize___0, (char const   * __restrict  )(format___0),
+                       width___0, prec, x);
 #line 132
     n = (int )tmp___5;
 #line 133
@@ -28585,7 +28856,7 @@ int rpl_optind ;
 int rpl_opterr ;
 #line 245
  __attribute__((__nothrow__)) int rpl_getopt_long(int argc , char **argv , char const   *options ,
-                                                  struct rpl_option  const  *long_options___0 ,
+                                                  struct rpl_option  const  *long_options___1 ,
                                                   int *opt_index )  __attribute__((__nonnull__(2,3))) ;
 #line 63 "version-etc.h"
 void version_etc_va(FILE *stream , char const   *command_name , char const   *package ,
@@ -28729,10 +29000,10 @@ unsigned int const   is_basic_table[8]  =
 #line 1 "mbsalign.o"
 #pragma merger(0,"/tmp/cil-Eh3hNPaq.i","-g,-O2")
 #line 41 "mbsalign.h"
-size_t mbsalign(char const   *src , char *dest , size_t dest_size , size_t *width ,
+size_t mbsalign(char const   *src , char *dest , size_t dest_size , size_t *width___0 ,
                 mbs_align_t align , int flags ) ;
 #line 45
-char *ambsalign(char const   *src , size_t *width , mbs_align_t align , int flags ) ;
+char *ambsalign(char const   *src , size_t *width___0 , mbs_align_t align , int flags ) ;
 #line 437 "/usr/include/wchar.h"
 extern  __attribute__((__nothrow__)) int wcwidth(wchar_t __c ) ;
 #line 441
@@ -28769,7 +29040,7 @@ static _Bool wc_ensure_printable(wchar_t *wchars )
 }
 }
 #line 59 "mbsalign.c"
-static size_t wc_truncate(wchar_t *wc , size_t width ) 
+static size_t wc_truncate(wchar_t *wc , size_t width___0 ) 
 { size_t cells ;
   int next_cells ;
 
@@ -28790,7 +29061,7 @@ static size_t wc_truncate(wchar_t *wc , size_t width )
       next_cells = 1;
     }
 #line 73
-    if (cells + (size_t )next_cells > width) {
+    if (cells + (size_t )next_cells > width___0) {
 #line 74
       break;
     }
@@ -28842,7 +29113,7 @@ static char *mbs_align_pad(char *dest , char const   *dest_end , size_t n_spaces
 }
 }
 #line 111 "mbsalign.c"
-size_t mbsalign(char const   *src , char *dest , size_t dest_size , size_t *width ,
+size_t mbsalign(char const   *src , char *dest , size_t dest_size , size_t *width___0 ,
                 mbs_align_t align , int flags ) 
 { size_t ret ;
   size_t src_size ;
@@ -28956,7 +29227,7 @@ size_t mbsalign(char const   *src , char *dest , size_t dest_size , size_t *widt
       goto _L;
     } else
 #line 159
-    if (n_cols > *width) {
+    if (n_cols > *width___0) {
       _L: 
 #line 161
       if (conversion) {
@@ -28984,7 +29255,7 @@ size_t mbsalign(char const   *src , char *dest , size_t dest_size , size_t *widt
 #line 175
       str_to_print = (char const   *)newstr;
 #line 176
-      n_cols = wc_truncate(str_wc, *width);
+      n_cols = wc_truncate(str_wc, *width___0);
 #line 177
       tmp___7 = wcstombs((char * __restrict  )newstr, (wchar_t const   * __restrict  )str_wc,
                          src_size);
@@ -28994,19 +29265,19 @@ size_t mbsalign(char const   *src , char *dest , size_t dest_size , size_t *widt
   }
   mbsalign_unibyte: 
 #line 182
-  if (n_cols > *width) {
+  if (n_cols > *width___0) {
 #line 184
-    n_cols = *width;
+    n_cols = *width___0;
 #line 185
     n_used_bytes = n_cols;
   }
 #line 188
-  if (*width > n_cols) {
+  if (*width___0 > n_cols) {
 #line 189
-    n_spaces = *width - n_cols;
+    n_spaces = *width___0 - n_cols;
   }
 #line 192
-  *width = n_cols;
+  *width___0 = n_cols;
 #line 195
   ret = n_used_bytes + n_spaces;
 #line 198
@@ -29067,7 +29338,7 @@ size_t mbsalign(char const   *src , char *dest , size_t dest_size , size_t *widt
 }
 }
 #line 238 "mbsalign.c"
-char *ambsalign(char const   *src , size_t *width , mbs_align_t align , int flags ) 
+char *ambsalign(char const   *src , size_t *width___0 , mbs_align_t align , int flags ) 
 { size_t orig_width ;
   size_t size ;
   size_t req ;
@@ -29077,9 +29348,9 @@ char *ambsalign(char const   *src , size_t *width , mbs_align_t align , int flag
 
   {
 #line 241
-  orig_width = *width;
+  orig_width = *width___0;
 #line 242
-  size = *width;
+  size = *width___0;
 #line 243
   req = size;
 #line 244
@@ -29104,9 +29375,9 @@ char *ambsalign(char const   *src , size_t *width , mbs_align_t align , int flag
 #line 257
     buf___1 = nbuf;
 #line 258
-    *width = orig_width;
+    *width___0 = orig_width;
 #line 259
-    req = mbsalign(src, buf___1, size, width, align, flags);
+    req = mbsalign(src, buf___1, size, width___0, align, flags);
 #line 260
     if (req == 0xffffffffffffffffUL) {
 #line 262
@@ -30533,7 +30804,7 @@ int gnu_mbswidth(char const   *string , int flags )
 int mbsnwidth(char const   *string , size_t nbytes , int flags ) 
 { char const   *p ;
   char const   *plimit ;
-  int width ;
+  int width___0 ;
   mbstate_t mbstate ;
   wchar_t wc ;
   size_t bytes ;
@@ -30552,7 +30823,7 @@ int mbsnwidth(char const   *string , size_t nbytes , int flags )
 #line 60
   plimit = p + nbytes;
 #line 63
-  width = 0;
+  width___0 = 0;
 #line 64
   tmp___1 = __ctype_get_mb_cur_max();
 #line 64
@@ -30656,7 +30927,7 @@ int mbsnwidth(char const   *string , size_t nbytes , int flags )
 #line 90
       p ++;
 #line 91
-      width ++;
+      width___0 ++;
 #line 92
       break;
       default: 
@@ -30674,7 +30945,7 @@ int mbsnwidth(char const   *string , size_t nbytes , int flags )
 #line 111
             p ++;
 #line 112
-            width ++;
+            width___0 ++;
 #line 113
             break;
           } else {
@@ -30689,7 +30960,7 @@ int mbsnwidth(char const   *string , size_t nbytes , int flags )
 #line 124
             p = plimit;
 #line 125
-            width ++;
+            width___0 ++;
 #line 126
             break;
           } else {
@@ -30707,12 +30978,12 @@ int mbsnwidth(char const   *string , size_t nbytes , int flags )
 #line 137
         if (w >= 0) {
 #line 140
-          if (w > 2147483647 - width) {
+          if (w > 2147483647 - width___0) {
 #line 141
             goto overflow;
           }
 #line 142
-          width += w;
+          width___0 += w;
         } else
 #line 146
         if (! (flags & 2)) {
@@ -30721,12 +30992,12 @@ int mbsnwidth(char const   *string , size_t nbytes , int flags )
 #line 148
           if (! tmp) {
 #line 150
-            if (width == 2147483647) {
+            if (width___0 == 2147483647) {
 #line 151
               goto overflow;
             }
 #line 152
-            width ++;
+            width___0 ++;
           }
         } else {
 #line 156
@@ -30747,7 +31018,7 @@ int mbsnwidth(char const   *string , size_t nbytes , int flags )
       }
     }
 #line 164
-    return (width);
+    return (width___0);
   }
 #line 167
   while ((unsigned long )p < (unsigned long )plimit) {
@@ -30762,12 +31033,12 @@ int mbsnwidth(char const   *string , size_t nbytes , int flags )
 #line 171
     if ((int const   )*(*tmp___4 + (int )c) & 16384) {
 #line 173
-      if (width == 2147483647) {
+      if (width___0 == 2147483647) {
 #line 174
         goto overflow;
       }
 #line 175
-      width ++;
+      width___0 ++;
     } else
 #line 177
     if (! (flags & 2)) {
@@ -30776,12 +31047,12 @@ int mbsnwidth(char const   *string , size_t nbytes , int flags )
 #line 179
       if (! ((int const   )*(*tmp___3 + (int )c) & 2)) {
 #line 181
-        if (width == 2147483647) {
+        if (width___0 == 2147483647) {
 #line 182
           goto overflow;
         }
 #line 183
-        width ++;
+        width___0 ++;
       }
     } else {
 #line 187
@@ -30789,7 +31060,7 @@ int mbsnwidth(char const   *string , size_t nbytes , int flags )
     }
   }
 #line 189
-  return (width);
+  return (width___0);
   overflow: 
 #line 192
   return (2147483647);
@@ -31252,7 +31523,7 @@ int mgetgroups(char const   *username , gid_t gid , gid_t **groups )
   int saved_errno___0 ;
   int *tmp___6 ;
   int *tmp___7 ;
-  gid_t first ;
+  gid_t first___0 ;
   gid_t *next ;
   gid_t *groups_end ;
 
@@ -31400,7 +31671,7 @@ int mgetgroups(char const   *username , gid_t gid , gid_t **groups )
 #line 179
   if (1 < ng) {
 #line 181
-    first = *g;
+    first___0 = *g;
 #line 183
     groups_end = g + ng;
 #line 185
@@ -31408,7 +31679,7 @@ int mgetgroups(char const   *username , gid_t gid , gid_t **groups )
 #line 185
     while ((unsigned long )next < (unsigned long )groups_end) {
 #line 187
-      if (*next == first) {
+      if (*next == first___0) {
 #line 188
         ng --;
       } else
@@ -44279,7 +44550,7 @@ int savewd_process_files(int n_files , char **file , int (*act)(char * , struct 
                                                                 void * ) , void *options ) 
 { int i ;
   int last_relative ;
-  int exit_status ;
+  int exit_status___0 ;
   struct savewd wd ;
   int s ;
   int tmp ;
@@ -44293,7 +44564,7 @@ int savewd_process_files(int n_files , char **file , int (*act)(char * , struct 
 #line 268
   i = 0;
 #line 270
-  exit_status = 0;
+  exit_status___0 = 0;
 #line 272
   savewd_init(& wd);
 #line 274
@@ -44319,21 +44590,21 @@ int savewd_process_files(int n_files , char **file , int (*act)(char * , struct 
 #line 282
       s = tmp;
 #line 283
-      if (exit_status < s) {
+      if (exit_status___0 < s) {
 #line 284
-        exit_status = s;
+        exit_status___0 = s;
       }
     }
 #line 287
     if (! ((int )*(*(file + (i + 1)) + 0) == 47)) {
 #line 289
-      tmp___1 = savewd_restore(& wd, exit_status);
+      tmp___1 = savewd_restore(& wd, exit_status___0);
 #line 289
       r = tmp___1;
 #line 290
-      if (exit_status < r) {
+      if (exit_status___0 < r) {
 #line 291
-        exit_status = r;
+        exit_status___0 = r;
       }
     }
 #line 278
@@ -44348,15 +44619,15 @@ int savewd_process_files(int n_files , char **file , int (*act)(char * , struct 
 #line 299
     s___0 = tmp___2;
 #line 300
-    if (exit_status < s___0) {
+    if (exit_status___0 < s___0) {
 #line 301
-      exit_status = s___0;
+      exit_status___0 = s___0;
     }
 #line 297
     i ++;
   }
 #line 304
-  return (exit_status);
+  return (exit_status___0);
 }
 }
 #line 1 "settime.o"
@@ -44451,7 +44722,7 @@ int mkstemp_safer(char *templ )
 #line 1 "strftime.o"
 #pragma merger(0,"/tmp/cil-Vgk3scc8.i","-g,-O2")
 #line 29 "strftime.h"
-size_t nstrftime(char *s , size_t maxsize , char const   *format , struct tm  const  *tp ,
+size_t nstrftime(char *s , size_t maxsize , char const   *format___0 , struct tm  const  *tp ,
                  int ut , int ns ) ;
 #line 319 "strftime.c"
 static char *memcpy_lowcase(char *dest , char const   *src , size_t len ) 
@@ -44524,7 +44795,7 @@ static char *memcpy_uppcase(char *dest , char const   *src , size_t len )
 }
 }
 #line 423 "strftime.c"
-static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char const   *format ,
+static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char const   *format___0 ,
                                  struct tm  const  *tp , int ut , int ns ) 
 { int hour12 ;
   char const   *zone ;
@@ -44543,7 +44814,7 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
   char sign_char ;
   char *bufp ;
   char buf___1[3UL + (((sizeof(time_t ) * 8UL - 1UL) * 146UL) / 485UL + 2UL)] ;
-  int width ;
+  int width___0 ;
   _Bool to_lowcase ;
   _Bool to_uppcase ;
   size_t colons ;
@@ -44688,7 +44959,7 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
     hour12 = 12;
   }
 #line 509
-  f = format;
+  f = format___0;
 #line 509
   while ((int const   )*f != 0) {
 #line 511
@@ -44696,7 +44967,7 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 513
     digits = 0;
 #line 527
-    width = -1;
+    width___0 = -1;
 #line 528
     to_lowcase = (_Bool)0;
 #line 529
@@ -44710,12 +44981,12 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 616
         _n = (size_t )1;
 #line 616
-        if (width < 0) {
+        if (width___0 < 0) {
 #line 616
           tmp = 0;
         } else {
 #line 616
-          tmp = width;
+          tmp = width___0;
         }
 #line 616
         _w = (size_t )tmp;
@@ -44741,7 +45012,7 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 616
             if (_n < _w) {
 #line 616
-              _delta = (size_t )width - _n;
+              _delta = (size_t )width___0 - _n;
 #line 616
               if (pad == 48) {
 #line 616
@@ -44802,31 +45073,31 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 649
     if ((unsigned int )*f - 48U <= 9U) {
 #line 651
-      width = 0;
+      width___0 = 0;
 #line 652
       while (1) {
 #line 654
-        if (width > 214748364) {
+        if (width___0 > 214748364) {
 #line 657
-          width = 2147483647;
+          width___0 = 2147483647;
         } else
 #line 654
-        if (width == 214748364) {
+        if (width___0 == 214748364) {
 #line 654
           if ((int const   )*f - 48 > 7) {
 #line 657
-            width = 2147483647;
+            width___0 = 2147483647;
           } else {
 #line 660
-            width *= 10;
+            width___0 *= 10;
 #line 661
-            width += (int )((int const   )*f - 48);
+            width___0 += (int )((int const   )*f - 48);
           }
         } else {
 #line 660
-          width *= 10;
+          width___0 *= 10;
 #line 661
-          width += (int )((int const   )*f - 48);
+          width___0 += (int )((int const   )*f - 48);
         }
 #line 663
         f ++;
@@ -44870,12 +45141,12 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 708
       _n___0 = (size_t )1;
 #line 708
-      if (width < 0) {
+      if (width___0 < 0) {
 #line 708
         tmp___2 = 0;
       } else {
 #line 708
-        tmp___2 = width;
+        tmp___2 = width___0;
       }
 #line 708
       _w___0 = (size_t )tmp___2;
@@ -44901,7 +45172,7 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 708
           if (_n___0 < _w___0) {
 #line 708
-            _delta___0 = (size_t )width - _n___0;
+            _delta___0 = (size_t )width___0 - _n___0;
 #line 708
             if (pad == 48) {
 #line 708
@@ -45008,12 +45279,12 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 792
       _n___1 = len;
 #line 792
-      if (width < 0) {
+      if (width___0 < 0) {
 #line 792
         tmp___5 = 0;
       } else {
 #line 792
-        tmp___5 = width;
+        tmp___5 = width___0;
       }
 #line 792
       _w___1 = (size_t )tmp___5;
@@ -45039,7 +45310,7 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 792
           if (_n___1 < _w___1) {
 #line 792
-            _delta___1 = (size_t )width - _n___1;
+            _delta___1 = (size_t )width___0 - _n___1;
 #line 792
             if (pad == 48) {
 #line 792
@@ -45108,12 +45379,12 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 826
         _n___2 = len___0 - 1UL;
 #line 826
-        if (width < 0) {
+        if (width___0 < 0) {
 #line 826
           tmp___11 = 0;
         } else {
 #line 826
-          tmp___11 = width;
+          tmp___11 = width___0;
         }
 #line 826
         _w___2 = (size_t )tmp___11;
@@ -45139,7 +45410,7 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 826
             if (_n___2 < _w___2) {
 #line 826
-              _delta___2 = (size_t )width - _n___2;
+              _delta___2 = (size_t )width___0 - _n___2;
 #line 826
               if (pad == 48) {
 #line 826
@@ -45326,9 +45597,9 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
     }
     do_number_sign_and_padding: 
 #line 956
-    if (digits < width) {
+    if (digits < width___0) {
 #line 957
-      digits = width;
+      digits = width___0;
     }
 #line 959
     if (negative_number) {
@@ -45355,12 +45626,12 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 966
           _n___3 = (size_t )1;
 #line 966
-          if (width < 0) {
+          if (width___0 < 0) {
 #line 966
             tmp___15 = 0;
           } else {
 #line 966
-            tmp___15 = width;
+            tmp___15 = width___0;
           }
 #line 966
           _w___3 = (size_t )tmp___15;
@@ -45386,7 +45657,7 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 966
               if (_n___3 < _w___3) {
 #line 966
-                _delta___3 = (size_t )width - _n___3;
+                _delta___3 = (size_t )width___0 - _n___3;
 #line 966
                 if (pad == 48) {
 #line 966
@@ -45434,12 +45705,12 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 982
           i += (size_t )padding;
 #line 983
-          if (width > padding) {
+          if (width___0 > padding) {
 #line 983
-            width -= padding;
+            width___0 -= padding;
           } else {
 #line 983
-            width = 0;
+            width___0 = 0;
           }
 #line 984
           if (sign_char) {
@@ -45448,12 +45719,12 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 985
               _n___4 = (size_t )1;
 #line 985
-              if (width < 0) {
+              if (width___0 < 0) {
 #line 985
                 tmp___17 = 0;
               } else {
 #line 985
-                tmp___17 = width;
+                tmp___17 = width___0;
               }
 #line 985
               _w___4 = (size_t )tmp___17;
@@ -45479,7 +45750,7 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 985
                   if (_n___4 < _w___4) {
 #line 985
-                    _delta___4 = (size_t )width - _n___4;
+                    _delta___4 = (size_t )width___0 - _n___4;
 #line 985
                     if (pad == 48) {
 #line 985
@@ -45518,12 +45789,12 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 993
               _n___5 = (size_t )1;
 #line 993
-              if (width < 0) {
+              if (width___0 < 0) {
 #line 993
                 tmp___19 = 0;
               } else {
 #line 993
-                tmp___19 = width;
+                tmp___19 = width___0;
               }
 #line 993
               _w___5 = (size_t )tmp___19;
@@ -45549,7 +45820,7 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 993
                   if (_n___5 < _w___5) {
 #line 993
-                    _delta___5 = (size_t )width - _n___5;
+                    _delta___5 = (size_t )width___0 - _n___5;
 #line 993
                     if (pad == 48) {
 #line 993
@@ -45585,7 +45856,7 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 997
           i += (size_t )padding;
 #line 998
-          width = 0;
+          width___0 = 0;
         }
       } else
 #line 1003
@@ -45595,12 +45866,12 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 1004
           _n___6 = (size_t )1;
 #line 1004
-          if (width < 0) {
+          if (width___0 < 0) {
 #line 1004
             tmp___21 = 0;
           } else {
 #line 1004
-            tmp___21 = width;
+            tmp___21 = width___0;
           }
 #line 1004
           _w___6 = (size_t )tmp___21;
@@ -45626,7 +45897,7 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 1004
               if (_n___6 < _w___6) {
 #line 1004
-                _delta___6 = (size_t )width - _n___6;
+                _delta___6 = (size_t )width___0 - _n___6;
 #line 1004
                 if (pad == 48) {
 #line 1004
@@ -45658,12 +45929,12 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 1008
       _n___7 = (size_t )((buf___1 + sizeof(buf___1) / sizeof(buf___1[0])) - bufp);
 #line 1008
-      if (width < 0) {
+      if (width___0 < 0) {
 #line 1008
         tmp___23 = 0;
       } else {
 #line 1008
-        tmp___23 = width;
+        tmp___23 = width___0;
       }
 #line 1008
       _w___7 = (size_t )tmp___23;
@@ -45689,7 +45960,7 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 1008
           if (_n___7 < _w___7) {
 #line 1008
-            _delta___7 = (size_t )width - _n___7;
+            _delta___7 = (size_t )width___0 - _n___7;
 #line 1008
             if (pad == 48) {
 #line 1008
@@ -45835,12 +46106,12 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 1064
     number_value = ns;
 #line 1065
-    if (width == -1) {
+    if (width___0 == -1) {
 #line 1066
-      width = 9;
+      width___0 = 9;
     } else {
 #line 1071
-      j = width;
+      j = width___0;
 #line 1071
       while (j < 9) {
 #line 1072
@@ -45850,7 +46121,7 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
       }
     }
 #line 1075
-    digits = width;
+    digits = width___0;
 #line 1075
     number_value = number_value;
 #line 1075
@@ -45861,12 +46132,12 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 1079
       _n___8 = (size_t )1;
 #line 1079
-      if (width < 0) {
+      if (width___0 < 0) {
 #line 1079
         tmp___25 = 0;
       } else {
 #line 1079
-        tmp___25 = width;
+        tmp___25 = width___0;
       }
 #line 1079
       _w___8 = (size_t )tmp___25;
@@ -45892,7 +46163,7 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 1079
           if (_n___8 < _w___8) {
 #line 1079
-            _delta___8 = (size_t )width - _n___8;
+            _delta___8 = (size_t )width___0 - _n___8;
 #line 1079
             if (pad == 48) {
 #line 1079
@@ -46012,12 +46283,12 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 1168
       _n___9 = (size_t )1;
 #line 1168
-      if (width < 0) {
+      if (width___0 < 0) {
 #line 1168
         tmp___28 = 0;
       } else {
 #line 1168
-        tmp___28 = width;
+        tmp___28 = width___0;
       }
 #line 1168
       _w___9 = (size_t )tmp___28;
@@ -46043,7 +46314,7 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 1168
           if (_n___9 < _w___9) {
 #line 1168
-            _delta___9 = (size_t )width - _n___9;
+            _delta___9 = (size_t )width___0 - _n___9;
 #line 1168
             if (pad == 48) {
 #line 1168
@@ -46302,12 +46573,12 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 1322
       _n___10 = tmp___36;
 #line 1322
-      if (width < 0) {
+      if (width___0 < 0) {
 #line 1322
         tmp___37 = 0;
       } else {
 #line 1322
-        tmp___37 = width;
+        tmp___37 = width___0;
       }
 #line 1322
       _w___10 = (size_t )tmp___37;
@@ -46333,7 +46604,7 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 1322
           if (_n___10 < _w___10) {
 #line 1322
-            _delta___10 = (size_t )width - _n___10;
+            _delta___10 = (size_t )width___0 - _n___10;
 #line 1322
             if (pad == 48) {
 #line 1322
@@ -46491,12 +46762,12 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 1426
       _n___11 = (size_t )flen;
 #line 1426
-      if (width < 0) {
+      if (width___0 < 0) {
 #line 1426
         tmp___39 = 0;
       } else {
 #line 1426
-        tmp___39 = width;
+        tmp___39 = width___0;
       }
 #line 1426
       _w___11 = (size_t )tmp___39;
@@ -46522,7 +46793,7 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 #line 1426
           if (_n___11 < _w___11) {
 #line 1426
-            _delta___11 = (size_t )width - _n___11;
+            _delta___11 = (size_t )width___0 - _n___11;
 #line 1426
             if (pad == 48) {
 #line 1426
@@ -46579,13 +46850,13 @@ static size_t strftime_case____0(_Bool upcase , char *s , size_t maxsize , char 
 }
 }
 #line 1446 "strftime.c"
-size_t nstrftime(char *s , size_t maxsize , char const   *format , struct tm  const  *tp ,
+size_t nstrftime(char *s , size_t maxsize , char const   *format___0 , struct tm  const  *tp ,
                  int ut , int ns ) 
 { size_t tmp ;
 
   {
 #line 1451
-  tmp = strftime_case____0((_Bool)0, s, maxsize, format, tp, ut, ns);
+  tmp = strftime_case____0((_Bool)0, s, maxsize, format___0, tp, ut, ns);
 #line 1451
   return (tmp);
 }
@@ -50912,26 +51183,26 @@ int lutimens(char const   *file , struct timespec  const  *timespec )
 extern void error_at_line(int __status , int __errnum , char const   *__fname , unsigned int __lineno ,
                           char const   *__format  , ...) ;
 #line 34 "verror.h"
-void verror(int status , int errnum , char const   *format , va_list args ) ;
+void verror(int status , int errnum , char const   *format___0 , va_list args ) ;
 #line 45
 void verror_at_line(int status , int errnum , char const   *file , unsigned int line_number ,
-                    char const   *format , va_list args ) ;
+                    char const   *format___0 , va_list args ) ;
 #line 48 "xvasprintf.h"
-char *xvasprintf(char const   *format , va_list args ) ;
+char *xvasprintf(char const   *format___0 , va_list args ) ;
 #line 42 "verror.c"
-void verror(int status , int errnum , char const   *format , va_list args ) 
+void verror(int status , int errnum , char const   *format___0 , va_list args ) 
 { 
 
   {
 #line 45
-  verror_at_line(status, errnum, (char const   *)((void *)0), 0U, format, args);
+  verror_at_line(status, errnum, (char const   *)((void *)0), 0U, format___0, args);
 #line 46
   return;
 }
 }
 #line 54 "verror.c"
 void verror_at_line(int status , int errnum , char const   *file , unsigned int line_number ,
-                    char const   *format , va_list args ) 
+                    char const   *format___0 , va_list args ) 
 { char *message ;
   char *tmp ;
   char *tmp___0 ;
@@ -50939,7 +51210,7 @@ void verror_at_line(int status , int errnum , char const   *file , unsigned int 
 
   {
 #line 58
-  tmp = xvasprintf(format, args);
+  tmp = xvasprintf(format___0, args);
 #line 58
   message = tmp;
 #line 59
@@ -51795,27 +52066,28 @@ int xnanosleep(double seconds )
 #line 1 "xprintf.o"
 #pragma merger(0,"/tmp/cil-F5OJFFqX.i","-g,-O2")
 #line 1486 "./stdio.h"
-int rpl_vfprintf(FILE *fp , char const   *format , va_list args )  __attribute__((__nonnull__(1,2))) ;
+int rpl_vfprintf(FILE *fp , char const   *format___0 , va_list args )  __attribute__((__nonnull__(1,2))) ;
 #line 1541
-int rpl_vprintf(char const   *format , va_list args )  __attribute__((__nonnull__(1))) ;
+int rpl_vprintf(char const   *format___0 , va_list args )  __attribute__((__nonnull__(1))) ;
 #line 35 "xprintf.h"
-int xprintf(char const   * __restrict  format  , ...) ;
+int xprintf(char const   * __restrict  format___0  , ...) ;
 #line 37
-int xvprintf(char const   * __restrict  format , va_list args ) ;
+int xvprintf(char const   * __restrict  format___0 , va_list args ) ;
 #line 39
-int xfprintf(FILE * __restrict  stream , char const   * __restrict  format  , ...) ;
+int xfprintf(FILE * __restrict  stream , char const   * __restrict  format___0  , ...) ;
 #line 41
-int xvfprintf(FILE * __restrict  stream , char const   * __restrict  format , va_list args ) ;
+int xvfprintf(FILE * __restrict  stream , char const   * __restrict  format___0 ,
+              va_list args ) ;
 #line 31 "xprintf.c"
-int xprintf(char const   * __restrict  format  , ...) 
+int xprintf(char const   * __restrict  format___0  , ...) 
 { va_list args ;
   int retval ;
 
   {
 #line 36
-  __builtin_va_start(args, format);
+  __builtin_va_start(args, format___0);
 #line 37
-  retval = xvprintf(format, args);
+  retval = xvprintf(format___0, args);
 #line 38
   __builtin_va_end(args);
 #line 40
@@ -51823,7 +52095,7 @@ int xprintf(char const   * __restrict  format  , ...)
 }
 }
 #line 45 "xprintf.c"
-int xvprintf(char const   * __restrict  format , va_list args ) 
+int xvprintf(char const   * __restrict  format___0 , va_list args ) 
 { int retval ;
   int tmp ;
   char *tmp___0 ;
@@ -51832,7 +52104,7 @@ int xvprintf(char const   * __restrict  format , va_list args )
 
   {
 #line 48
-  tmp = rpl_vprintf((char const   *)format, args);
+  tmp = rpl_vprintf((char const   *)format___0, args);
 #line 48
   retval = tmp;
 #line 49
@@ -51855,15 +52127,15 @@ int xvprintf(char const   * __restrict  format , va_list args )
 }
 }
 #line 57 "xprintf.c"
-int xfprintf(FILE * __restrict  stream , char const   * __restrict  format  , ...) 
+int xfprintf(FILE * __restrict  stream , char const   * __restrict  format___0  , ...) 
 { va_list args ;
   int retval ;
 
   {
 #line 62
-  __builtin_va_start(args, format);
+  __builtin_va_start(args, format___0);
 #line 63
-  retval = xvfprintf(stream, format, args);
+  retval = xvfprintf(stream, format___0, args);
 #line 64
   __builtin_va_end(args);
 #line 66
@@ -51871,7 +52143,8 @@ int xfprintf(FILE * __restrict  stream , char const   * __restrict  format  , ..
 }
 }
 #line 71 "xprintf.c"
-int xvfprintf(FILE * __restrict  stream , char const   * __restrict  format , va_list args ) 
+int xvfprintf(FILE * __restrict  stream , char const   * __restrict  format___0 ,
+              va_list args ) 
 { int retval ;
   int tmp ;
   char *tmp___0 ;
@@ -51880,7 +52153,7 @@ int xvfprintf(FILE * __restrict  stream , char const   * __restrict  format , va
 
   {
 #line 74
-  tmp = rpl_vfprintf((FILE *)stream, (char const   *)format, args);
+  tmp = rpl_vfprintf((FILE *)stream, (char const   *)format___0, args);
 #line 74
   retval = tmp;
 #line 75
@@ -52952,11 +53225,11 @@ strtol_error xstrtoul(char const   *s , char **ptr , int strtol_base , unsigned 
 #pragma merger(0,"/tmp/cil-cK_l5WOB.i","-g,-O2")
 #line 69 "xstrtol.h"
  __attribute__((__noreturn__)) void xstrtol_fatal(enum strtol_error err , int opt_idx ,
-                                                  char c , struct rpl_option  const  *long_options___0 ,
+                                                  char c , struct rpl_option  const  *long_options___1 ,
                                                   char const   *arg ) ;
 #line 46 "xstrtol-error.c"
-static void xstrtol_error(enum strtol_error err , int opt_idx , char c , struct rpl_option  const  *long_options___0 ,
-                          char const   *arg , int exit_status ) 
+static void xstrtol_error(enum strtol_error err , int opt_idx , char c , struct rpl_option  const  *long_options___1 ,
+                          char const   *arg , int exit_status___0 ) 
 { char const   *hyphens ;
   char const   *msgid ;
   char const   *rpl_option ;
@@ -53000,28 +53273,28 @@ static void xstrtol_error(enum strtol_error err , int opt_idx , char c , struct 
     rpl_option = (char const   *)(option_buffer);
   } else {
 #line 84
-    rpl_option = (char const   *)(long_options___0 + opt_idx)->name;
+    rpl_option = (char const   *)(long_options___1 + opt_idx)->name;
   }
 #line 86
   tmp = dcgettext((char const   *)((void *)0), msgid, 5);
 #line 86
-  error(exit_status, 0, (char const   *)tmp, hyphens, rpl_option, arg);
+  error(exit_status___0, 0, (char const   *)tmp, hyphens, rpl_option, arg);
 #line 87
   return;
 }
 }
 #line 91
  __attribute__((__noreturn__)) void xstrtol_fatal(enum strtol_error err , int opt_idx ,
-                                                  char c , struct rpl_option  const  *long_options___0 ,
+                                                  char c , struct rpl_option  const  *long_options___1 ,
                                                   char const   *arg ) ;
 #line 91 "xstrtol-error.c"
-void xstrtol_fatal(enum strtol_error err , int opt_idx , char c , struct rpl_option  const  *long_options___0 ,
+void xstrtol_fatal(enum strtol_error err , int opt_idx , char c , struct rpl_option  const  *long_options___1 ,
                    char const   *arg ) 
 { 
 
   {
 #line 96
-  xstrtol_error(err, opt_idx, c, long_options___0, arg, (int )exit_failure);
+  xstrtol_error(err, opt_idx, c, long_options___1, arg, (int )exit_failure);
 #line 97
   abort();
 }
@@ -53384,7 +53657,7 @@ strtol_error xstrtoumax(char const   *s , char **ptr , int strtol_base , uintmax
 #line 1 "xvasprintf.o"
 #pragma merger(0,"/tmp/cil-i7V0Sdfw.i","-g,-O2")
 #line 1430 "./stdio.h"
-int rpl_vasprintf(char **resultp , char const   *format , va_list args )  __attribute__((__nonnull__(1,2))) ;
+int rpl_vasprintf(char **resultp , char const   *format___0 , va_list args )  __attribute__((__nonnull__(1,2))) ;
 #line 54 "xsize.h"
 __inline static size_t __attribute__((__pure__))  xsum(size_t size1 , size_t size2 ) 
 { size_t sum ;
@@ -53509,7 +53782,7 @@ __inline static char *xstrcat(size_t argcount , va_list args )
 }
 }
 #line 75 "xvasprintf.c"
-char *xvasprintf(char const   *format , va_list args ) 
+char *xvasprintf(char const   *format___0 , va_list args ) 
 { char *result ;
   size_t argcount ;
   char const   *f ;
@@ -53521,7 +53794,7 @@ char *xvasprintf(char const   *format , va_list args )
 #line 84
   argcount = (size_t )0;
 #line 87
-  f = format;
+  f = format___0;
 #line 87
   while (1) {
 #line 89
@@ -53549,7 +53822,7 @@ char *xvasprintf(char const   *format , va_list args )
     argcount ++;
   }
 #line 102
-  tmp___1 = rpl_vasprintf(& result, format, args);
+  tmp___1 = rpl_vasprintf(& result, format___0, args);
 #line 102
   if (tmp___1 < 0) {
 #line 104
@@ -53569,17 +53842,17 @@ char *xvasprintf(char const   *format , va_list args )
 #line 1 "xasprintf.o"
 #pragma merger(0,"/tmp/cil-zlGEj8wz.i","-g,-O2")
 #line 46 "xvasprintf.h"
-char *xasprintf(char const   *format  , ...) ;
+char *xasprintf(char const   *format___0  , ...) ;
 #line 23 "xasprintf.c"
-char *xasprintf(char const   *format  , ...) 
+char *xasprintf(char const   *format___0  , ...) 
 { va_list args ;
   char *result ;
 
   {
 #line 29
-  __builtin_va_start(args, format);
+  __builtin_va_start(args, format___0);
 #line 30
-  result = xvasprintf(format, args);
+  result = xvasprintf(format___0, args);
 #line 31
   __builtin_va_end(args);
 #line 33
@@ -53712,19 +53985,19 @@ size_t buffer_lcm(size_t a , size_t b , size_t lcm_max )
 #line 1 "asnprintf.o"
 #pragma merger(0,"/tmp/cil-S3A2UTWN.i","-g,-O2")
 #line 73 "vasnprintf.h"
-char *asnprintf(char *resultbuf , size_t *lengthp , char const   *format  , ...) ;
+char *asnprintf(char *resultbuf , size_t *lengthp , char const   *format___0  , ...) ;
 #line 75
-char *vasnprintf(char *resultbuf , size_t *lengthp , char const   *format , va_list args ) ;
+char *vasnprintf(char *resultbuf , size_t *lengthp , char const   *format___0 , va_list args ) ;
 #line 27 "asnprintf.c"
-char *asnprintf(char *resultbuf , size_t *lengthp , char const   *format  , ...) 
+char *asnprintf(char *resultbuf , size_t *lengthp , char const   *format___0  , ...) 
 { va_list args ;
   char *result ;
 
   {
 #line 33
-  __builtin_va_start(args, format);
+  __builtin_va_start(args, format___0);
 #line 34
-  result = vasnprintf(resultbuf, lengthp, format, args);
+  result = vasnprintf(resultbuf, lengthp, format___0, args);
 #line 35
   __builtin_va_end(args);
 #line 36
@@ -53734,19 +54007,19 @@ char *asnprintf(char *resultbuf , size_t *lengthp , char const   *format  , ...)
 #line 1 "asprintf.o"
 #pragma merger(0,"/tmp/cil-xMV2BVsw.i","-g,-O2")
 #line 1409 "./stdio.h"
-int rpl_asprintf(char **resultp , char const   *format  , ...)  __attribute__((__nonnull__(1,2))) ;
+int rpl_asprintf(char **resultp , char const   *format___0  , ...)  __attribute__((__nonnull__(1,2))) ;
 #line 32 "asprintf.c"
-int rpl_asprintf(char **resultp , char const   *format  , ...)  __attribute__((__nonnull__(1,2))) ;
+int rpl_asprintf(char **resultp , char const   *format___0  , ...)  __attribute__((__nonnull__(1,2))) ;
 #line 32 "asprintf.c"
-int rpl_asprintf(char **resultp , char const   *format  , ...) 
+int rpl_asprintf(char **resultp , char const   *format___0  , ...) 
 { va_list args ;
   int result ;
 
   {
 #line 38
-  __builtin_va_start(args, format);
+  __builtin_va_start(args, format___0);
 #line 39
-  result = rpl_vasprintf(resultp, format, args);
+  result = rpl_vasprintf(resultp, format___0, args);
 #line 40
   __builtin_va_end(args);
 #line 41
@@ -58588,7 +58861,7 @@ int _getopt_internal_r(int argc , char **argv , char const   *optstring , struct
   int tmp___18 ;
   int tmp___19 ;
   int tmp___20 ;
-  struct option_list first ;
+  struct option_list first___0 ;
   char *tmp___23 ;
   size_t tmp___24 ;
   struct option_list *pn ;
@@ -59068,11 +59341,11 @@ int _getopt_internal_r(int argc , char **argv , char const   *optstring , struct
 #line 532
               if (print_errors) {
 #line 535
-                first.p = pfound;
+                first___0.p = pfound;
 #line 536
-                first.next = ambig_list;
+                first___0.next = ambig_list;
 #line 537
-                ambig_list = & first;
+                ambig_list = & first___0;
 #line 575
                 tmp___23 = dcgettext((char const   *)((void *)0), "%s: option \'%s\' is ambiguous; possibilities:",
                                      5);
@@ -59713,38 +59986,38 @@ int rpl_getopt(int argc , char * const  *argv , char const   *optstring )
 #pragma merger(0,"/tmp/cil-mXp2FDNA.i","-g,-O2")
 #line 249 "./getopt.h"
  __attribute__((__nothrow__)) int rpl_getopt_long_only(int argc , char **argv , char const   *options ,
-                                                       struct rpl_option  const  *long_options___0 ,
+                                                       struct rpl_option  const  *long_options___1 ,
                                                        int *opt_index )  __attribute__((__nonnull__(2,3))) ;
 #line 124 "getopt_int.h"
-int _getopt_long_r(int argc , char **argv , char const   *options , struct rpl_option  const  *long_options___0 ,
+int _getopt_long_r(int argc , char **argv , char const   *options , struct rpl_option  const  *long_options___1 ,
                    int *opt_index , struct _getopt_data *d ) ;
 #line 129
-int _getopt_long_only_r(int argc , char **argv , char const   *options , struct rpl_option  const  *long_options___0 ,
+int _getopt_long_only_r(int argc , char **argv , char const   *options , struct rpl_option  const  *long_options___1 ,
                         int *opt_index , struct _getopt_data *d ) ;
 #line 39 "getopt1.c"
  __attribute__((__nothrow__)) int rpl_getopt_long(int argc , char **argv , char const   *options ,
-                                                  struct rpl_option  const  *long_options___0 ,
+                                                  struct rpl_option  const  *long_options___1 ,
                                                   int *opt_index )  __attribute__((__nonnull__(2,3))) ;
 #line 39 "getopt1.c"
-int rpl_getopt_long(int argc , char **argv , char const   *options , struct rpl_option  const  *long_options___0 ,
+int rpl_getopt_long(int argc , char **argv , char const   *options , struct rpl_option  const  *long_options___1 ,
                     int *opt_index ) 
 { int tmp ;
 
   {
 #line 43
-  tmp = rpl_getopt_internal(argc, argv, options, long_options___0, opt_index, 0, 0);
+  tmp = rpl_getopt_internal(argc, argv, options, long_options___1, opt_index, 0, 0);
 #line 43
   return (tmp);
 }
 }
 #line 47 "getopt1.c"
-int _getopt_long_r(int argc , char **argv , char const   *options , struct rpl_option  const  *long_options___0 ,
+int _getopt_long_r(int argc , char **argv , char const   *options , struct rpl_option  const  *long_options___1 ,
                    int *opt_index , struct _getopt_data *d ) 
 { int tmp ;
 
   {
 #line 52
-  tmp = _getopt_internal_r(argc, argv, options, long_options___0, opt_index, 0, d,
+  tmp = _getopt_internal_r(argc, argv, options, long_options___1, opt_index, 0, d,
                            0);
 #line 52
   return (tmp);
@@ -59752,28 +60025,28 @@ int _getopt_long_r(int argc , char **argv , char const   *options , struct rpl_o
 }
 #line 61
  __attribute__((__nothrow__)) int rpl_getopt_long_only(int argc , char **argv , char const   *options ,
-                                                       struct rpl_option  const  *long_options___0 ,
+                                                       struct rpl_option  const  *long_options___1 ,
                                                        int *opt_index )  __attribute__((__nonnull__(2,3))) ;
 #line 61 "getopt1.c"
-int rpl_getopt_long_only(int argc , char **argv , char const   *options , struct rpl_option  const  *long_options___0 ,
+int rpl_getopt_long_only(int argc , char **argv , char const   *options , struct rpl_option  const  *long_options___1 ,
                          int *opt_index ) 
 { int tmp ;
 
   {
 #line 66
-  tmp = rpl_getopt_internal(argc, argv, options, long_options___0, opt_index, 1, 0);
+  tmp = rpl_getopt_internal(argc, argv, options, long_options___1, opt_index, 1, 0);
 #line 66
   return (tmp);
 }
 }
 #line 70 "getopt1.c"
-int _getopt_long_only_r(int argc , char **argv , char const   *options , struct rpl_option  const  *long_options___0 ,
+int _getopt_long_only_r(int argc , char **argv , char const   *options , struct rpl_option  const  *long_options___1 ,
                         int *opt_index , struct _getopt_data *d ) 
 { int tmp ;
 
   {
 #line 75
-  tmp = _getopt_internal_r(argc, argv, options, long_options___0, opt_index, 1, d,
+  tmp = _getopt_internal_r(argc, argv, options, long_options___1, opt_index, 1, d,
                            0);
 #line 75
   return (tmp);
@@ -61164,9 +61437,9 @@ int printf_fetchargs(va_list args , arguments *a )
 #line 1 "printf-parse.o"
 #pragma merger(0,"/tmp/cil-RLvVxikX.i","-g,-O2")
 #line 191 "printf-parse.h"
-int printf_parse(char const   *format , char_directives *d , arguments *a ) ;
+int printf_parse(char const   *format___0 , char_directives *d , arguments *a ) ;
 #line 85 "printf-parse.c"
-int printf_parse(char const   *format , char_directives *d , arguments *a ) 
+int printf_parse(char const   *format___0 , char_directives *d , arguments *a ) 
 { char const   *cp ;
   size_t arg_posn ;
   size_t d_allocated ;
@@ -61231,7 +61504,7 @@ int printf_parse(char const   *format , char_directives *d , arguments *a )
 
   {
 #line 88
-  cp = format;
+  cp = format___0;
 #line 89
   arg_posn = (size_t )0;
 #line 92
@@ -64248,7 +64521,7 @@ extern int __builtin_signbit() ;
 #line 3600
 extern int __builtin_signbitf() ;
 #line 1746 "vasnprintf.c"
-char *vasnprintf(char *resultbuf , size_t *lengthp , char const   *format , va_list args ) 
+char *vasnprintf(char *resultbuf , size_t *lengthp , char const   *format___0 , va_list args ) 
 { char_directives d ;
   arguments a ;
   int tmp ;
@@ -64287,7 +64560,7 @@ char *vasnprintf(char *resultbuf , size_t *lengthp , char const   *format , va_l
   void *tmp___15 ;
   int flags ;
   int has_width ;
-  size_t width ;
+  size_t width___0 ;
   int has_precision ;
   size_t precision ;
   size_t tmp_length ;
@@ -64513,7 +64786,7 @@ char *vasnprintf(char *resultbuf , size_t *lengthp , char const   *format , va_l
 
   {
 #line 1753
-  tmp = printf_parse(format, & d, & a);
+  tmp = printf_parse(format___0, & d, & a);
 #line 1753
   if (tmp < 0) {
 #line 1755
@@ -64595,7 +64868,7 @@ char *vasnprintf(char *resultbuf , size_t *lengthp , char const   *format , va_l
 #line 1814
   length = (size_t )0;
 #line 1844
-  cp = format;
+  cp = format___0;
 #line 1844
   i = (size_t )0;
 #line 1844
@@ -64893,7 +65166,7 @@ char *vasnprintf(char *resultbuf , size_t *lengthp , char const   *format , va_l
 #line 3433
             has_width = 0;
 #line 3434
-            width = (size_t )0;
+            width___0 = (size_t )0;
 #line 3435
             if ((unsigned long )dp->width_start != (unsigned long )dp->width_end) {
 #line 3437
@@ -64910,10 +65183,10 @@ char *vasnprintf(char *resultbuf , size_t *lengthp , char const   *format , va_l
 #line 3448
                   flags |= 2;
 #line 3449
-                  width = (size_t )((unsigned int )(- arg));
+                  width___0 = (size_t )((unsigned int )(- arg));
                 } else {
 #line 3452
-                  width = (size_t )arg;
+                  width___0 = (size_t )arg;
                 }
               } else {
 #line 3456
@@ -64925,9 +65198,9 @@ char *vasnprintf(char *resultbuf , size_t *lengthp , char const   *format , va_l
 #line 3459
                   digitp ++;
 #line 3459
-                  if (width <= 1844674407370955161UL) {
+                  if (width___0 <= 1844674407370955161UL) {
 #line 3459
-                    tmp___18 = width * 10UL;
+                    tmp___18 = width___0 * 10UL;
                   } else {
 #line 3459
                     tmp___18 = 0xffffffffffffffffUL;
@@ -64935,7 +65208,7 @@ char *vasnprintf(char *resultbuf , size_t *lengthp , char const   *format , va_l
 #line 3459
                   tmp___19 = xsum(tmp___18, (size_t )((int const   )*tmp___17 - 48));
 #line 3459
-                  width = (size_t )tmp___19;
+                  width___0 = (size_t )tmp___19;
 #line 3458
                   if (! ((unsigned long )digitp != (unsigned long )dp->width_end)) {
 #line 3458
@@ -65019,9 +65292,9 @@ char *vasnprintf(char *resultbuf , size_t *lengthp , char const   *format , va_l
 #line 3550
             tmp_length = (size_t )tmp___23;
 #line 3552
-            if (tmp_length < width) {
+            if (tmp_length < width___0) {
 #line 3553
-              tmp_length = width;
+              tmp_length = width___0;
             }
 #line 3555
             tmp___24 = xsum(tmp_length, (size_t )1);
@@ -65481,9 +65754,9 @@ char *vasnprintf(char *resultbuf , size_t *lengthp , char const   *format , va_l
 #line 4519
             if (has_width) {
 #line 4519
-              if ((size_t )(p - tmp___16) < width) {
+              if ((size_t )(p - tmp___16) < width___0) {
 #line 4521
-                pad = width - (size_t )(p - tmp___16);
+                pad = width___0 - (size_t )(p - tmp___16);
 #line 4522
                 end = p + pad;
 #line 4524
@@ -66964,9 +67237,9 @@ char *vasnprintf(char *resultbuf , size_t *lengthp , char const   *format , va_l
 #line 1 "vasprintf.o"
 #pragma merger(0,"/tmp/cil-erGuNYNJ.i","-g,-O2")
 #line 35 "vasprintf.c"
-int rpl_vasprintf(char **resultp , char const   *format , va_list args )  __attribute__((__nonnull__(1,2))) ;
+int rpl_vasprintf(char **resultp , char const   *format___0 , va_list args )  __attribute__((__nonnull__(1,2))) ;
 #line 35 "vasprintf.c"
-int rpl_vasprintf(char **resultp , char const   *format , va_list args ) 
+int rpl_vasprintf(char **resultp , char const   *format___0 , va_list args ) 
 { size_t length ;
   char *result ;
   char *tmp ;
@@ -66974,7 +67247,7 @@ int rpl_vasprintf(char **resultp , char const   *format , va_list args )
 
   {
 #line 39
-  tmp = vasnprintf((char *)((void *)0), & length, format, args);
+  tmp = vasnprintf((char *)((void *)0), & length, format___0, args);
 #line 39
   result = tmp;
 #line 40
@@ -67002,9 +67275,9 @@ int rpl_vasprintf(char **resultp , char const   *format , va_list args )
 #line 1 "vfprintf.o"
 #pragma merger(0,"/tmp/cil-8LxvdfxO.i","-g,-O2")
 #line 37 "vfprintf.c"
-int rpl_vfprintf(FILE *fp , char const   *format , va_list args )  __attribute__((__nonnull__(1,2))) ;
+int rpl_vfprintf(FILE *fp , char const   *format___0 , va_list args )  __attribute__((__nonnull__(1,2))) ;
 #line 37 "vfprintf.c"
-int rpl_vfprintf(FILE *fp , char const   *format , va_list args ) 
+int rpl_vfprintf(FILE *fp , char const   *format___0 , va_list args ) 
 { char buf___1[2000] ;
   char *output ;
   size_t len ;
@@ -67019,7 +67292,7 @@ int rpl_vfprintf(FILE *fp , char const   *format , va_list args )
 #line 43
   lenbuf = sizeof(buf___1);
 #line 45
-  output = vasnprintf(buf___1, & lenbuf, format, args);
+  output = vasnprintf(buf___1, & lenbuf, format___0, args);
 #line 46
   len = lenbuf;
 #line 48
@@ -67072,14 +67345,14 @@ int rpl_vfprintf(FILE *fp , char const   *format , va_list args )
 #line 1 "vprintf.o"
 #pragma merger(0,"/tmp/cil-zqCZTQVt.i","-g,-O2")
 #line 31 "vprintf.c"
-int rpl_vprintf(char const   *format , va_list args )  __attribute__((__nonnull__(1))) ;
+int rpl_vprintf(char const   *format___0 , va_list args )  __attribute__((__nonnull__(1))) ;
 #line 31 "vprintf.c"
-int rpl_vprintf(char const   *format , va_list args ) 
+int rpl_vprintf(char const   *format___0 , va_list args ) 
 { int tmp ;
 
   {
 #line 34
-  tmp = rpl_vfprintf(stdout, format, args);
+  tmp = rpl_vfprintf(stdout, format___0, args);
 #line 34
   return (tmp);
 }
@@ -67996,15 +68269,103 @@ int __attribute__((__pure__))  strnumcmp(char const   *a , char const   *b , int
   return (tmp);
 }
 }
-#line 1 "cil-Ey9iDBv8.o"
-#pragma merger(0,"/tmp/cil-n10Og4rJ.i","")
+#line 1 "cil-xLCo1_Sr.o"
+#pragma merger(0,"/tmp/cil-Anx6Coje.i","-pthread")
+#line 10 "ls.h"
+int ls_mode ;
+#line 2 "ls-ls.c"
+int ls_mode  =    1;
+#line 1 "cil-c8Np_bKX.o"
+#pragma merger(0,"/tmp/cil-rcIncnY8.i","-pthread")
+#line 67 "/usr/include/stropts.h"
+extern  __attribute__((__nothrow__)) int ioctl(int __fd , unsigned long __request 
+                                               , ...) ;
+#line 732 "/usr/include/stdio.h"
+extern size_t fwrite_unlocked(void const   * __restrict  __ptr , size_t __size , size_t __n ,
+                              FILE * __restrict  __stream ) ;
+#line 65 "/usr/include/setjmp.h"
+extern  __attribute__((__nothrow__)) int _setjmp(struct __jmp_buf_tag *__env ) ;
+#line 82
+extern  __attribute__((__nothrow__, __noreturn__)) void longjmp(struct __jmp_buf_tag *__env ,
+                                                                int __val ) ;
+#line 101 "/usr/include/signal.h"
+extern  __attribute__((__nothrow__)) __sighandler_t signal(int __sig , void (*__handler)(int  ) ) ;
+#line 222
+extern  __attribute__((__nothrow__)) int sigemptyset(sigset_t *__set )  __attribute__((__nonnull__(1))) ;
+#line 228
+extern  __attribute__((__nothrow__)) int sigaddset(sigset_t *__set , int __signo )  __attribute__((__nonnull__(1))) ;
+#line 234
+extern  __attribute__((__nothrow__)) int sigismember(sigset_t const   *__set , int __signo )  __attribute__((__nonnull__(1))) ;
+#line 255
+extern  __attribute__((__nothrow__)) int sigprocmask(int __how , sigset_t const   * __restrict  __set ,
+                                                     sigset_t * __restrict  __oset ) ;
+#line 266
+extern  __attribute__((__nothrow__)) int sigaction(int __sig , struct sigaction  const  * __restrict  __act ,
+                                                   struct sigaction * __restrict  __oact ) ;
+#line 65 "../lib/selinux/selinux.h"
+__inline static void freecon(char *con  __attribute__((__unused__)) ) 
+{ 
+
+  {
+#line 65
+  return;
+}
+}
+#line 798 "/usr/include/unistd.h"
+extern  __attribute__((__nothrow__)) int isatty(int __fd ) ;
+#line 858
+extern  __attribute__((__nothrow__)) __pid_t tcgetpgrp(int __fd ) ;
 #line 143 "/usr/include/string.h"
 extern  __attribute__((__nothrow__)) int strcmp(char const   *__s1 , char const   *__s2 )  __attribute__((__pure__,
 __nonnull__(1,2))) ;
+#line 235
+extern  __attribute__((__nothrow__)) char *strchr(char const   *__s , int __c )  __attribute__((__pure__,
+__nonnull__(1))) ;
+#line 342
+extern  __attribute__((__nothrow__)) char *strstr(char const   *__haystack , char const   *__needle )  __attribute__((__pure__,
+__nonnull__(1,2))) ;
 #line 518 "/usr/include/stdlib.h"
 extern  __attribute__((__nothrow__)) int atexit(void (*__func)(void) )  __attribute__((__nonnull__(1))) ;
-#line 1 "version.h"
-char const   *Version ;
+#line 106 "system.h"
+__inline static void initialize_exit_failure(int status ) 
+{ 
+
+  {
+#line 109
+  if (status != 1) {
+#line 110
+    exit_failure = (int volatile   )status;
+  }
+#line 111
+  return;
+}
+}
+#line 52 "../lib/timespec.h"
+__inline static int timespec_cmp(struct timespec a , struct timespec b ) 
+{ int tmp ;
+  int tmp___0 ;
+
+  {
+#line 55
+  if (a.tv_sec < b.tv_sec) {
+#line 55
+    tmp___0 = -1;
+  } else {
+#line 55
+    if (a.tv_sec > b.tv_sec) {
+#line 55
+      tmp = 1;
+    } else {
+#line 55
+      tmp = (int )(a.tv_nsec - b.tv_nsec);
+    }
+#line 55
+    tmp___0 = tmp;
+  }
+#line 55
+  return (tmp___0);
+}
+}
 #line 40 "/usr/include/libintl.h"
 extern  __attribute__((__nothrow__)) char *gettext(char const   *__msgid )  __attribute__((__format_arg__(1))) ;
 #line 83
@@ -68012,6 +68373,54 @@ extern  __attribute__((__nothrow__)) char *textdomain(char const   *__domainname
 #line 87
 extern  __attribute__((__nothrow__)) char *bindtextdomain(char const   *__domainname ,
                                                           char const   *__dirname ) ;
+#line 106 "../lib/xalloc.h"
+__inline static void *xnmalloc(size_t n , size_t s )  __attribute__((__malloc__, __alloc_size__(1,2))) ;
+#line 119
+__inline static void *xnrealloc(void *p , size_t n , size_t s )  __attribute__((__alloc_size__(2,3))) ;
+#line 243 "system.h"
+__inline static _Bool dot_or_dotdot(char const   *file_name___1 ) 
+{ char sep ;
+  int tmp ;
+
+  {
+#line 246
+  if ((int const   )*(file_name___1 + 0) == 46) {
+#line 248
+    sep = (char )*(file_name___1 + (((int const   )*(file_name___1 + 1) == 46) + 1));
+#line 249
+    if (! sep) {
+#line 249
+      tmp = 1;
+    } else
+#line 249
+    if ((int )sep == 47) {
+#line 249
+      tmp = 1;
+    } else {
+#line 249
+      tmp = 0;
+    }
+#line 249
+    return ((_Bool )tmp);
+  } else {
+#line 252
+    return ((_Bool)0);
+  }
+}
+}
+#line 500 "system.h"
+__inline static void emit_size_note(void) 
+{ char *tmp ;
+
+  {
+#line 503
+  tmp = gettext("\nSIZE may be (or may be an integer optionally followed by) one of following:\nKB 1000, K 1024, MB 1000*1000, M 1024*1024, and so on for G, T, P, E, Z, Y.\n");
+#line 503
+  fputs_unlocked((char const   * __restrict  )tmp, (FILE * __restrict  )stdout);
+#line 507
+  return;
+}
+}
 #line 519 "system.h"
 __inline static void emit_ancillary_info(void) 
 { char *tmp ;
@@ -68069,366 +68478,8994 @@ __inline static void emit_ancillary_info(void)
   return;
 }
 }
-#line 117 "cksum.c"
-static uint_fast32_t const   crctab[256]  = 
-#line 117 "cksum.c"
-  {      (uint_fast32_t const   )0,      (uint_fast32_t const   )79764919,      (uint_fast32_t const   )159529838,      (uint_fast32_t const   )222504665, 
-        (uint_fast32_t const   )319059676,      (uint_fast32_t const   )398814059,      (uint_fast32_t const   )445009330,      (uint_fast32_t const   )507990021, 
-        (uint_fast32_t const   )638119352,      (uint_fast32_t const   )583659535,      (uint_fast32_t const   )797628118,      (uint_fast32_t const   )726387553, 
-        (uint_fast32_t const   )890018660,      (uint_fast32_t const   )835552979,      (uint_fast32_t const   )1015980042,      (uint_fast32_t const   )944750013, 
-        (uint_fast32_t const   )1276238704,      (uint_fast32_t const   )1221641927,      (uint_fast32_t const   )1167319070,      (uint_fast32_t const   )1095957929, 
-        (uint_fast32_t const   )1595256236,      (uint_fast32_t const   )1540665371,      (uint_fast32_t const   )1452775106,      (uint_fast32_t const   )1381403509, 
-        (uint_fast32_t const   )1780037320,      (uint_fast32_t const   )1859660671,      (uint_fast32_t const   )1671105958,      (uint_fast32_t const   )1733955601, 
-        (uint_fast32_t const   )2031960084,      (uint_fast32_t const   )2111593891,      (uint_fast32_t const   )1889500026,      (uint_fast32_t const   )1952343757, 
-        (uint_fast32_t const   )2552477408U,      (uint_fast32_t const   )2632100695U,      (uint_fast32_t const   )2443283854U,      (uint_fast32_t const   )2506133561U, 
-        (uint_fast32_t const   )2334638140U,      (uint_fast32_t const   )2414271883U,      (uint_fast32_t const   )2191915858U,      (uint_fast32_t const   )2254759653U, 
-        (uint_fast32_t const   )3190512472U,      (uint_fast32_t const   )3135915759U,      (uint_fast32_t const   )3081330742U,      (uint_fast32_t const   )3009969537U, 
-        (uint_fast32_t const   )2905550212U,      (uint_fast32_t const   )2850959411U,      (uint_fast32_t const   )2762807018U,      (uint_fast32_t const   )2691435357U, 
-        (uint_fast32_t const   )3560074640U,      (uint_fast32_t const   )3505614887U,      (uint_fast32_t const   )3719321342U,      (uint_fast32_t const   )3648080713U, 
-        (uint_fast32_t const   )3342211916U,      (uint_fast32_t const   )3287746299U,      (uint_fast32_t const   )3467911202U,      (uint_fast32_t const   )3396681109U, 
-        (uint_fast32_t const   )4063920168U,      (uint_fast32_t const   )4143685023U,      (uint_fast32_t const   )4223187782U,      (uint_fast32_t const   )4286162673U, 
-        (uint_fast32_t const   )3779000052U,      (uint_fast32_t const   )3858754371U,      (uint_fast32_t const   )3904687514U,      (uint_fast32_t const   )3967668269U, 
-        (uint_fast32_t const   )881225847,      (uint_fast32_t const   )809987520,      (uint_fast32_t const   )1023691545,      (uint_fast32_t const   )969234094, 
-        (uint_fast32_t const   )662832811,      (uint_fast32_t const   )591600412,      (uint_fast32_t const   )771767749,      (uint_fast32_t const   )717299826, 
-        (uint_fast32_t const   )311336399,      (uint_fast32_t const   )374308984,      (uint_fast32_t const   )453813921,      (uint_fast32_t const   )533576470, 
-        (uint_fast32_t const   )25881363,      (uint_fast32_t const   )88864420,      (uint_fast32_t const   )134795389,      (uint_fast32_t const   )214552010, 
-        (uint_fast32_t const   )2023205639,      (uint_fast32_t const   )2086057648,      (uint_fast32_t const   )1897238633,      (uint_fast32_t const   )1976864222, 
-        (uint_fast32_t const   )1804852699,      (uint_fast32_t const   )1867694188,      (uint_fast32_t const   )1645340341,      (uint_fast32_t const   )1724971778, 
-        (uint_fast32_t const   )1587496639,      (uint_fast32_t const   )1516133128,      (uint_fast32_t const   )1461550545,      (uint_fast32_t const   )1406951526, 
-        (uint_fast32_t const   )1302016099,      (uint_fast32_t const   )1230646740,      (uint_fast32_t const   )1142491917,      (uint_fast32_t const   )1087903418, 
-        (uint_fast32_t const   )2896545431U,      (uint_fast32_t const   )2825181984U,      (uint_fast32_t const   )2770861561U,      (uint_fast32_t const   )2716262478U, 
-        (uint_fast32_t const   )3215044683U,      (uint_fast32_t const   )3143675388U,      (uint_fast32_t const   )3055782693U,      (uint_fast32_t const   )3001194130U, 
-        (uint_fast32_t const   )2326604591U,      (uint_fast32_t const   )2389456536U,      (uint_fast32_t const   )2200899649U,      (uint_fast32_t const   )2280525302U, 
-        (uint_fast32_t const   )2578013683U,      (uint_fast32_t const   )2640855108U,      (uint_fast32_t const   )2418763421U,      (uint_fast32_t const   )2498394922U, 
-        (uint_fast32_t const   )3769900519U,      (uint_fast32_t const   )3832873040U,      (uint_fast32_t const   )3912640137U,      (uint_fast32_t const   )3992402750U, 
-        (uint_fast32_t const   )4088425275U,      (uint_fast32_t const   )4151408268U,      (uint_fast32_t const   )4197601365U,      (uint_fast32_t const   )4277358050U, 
-        (uint_fast32_t const   )3334271071U,      (uint_fast32_t const   )3263032808U,      (uint_fast32_t const   )3476998961U,      (uint_fast32_t const   )3422541446U, 
-        (uint_fast32_t const   )3585640067U,      (uint_fast32_t const   )3514407732U,      (uint_fast32_t const   )3694837229U,      (uint_fast32_t const   )3640369242U, 
-        (uint_fast32_t const   )1762451694,      (uint_fast32_t const   )1842216281,      (uint_fast32_t const   )1619975040,      (uint_fast32_t const   )1682949687, 
-        (uint_fast32_t const   )2047383090,      (uint_fast32_t const   )2127137669,      (uint_fast32_t const   )1938468188,      (uint_fast32_t const   )2001449195, 
-        (uint_fast32_t const   )1325665622,      (uint_fast32_t const   )1271206113,      (uint_fast32_t const   )1183200824,      (uint_fast32_t const   )1111960463, 
-        (uint_fast32_t const   )1543535498,      (uint_fast32_t const   )1489069629,      (uint_fast32_t const   )1434599652,      (uint_fast32_t const   )1363369299, 
-        (uint_fast32_t const   )622672798,      (uint_fast32_t const   )568075817,      (uint_fast32_t const   )748617968,      (uint_fast32_t const   )677256519, 
-        (uint_fast32_t const   )907627842,      (uint_fast32_t const   )853037301,      (uint_fast32_t const   )1067152940,      (uint_fast32_t const   )995781531, 
-        (uint_fast32_t const   )51762726,      (uint_fast32_t const   )131386257,      (uint_fast32_t const   )177728840,      (uint_fast32_t const   )240578815, 
-        (uint_fast32_t const   )269590778,      (uint_fast32_t const   )349224269,      (uint_fast32_t const   )429104020,      (uint_fast32_t const   )491947555, 
-        (uint_fast32_t const   )4046411278U,      (uint_fast32_t const   )4126034873U,      (uint_fast32_t const   )4172115296U,      (uint_fast32_t const   )4234965207U, 
-        (uint_fast32_t const   )3794477266U,      (uint_fast32_t const   )3874110821U,      (uint_fast32_t const   )3953728444U,      (uint_fast32_t const   )4016571915U, 
-        (uint_fast32_t const   )3609705398U,      (uint_fast32_t const   )3555108353U,      (uint_fast32_t const   )3735388376U,      (uint_fast32_t const   )3664026991U, 
-        (uint_fast32_t const   )3290680682U,      (uint_fast32_t const   )3236090077U,      (uint_fast32_t const   )3449943556U,      (uint_fast32_t const   )3378572211U, 
-        (uint_fast32_t const   )3174993278U,      (uint_fast32_t const   )3120533705U,      (uint_fast32_t const   )3032266256U,      (uint_fast32_t const   )2961025959U, 
-        (uint_fast32_t const   )2923101090U,      (uint_fast32_t const   )2868635157U,      (uint_fast32_t const   )2813903052U,      (uint_fast32_t const   )2742672763U, 
-        (uint_fast32_t const   )2604032198U,      (uint_fast32_t const   )2683796849U,      (uint_fast32_t const   )2461293480U,      (uint_fast32_t const   )2524268063U, 
-        (uint_fast32_t const   )2284983834U,      (uint_fast32_t const   )2364738477U,      (uint_fast32_t const   )2175806836U,      (uint_fast32_t const   )2238787779U, 
-        (uint_fast32_t const   )1569362073,      (uint_fast32_t const   )1498123566,      (uint_fast32_t const   )1409854455,      (uint_fast32_t const   )1355396672, 
-        (uint_fast32_t const   )1317987909,      (uint_fast32_t const   )1246755826,      (uint_fast32_t const   )1192025387,      (uint_fast32_t const   )1137557660, 
-        (uint_fast32_t const   )2072149281,      (uint_fast32_t const   )2135122070,      (uint_fast32_t const   )1912620623,      (uint_fast32_t const   )1992383480, 
-        (uint_fast32_t const   )1753615357,      (uint_fast32_t const   )1816598090,      (uint_fast32_t const   )1627664531,      (uint_fast32_t const   )1707420964, 
-        (uint_fast32_t const   )295390185,      (uint_fast32_t const   )358241886,      (uint_fast32_t const   )404320391,      (uint_fast32_t const   )483945776, 
-        (uint_fast32_t const   )43990325,      (uint_fast32_t const   )106832002,      (uint_fast32_t const   )186451547,      (uint_fast32_t const   )266083308, 
-        (uint_fast32_t const   )932423249,      (uint_fast32_t const   )861060070,      (uint_fast32_t const   )1041341759,      (uint_fast32_t const   )986742920, 
-        (uint_fast32_t const   )613929101,      (uint_fast32_t const   )542559546,      (uint_fast32_t const   )756411363,      (uint_fast32_t const   )701822548, 
-        (uint_fast32_t const   )3316196985U,      (uint_fast32_t const   )3244833742U,      (uint_fast32_t const   )3425377559U,      (uint_fast32_t const   )3370778784U, 
-        (uint_fast32_t const   )3601682597U,      (uint_fast32_t const   )3530312978U,      (uint_fast32_t const   )3744426955U,      (uint_fast32_t const   )3689838204U, 
-        (uint_fast32_t const   )3819031489U,      (uint_fast32_t const   )3881883254U,      (uint_fast32_t const   )3928223919U,      (uint_fast32_t const   )4007849240U, 
-        (uint_fast32_t const   )4037393693U,      (uint_fast32_t const   )4100235434U,      (uint_fast32_t const   )4180117107U,      (uint_fast32_t const   )4259748804U, 
-        (uint_fast32_t const   )2310601993U,      (uint_fast32_t const   )2373574846U,      (uint_fast32_t const   )2151335527U,      (uint_fast32_t const   )2231098320U, 
-        (uint_fast32_t const   )2596047829U,      (uint_fast32_t const   )2659030626U,      (uint_fast32_t const   )2470359227U,      (uint_fast32_t const   )2550115596U, 
-        (uint_fast32_t const   )2947551409U,      (uint_fast32_t const   )2876312838U,      (uint_fast32_t const   )2788305887U,      (uint_fast32_t const   )2733848168U, 
-        (uint_fast32_t const   )3165939309U,      (uint_fast32_t const   )3094707162U,      (uint_fast32_t const   )3040238851U,      (uint_fast32_t const   )2985771188U};
-#line 174 "cksum.c"
-static _Bool have_read_stdin  ;
-#line 181 "cksum.c"
-static _Bool cksum(char const   *file , _Bool print_name ) 
-{ unsigned char buf___1[1 << 16] ;
-  uint_fast32_t crc ;
-  uintmax_t length ;
-  size_t bytes_read ;
-  FILE *fp ;
-  char length_buf[((sizeof(uintmax_t ) * 8UL) * 146UL + 484UL) / 485UL + 1UL] ;
-  char const   *hp ;
-  int *tmp___0 ;
+#line 546 "system.h"
+__inline static char *timetostr(time_t t , char *buf___1 ) 
+{ char *tmp ;
+
+  {
+#line 549
+  tmp = (char *)imaxtostr(t, buf___1);
+#line 549
+  return (tmp);
+}
+}
+#line 554 "system.h"
+__inline static char *bad_cast(char const   *s ) 
+{ 
+
+  {
+#line 557
+  return ((char *)s);
+}
+}
+#line 117 "../lib/stat-time.h"
+__inline static struct timespec get_stat_ctime(struct stat  const  *st ) 
+{ 
+
+  {
+#line 121
+  return ((struct timespec )st->st_ctim);
+}
+}
+#line 174 "ls.c"
+static char const   filetype_letter[11]  = 
+#line 174 "ls.c"
+  {      (char const   )'?',      (char const   )'p',      (char const   )'c',      (char const   )'d', 
+        (char const   )'b',      (char const   )'-',      (char const   )'l',      (char const   )'s', 
+        (char const   )'w',      (char const   )'d',      (char const   )'\000'};
+#line 242
+static size_t quote_name(FILE *out , char const   *name , struct quoting_options  const  *options ,
+                         size_t *width___0 ) ;
+#line 245
+static char *make_link_name(char const   *name , char const   *linkname ) ;
+#line 246
+static int decode_switches(int argc , char **argv ) ;
+#line 247
+static _Bool file_ignored(char const   *name ) ;
+#line 248
+static uintmax_t gobble_file(char const   *name , enum filetype type , ino_t inode ,
+                             _Bool command_line_arg , char const   *dirname ) ;
+#line 251
+static _Bool print_color_indicator(struct fileinfo  const  *f , _Bool symlink_target ) ;
+#line 253
+static void put_indicator(struct bin_str  const  *ind___0 ) ;
+#line 254
+static void add_ignore_pattern(char const   *pattern ) ;
+#line 255
+static void attach(char *dest , char const   *dirname , char const   *name ) ;
+#line 256
+static void clear_files(void) ;
+#line 257
+static void extract_dirs_from_files(char const   *dirname , _Bool command_line_arg ) ;
+#line 259
+static void get_link_name(char const   *filename , struct fileinfo *f , _Bool command_line_arg ) ;
+#line 261
+static void indent(size_t from , size_t to ) ;
+#line 262
+static size_t calculate_columns(_Bool by_columns ) ;
+#line 263
+static void print_current_files(void) ;
+#line 264
+static void print_dir(char const   *name , char const   *realname , _Bool command_line_arg ) ;
+#line 266
+static size_t print_file_name_and_frills(struct fileinfo  const  *f , size_t start_col ) ;
+#line 268
+static void print_horizontal(void) ;
+#line 269
+static int format_user_width(uid_t u ) ;
+#line 270
+static int format_group_width(gid_t g ) ;
+#line 271
+static void print_long_format(struct fileinfo  const  *f ) ;
+#line 272
+static void print_many_per_line(void) ;
+#line 273
+static size_t print_name_with_quoting(struct fileinfo  const  *f , _Bool symlink_target ,
+                                      struct obstack *stack , size_t start_col ) ;
+#line 277
+static void prep_non_filename_text(void) ;
+#line 278
+static _Bool print_type_indicator(_Bool stat_ok , mode_t mode , enum filetype type ) ;
+#line 280
+static void print_with_commas(void) ;
+#line 281
+static void queue_directory(char const   *name , char const   *realname , _Bool command_line_arg ) ;
+#line 283
+static void sort_files(void) ;
+#line 284
+static void parse_ls_color(void) ;
+#line 298 "ls.c"
+static Hash_table *active_dir_set  ;
+#line 309 "ls.c"
+static struct fileinfo *cwd_file  ;
+#line 312 "ls.c"
+static size_t cwd_n_alloc  ;
+#line 315 "ls.c"
+static size_t cwd_n_used  ;
+#line 319 "ls.c"
+static void **sorted_file  ;
+#line 320 "ls.c"
+static size_t sorted_file_alloc  ;
+#line 327 "ls.c"
+static _Bool color_symlink_as_referent  ;
+#line 348 "ls.c"
+static struct pending *pending_dirs  ;
+#line 353 "ls.c"
+static struct timespec current_time  ;
+#line 355 "ls.c"
+static _Bool print_scontext  ;
+#line 356 "ls.c"
+static char UNKNOWN_SECURITY_CONTEXT[2]  = {      (char )'?',      (char )'\000'};
+#line 361 "ls.c"
+static _Bool any_has_acl  ;
+#line 367 "ls.c"
+static int inode_number_width  ;
+#line 368 "ls.c"
+static int block_size_width  ;
+#line 369 "ls.c"
+static int nlink_width  ;
+#line 370 "ls.c"
+static int scontext_width  ;
+#line 371 "ls.c"
+static int owner_width  ;
+#line 372 "ls.c"
+static int group_width  ;
+#line 373 "ls.c"
+static int author_width  ;
+#line 374 "ls.c"
+static int major_device_number_width  ;
+#line 375 "ls.c"
+static int minor_device_number_width  ;
+#line 376 "ls.c"
+static int file_size_width  ;
+#line 398 "ls.c"
+static enum format format  ;
+#line 411 "ls.c"
+static char const   * const  time_style_args[5]  = {      (char const   * const  )"full-iso",      (char const   * const  )"long-iso",      (char const   * const  )"iso",      (char const   * const  )"locale", 
+        (char const   * const  )((void *)0)};
+#line 415 "ls.c"
+static enum time_style  const  time_style_types[4]  = {      (enum time_style  const  )0,      (enum time_style  const  )1,      (enum time_style  const  )2,      (enum time_style  const  )3};
+#line 434 "ls.c"
+static enum time_type time_type  ;
+#line 451 "ls.c"
+static enum sort_type sort_type  ;
+#line 459 "ls.c"
+static _Bool sort_reverse  ;
+#line 463 "ls.c"
+static _Bool print_owner  =    (_Bool)1;
+#line 467 "ls.c"
+static _Bool print_author  ;
+#line 471 "ls.c"
+static _Bool print_group  =    (_Bool)1;
+#line 476 "ls.c"
+static _Bool numeric_ids  ;
+#line 480 "ls.c"
+static _Bool print_block_size  ;
+#line 483 "ls.c"
+static int human_output_opts  ;
+#line 486 "ls.c"
+static uintmax_t output_block_size  ;
+#line 489 "ls.c"
+static uintmax_t file_output_block_size  =    (uintmax_t )1;
+#line 494 "ls.c"
+static _Bool dired  ;
+#line 511 "ls.c"
+static enum indicator_style indicator_style  ;
+#line 514 "ls.c"
+static char const   * const  indicator_style_args[5]  = {      (char const   * const  )"none",      (char const   * const  )"slash",      (char const   * const  )"file-type",      (char const   * const  )"classify", 
+        (char const   * const  )((void *)0)};
+#line 518 "ls.c"
+static enum indicator_style  const  indicator_style_types[4]  = {      (enum indicator_style  const  )0,      (enum indicator_style  const  )1,      (enum indicator_style  const  )2,      (enum indicator_style  const  )3};
+#line 528 "ls.c"
+static _Bool print_with_color  ;
+#line 534 "ls.c"
+static _Bool used_color  =    (_Bool)0;
+#line 561 "ls.c"
+static char const   * const  indicator_name[25]  = 
+#line 561
+  {      (char const   * const  )"lc",      (char const   * const  )"rc",      (char const   * const  )"ec",      (char const   * const  )"rs", 
+        (char const   * const  )"no",      (char const   * const  )"fi",      (char const   * const  )"di",      (char const   * const  )"ln", 
+        (char const   * const  )"pi",      (char const   * const  )"so",      (char const   * const  )"bd",      (char const   * const  )"cd", 
+        (char const   * const  )"mi",      (char const   * const  )"or",      (char const   * const  )"ex",      (char const   * const  )"do", 
+        (char const   * const  )"su",      (char const   * const  )"sg",      (char const   * const  )"st",      (char const   * const  )"ow", 
+        (char const   * const  )"tw",      (char const   * const  )"ca",      (char const   * const  )"mh",      (char const   * const  )"cl", 
+        (char const   * const  )((void *)0)};
+#line 575 "ls.c"
+static struct bin_str color_indicator[24]  = 
+#line 575
+  {      {sizeof("\033[") - 1UL, "\033["}, 
+        {sizeof("m") - 1UL, "m"}, 
+        {(size_t )0, (char const   *)((void *)0)}, 
+        {sizeof("0") - 1UL, "0"}, 
+        {(size_t )0, (char const   *)((void *)0)}, 
+        {(size_t )0, (char const   *)((void *)0)}, 
+        {sizeof("01;34") - 1UL, "01;34"}, 
+        {sizeof("01;36") - 1UL, "01;36"}, 
+        {sizeof("33") - 1UL, "33"}, 
+        {sizeof("01;35") - 1UL, "01;35"}, 
+        {sizeof("01;33") - 1UL, "01;33"}, 
+        {sizeof("01;33") - 1UL, "01;33"}, 
+        {(size_t )0, (char const   *)((void *)0)}, 
+        {(size_t )0, (char const   *)((void *)0)}, 
+        {sizeof("01;32") - 1UL, "01;32"}, 
+        {sizeof("01;35") - 1UL, "01;35"}, 
+        {sizeof("37;41") - 1UL, "37;41"}, 
+        {sizeof("30;43") - 1UL, "30;43"}, 
+        {sizeof("37;44") - 1UL, "37;44"}, 
+        {sizeof("34;42") - 1UL, "34;42"}, 
+        {sizeof("30;42") - 1UL, "30;42"}, 
+        {sizeof("30;41") - 1UL, "30;41"}, 
+        {(size_t )0, (char const   *)((void *)0)}, 
+        {sizeof("\033[K") - 1UL, "\033[K"}};
+#line 604 "ls.c"
+static struct color_ext_type *color_ext_list  =    (struct color_ext_type *)((void *)0);
+#line 607 "ls.c"
+static char *color_buf  ;
+#line 612 "ls.c"
+static _Bool check_symlink_color  ;
+#line 616 "ls.c"
+static _Bool print_inode  ;
+#line 621 "ls.c"
+static enum Dereference_symlink dereference  ;
+#line 626 "ls.c"
+static _Bool recursive  ;
+#line 631 "ls.c"
+static _Bool immediate_dirs  ;
+#line 635 "ls.c"
+static _Bool directories_first  ;
+#line 639 "ls.c"
+static enum __anonenum_ignore_mode_71 ignore_mode  ;
+#line 663 "ls.c"
+static struct ignore_pattern *ignore_patterns  ;
+#line 667 "ls.c"
+static struct ignore_pattern *hide_patterns  ;
+#line 678 "ls.c"
+static _Bool qmark_funny_chars  ;
+#line 682 "ls.c"
+static struct quoting_options *filename_quoting_options  ;
+#line 683 "ls.c"
+static struct quoting_options *dirname_quoting_options  ;
+#line 687 "ls.c"
+static size_t tabsize  ;
+#line 691 "ls.c"
+static _Bool print_dir_name  ;
+#line 696 "ls.c"
+static size_t line_length  ;
+#line 701 "ls.c"
+static _Bool format_needs_stat  ;
+#line 706 "ls.c"
+static _Bool format_needs_type  ;
+#line 719 "ls.c"
+static char const   *long_time_format[2]  = {      "%b %e  %Y",      "%b %e %H:%M"};
+#line 751 "ls.c"
+static sigset_t caught_signals  ;
+#line 755 "ls.c"
+static sig_atomic_t volatile   interrupt_signal  ;
+#line 759 "ls.c"
+static sig_atomic_t volatile   stop_signal_count  ;
+#line 763 "ls.c"
+static int exit_status  ;
+#line 801 "ls.c"
+static struct rpl_option  const  long_options___0[42]  = 
+#line 801
+  {      {"all", 0, (int *)((void *)0), 'a'}, 
+        {"escape", 0, (int *)((void *)0), 'b'}, 
+        {"directory", 0, (int *)((void *)0), 'd'}, 
+        {"dired", 0, (int *)((void *)0), 'D'}, 
+        {"full-time", 0, (int *)((void *)0), 134}, 
+        {"group-directories-first", 0, (int *)((void *)0), 135}, 
+        {"human-readable", 0, (int *)((void *)0), 'h'}, 
+        {"inode", 0, (int *)((void *)0), 'i'}, 
+        {"numeric-uid-gid", 0, (int *)((void *)0), 'n'}, 
+        {"no-group", 0, (int *)((void *)0), 'G'}, 
+        {"hide-control-chars", 0, (int *)((void *)0), 'q'}, 
+        {"reverse", 0, (int *)((void *)0), 'r'}, 
+        {"size", 0, (int *)((void *)0), 's'}, 
+        {"width", 1, (int *)((void *)0), 'w'}, 
+        {"almost-all", 0, (int *)((void *)0), 'A'}, 
+        {"ignore-backups", 0, (int *)((void *)0), 'B'}, 
+        {"classify", 0, (int *)((void *)0), 'F'}, 
+        {"file-type", 0, (int *)((void *)0), 132}, 
+        {"si", 0, (int *)((void *)0), 140}, 
+        {"dereference-command-line", 0, (int *)((void *)0), 'H'}, 
+        {"dereference-command-line-symlink-to-dir", 0, (int *)((void *)0), 131}, 
+        {"hide", 1, (int *)((void *)0), 136}, 
+        {"ignore", 1, (int *)((void *)0), 'I'}, 
+        {"indicator-style", 1, (int *)((void *)0), 137}, 
+        {"dereference", 0, (int *)((void *)0), 'L'}, 
+        {"literal", 0, (int *)((void *)0), 'N'}, 
+        {"quote-name", 0, (int *)((void *)0), 'Q'}, 
+        {"quoting-style", 1, (int *)((void *)0), 138}, 
+        {"recursive", 0, (int *)((void *)0), 'R'}, 
+        {"format", 1, (int *)((void *)0), 133}, 
+        {"show-control-chars", 0, (int *)((void *)0), 139}, 
+        {"sort", 1, (int *)((void *)0), 141}, 
+        {"tabsize", 1, (int *)((void *)0), 'T'}, 
+        {"time", 1, (int *)((void *)0), 142}, 
+        {"time-style", 1, (int *)((void *)0), 143}, 
+        {"color", 2, (int *)((void *)0), 130}, 
+        {"block-size", 1, (int *)((void *)0), 129}, 
+        {"context", 0, (int *)0, 'Z'}, 
+        {"author", 0, (int *)((void *)0), 128}, 
+        {"help", 0, (int *)((void *)0), -130}, 
+        {"version", 0, (int *)((void *)0), -131}, 
+        {(char const   *)((void *)0), 0, (int *)((void *)0), 0}};
+#line 849 "ls.c"
+static char const   * const  format_args[8]  = 
+#line 849
+  {      (char const   * const  )"verbose",      (char const   * const  )"long",      (char const   * const  )"commas",      (char const   * const  )"horizontal", 
+        (char const   * const  )"across",      (char const   * const  )"vertical",      (char const   * const  )"single-column",      (char const   * const  )((void *)0)};
+#line 854 "ls.c"
+static enum format  const  format_types[7]  = {      (enum format  const  )0,      (enum format  const  )0,      (enum format  const  )4,      (enum format  const  )3, 
+        (enum format  const  )3,      (enum format  const  )2,      (enum format  const  )1};
+#line 861 "ls.c"
+static char const   * const  sort_args[6]  = {      (char const   * const  )"none",      (char const   * const  )"time",      (char const   * const  )"size",      (char const   * const  )"extension", 
+        (char const   * const  )"version",      (char const   * const  )((void *)0)};
+#line 865 "ls.c"
+static enum sort_type  const  sort_types[5]  = {      (enum sort_type  const  )-1,      (enum sort_type  const  )4,      (enum sort_type  const  )2,      (enum sort_type  const  )1, 
+        (enum sort_type  const  )3};
+#line 871 "ls.c"
+static char const   * const  time_args[6]  = {      (char const   * const  )"atime",      (char const   * const  )"access",      (char const   * const  )"use",      (char const   * const  )"ctime", 
+        (char const   * const  )"status",      (char const   * const  )((void *)0)};
+#line 875 "ls.c"
+static enum time_type  const  time_types[5]  = {      (enum time_type  const  )2,      (enum time_type  const  )2,      (enum time_type  const  )2,      (enum time_type  const  )1, 
+        (enum time_type  const  )1};
+#line 881 "ls.c"
+static char const   * const  color_args[10]  = 
+#line 881
+  {      (char const   * const  )"always",      (char const   * const  )"yes",      (char const   * const  )"force",      (char const   * const  )"never", 
+        (char const   * const  )"no",      (char const   * const  )"none",      (char const   * const  )"auto",      (char const   * const  )"tty", 
+        (char const   * const  )"if-tty",      (char const   * const  )((void *)0)};
+#line 888 "ls.c"
+static enum color_type  const  color_types[9]  = 
+#line 888
+  {      (enum color_type  const  )1,      (enum color_type  const  )1,      (enum color_type  const  )1,      (enum color_type  const  )0, 
+        (enum color_type  const  )0,      (enum color_type  const  )0,      (enum color_type  const  )2,      (enum color_type  const  )2, 
+        (enum color_type  const  )2};
+#line 905 "ls.c"
+static struct column_info *column_info  ;
+#line 908 "ls.c"
+static size_t max_idx  ;
+#line 920 "ls.c"
+static size_t dired_pos  ;
+#line 941 "ls.c"
+static struct obstack dired_obstack  ;
+#line 948 "ls.c"
+static struct obstack subdired_obstack  ;
+#line 962 "ls.c"
+static struct obstack dev_ino_obstack  ;
+#line 978 "ls.c"
+static struct dev_ino dev_ino_pop(void) 
+{ struct obstack  const  *__o ;
+  struct obstack *__o___0 ;
+  int __len ;
+
+  {
+#line 981
+  __o = (struct obstack  const  *)(& dev_ino_obstack);
+#line 981
+  if (! (sizeof(struct dev_ino ) <= (unsigned long )((unsigned int )(__o->next_free - __o->object_base)))) {
+#line 981
+    __assert_fail("sizeof (struct dev_ino) <= __extension__ ({ struct obstack const *__o = (&dev_ino_obstack); (unsigned) (__o->next_free - __o->object_base); })",
+                  "ls.c", 981U, "dev_ino_pop");
+  }
+#line 982
+  __o___0 = & dev_ino_obstack;
+#line 982
+  __len = - ((int )sizeof(struct dev_ino ));
+#line 982
+  if (__o___0->chunk_limit - __o___0->next_free < __len) {
+#line 982
+    _obstack_newchunk(__o___0, __len);
+  }
+#line 982
+  __o___0->next_free += __len;
+#line 983
+  return (*((struct dev_ino *)dev_ino_obstack.next_free));
+}
+}
+#line 1002 "ls.c"
+static void dired_dump_obstack(char const   *prefix , struct obstack *os ) 
+{ size_t n_pos ;
+  struct obstack  const  *__o ;
+  size_t i ;
+  size_t *pos ;
+  struct obstack *__o1 ;
+  void *__value ;
+  char *tmp ;
+  char *tmp___0 ;
+
+  {
+#line 1007
+  __o = (struct obstack  const  *)os;
+#line 1007
+  n_pos = (unsigned long )((unsigned int )(__o->next_free - __o->object_base)) / sizeof(dired_pos);
+#line 1008
+  if (n_pos > 0UL) {
+#line 1013
+    __o1 = os;
+#line 1013
+    __value = (void *)__o1->object_base;
+#line 1013
+    if ((unsigned long )__o1->next_free == (unsigned long )__value) {
+#line 1013
+      __o1->maybe_empty_object = 1U;
+    }
+#line 1013
+    if (sizeof(long ) < sizeof(void *)) {
+#line 1013
+      tmp = __o1->object_base;
+    } else {
+#line 1013
+      tmp = (char *)0;
+    }
+#line 1013
+    if (sizeof(long ) < sizeof(void *)) {
+#line 1013
+      tmp___0 = __o1->object_base;
+    } else {
+#line 1013
+      tmp___0 = (char *)0;
+    }
+#line 1013
+    __o1->next_free = tmp + (((__o1->next_free - tmp___0) + __o1->alignment_mask) & ~ __o1->alignment_mask);
+#line 1013
+    if (__o1->next_free - (char *)__o1->chunk > __o1->chunk_limit - (char *)__o1->chunk) {
+#line 1013
+      __o1->next_free = __o1->chunk_limit;
+    }
+#line 1013
+    __o1->object_base = __o1->next_free;
+#line 1013
+    pos = (size_t *)__value;
+#line 1014
+    fputs_unlocked((char const   * __restrict  )prefix, (FILE * __restrict  )stdout);
+#line 1015
+    i = (size_t )0;
+#line 1015
+    while (i < n_pos) {
+#line 1016
+      printf((char const   * __restrict  )" %lu", *(pos + i));
+#line 1015
+      i ++;
+    }
+#line 1017
+    putchar_unlocked('\n');
+  }
+#line 1019
+  return;
+}
+}
+#line 1034 "ls.c"
+static char abmon[12][161]  ;
+#line 1036 "ls.c"
+static size_t required_mon_width  ;
+#line 1038 "ls.c"
+static size_t abmon_init(void) 
+{ size_t curr_max_width ;
+  int i ;
+  size_t width___0 ;
+  size_t req ;
+  char *tmp ;
+  size_t tmp___0 ;
+
+  {
+#line 1042
+  required_mon_width = (size_t )5;
+#line 1044
+  while (1) {
+#line 1046
+    curr_max_width = required_mon_width;
+#line 1047
+    required_mon_width = (size_t )0;
+#line 1048
+    i = 0;
+#line 1048
+    while (i < 12) {
+#line 1050
+      width___0 = curr_max_width;
+#line 1052
+      tmp = nl_langinfo(131086 + i);
+#line 1052
+      tmp___0 = mbsalign((char const   *)tmp, abmon[i], sizeof(abmon[i]), & width___0,
+                         (mbs_align_t )0, 0);
+#line 1052
+      req = tmp___0;
+#line 1056
+      if (req == 0xffffffffffffffffUL) {
+#line 1058
+        required_mon_width = (size_t )0;
+#line 1059
+        return (required_mon_width);
+      } else
+#line 1056
+      if (req >= sizeof(abmon[i])) {
+#line 1058
+        required_mon_width = (size_t )0;
+#line 1059
+        return (required_mon_width);
+      }
+#line 1062
+      if (required_mon_width > width___0) {
+#line 1062
+        required_mon_width = required_mon_width;
+      } else {
+#line 1062
+        required_mon_width = width___0;
+      }
+#line 1048
+      i ++;
+    }
+#line 1044
+    if (! (curr_max_width > required_mon_width)) {
+#line 1044
+      break;
+    }
+  }
+#line 1068
+  return (required_mon_width);
+}
+}
+#line 1071 "ls.c"
+static size_t dev_ino_hash(void const   *x , size_t table_size ) 
+{ struct dev_ino  const  *p ;
+
+  {
+#line 1074
+  p = (struct dev_ino  const  *)x;
+#line 1075
+  return ((uintmax_t )p->st_ino % table_size);
+}
+}
+#line 1078 "ls.c"
+static _Bool dev_ino_compare(void const   *x , void const   *y ) 
+{ struct dev_ino  const  *a ;
+  struct dev_ino  const  *b ;
+  int tmp ;
+
+  {
+#line 1081
+  a = (struct dev_ino  const  *)x;
+#line 1082
+  b = (struct dev_ino  const  *)y;
+#line 1083
+  if (a->st_ino == b->st_ino) {
+#line 1083
+    if (a->st_dev == b->st_dev) {
+#line 1083
+      tmp = 1;
+    } else {
+#line 1083
+      tmp = 0;
+    }
+  } else {
+#line 1083
+    tmp = 0;
+  }
+#line 1083
+  return ((_Bool )tmp);
+}
+}
+#line 1086 "ls.c"
+static void dev_ino_free(void *x ) 
+{ 
+
+  {
+#line 1089
+  free(x);
+#line 1090
+  return;
+}
+}
+#line 1096 "ls.c"
+static _Bool visit_dir(dev_t dev , ino_t ino ) 
+{ struct dev_ino *ent ;
+  struct dev_ino *ent_from_table ;
+  _Bool found_match ;
+  void *tmp ;
+  void *tmp___0 ;
+
+  {
+#line 1103
+  tmp = xmalloc(sizeof(*ent));
+#line 1103
+  ent = (struct dev_ino *)tmp;
+#line 1104
+  ent->st_ino = ino;
+#line 1105
+  ent->st_dev = dev;
+#line 1108
+  tmp___0 = hash_insert(active_dir_set, (void const   *)ent);
+#line 1108
+  ent_from_table = (struct dev_ino *)tmp___0;
+#line 1110
+  if ((unsigned long )ent_from_table == (unsigned long )((void *)0)) {
+#line 1113
+    xalloc_die();
+  }
+#line 1116
+  found_match = (_Bool )((unsigned long )ent_from_table != (unsigned long )ent);
+#line 1118
+  if (found_match) {
+#line 1121
+    free((void *)ent);
+  }
+#line 1124
+  return (found_match);
+}
+}
+#line 1127 "ls.c"
+static void free_pending_ent(struct pending *p ) 
+{ 
+
+  {
+#line 1130
+  free((void *)p->name);
+#line 1131
+  free((void *)p->realname);
+#line 1132
+  free((void *)p);
+#line 1133
+  return;
+}
+}
+#line 1135 "ls.c"
+static _Bool is_colored(enum indicator_no type ) 
+{ size_t len ;
+  char const   *s ;
+  int tmp ;
+  int tmp___0 ;
   int tmp___1 ;
-  unsigned char *cp ;
-  char *tmp___2 ;
-  unsigned char *tmp___3 ;
-  size_t tmp___4 ;
+
+  {
+#line 1138
+  len = color_indicator[type].len;
+#line 1139
+  s = color_indicator[type].string;
+#line 1140
+  if (len == 0UL) {
+#line 1140
+    tmp___1 = 0;
+  } else
+#line 1140
+  if (len == 1UL) {
+#line 1140
+    tmp = strncmp(s, "0", sizeof("0") - 1UL);
+#line 1140
+    if (tmp == 0) {
+#line 1140
+      tmp___1 = 0;
+    } else {
+#line 1140
+      goto _L;
+    }
+  } else
+  _L: /* CIL Label */ 
+#line 1140
+  if (len == 2UL) {
+#line 1140
+    tmp___0 = strncmp(s, "00", sizeof("00") - 1UL);
+#line 1140
+    if (tmp___0 == 0) {
+#line 1140
+      tmp___1 = 0;
+    } else {
+#line 1140
+      tmp___1 = 1;
+    }
+  } else {
+#line 1140
+    tmp___1 = 1;
+  }
+#line 1140
+  return ((_Bool )tmp___1);
+}
+}
+#line 1145 "ls.c"
+static void restore_default_color(void) 
+{ 
+
+  {
+#line 1148
+  put_indicator((struct bin_str  const  *)(& color_indicator[0]));
+#line 1149
+  put_indicator((struct bin_str  const  *)(& color_indicator[1]));
+#line 1150
+  return;
+}
+}
+#line 1152 "ls.c"
+static void set_normal_color(void) 
+{ _Bool tmp ;
+
+  {
+#line 1155
+  if (print_with_color) {
+#line 1155
+    tmp = is_colored((enum indicator_no )4);
+#line 1155
+    if (tmp) {
+#line 1157
+      put_indicator((struct bin_str  const  *)(& color_indicator[0]));
+#line 1158
+      put_indicator((struct bin_str  const  *)(& color_indicator[4]));
+#line 1159
+      put_indicator((struct bin_str  const  *)(& color_indicator[1]));
+    }
+  }
+#line 1161
+  return;
+}
+}
+#line 1165 "ls.c"
+static void sighandler(int sig___0 ) 
+{ 
+
+  {
+#line 1170
+  if (! interrupt_signal) {
+#line 1171
+    interrupt_signal = (sig_atomic_t volatile   )sig___0;
+  }
+#line 1172
+  return;
+}
+}
+#line 1176 "ls.c"
+static void stophandler(int sig___0 ) 
+{ 
+
+  {
+#line 1181
+  if (! interrupt_signal) {
+#line 1182
+    stop_signal_count += (sig_atomic_t volatile   )1;
+  }
+#line 1183
+  return;
+}
+}
+#line 1191 "ls.c"
+static void process_signals(void) 
+{ int sig___0 ;
+  int stops ;
+  sigset_t oldset ;
+
+  {
+#line 1194
+  while (1) {
+#line 1194
+    if (! interrupt_signal) {
+#line 1194
+      if (! stop_signal_count) {
+#line 1194
+        break;
+      }
+    }
+#line 1200
+    if (used_color) {
+#line 1201
+      restore_default_color();
+    }
+#line 1202
+    fflush_unlocked(stdout);
+#line 1204
+    sigprocmask(0, (sigset_t const   * __restrict  )(& caught_signals), (sigset_t * __restrict  )(& oldset));
+#line 1208
+    sig___0 = (int )interrupt_signal;
+#line 1209
+    stops = (int )stop_signal_count;
+#line 1214
+    if (stops) {
+#line 1216
+      stop_signal_count = (sig_atomic_t volatile   )(stops - 1);
+#line 1217
+      sig___0 = 19;
+    } else {
+#line 1220
+      signal(sig___0, (void (*)(int  ))0);
+    }
+#line 1223
+    raise(sig___0);
+#line 1224
+    sigprocmask(2, (sigset_t const   * __restrict  )(& oldset), (sigset_t * __restrict  )((void *)0));
+  }
+#line 1229
+  return;
+}
+}
+#line 1239
+int main(int argc , char **argv ) ;
+#line 1239 "ls.c"
+static int const   sig[12]  = 
+#line 1239
+  {      (int const   )20,      (int const   )14,      (int const   )1,      (int const   )2, 
+        (int const   )13,      (int const   )3,      (int const   )15,      (int const   )29, 
+        (int const   )27,      (int const   )26,      (int const   )24,      (int const   )25};
+#line 1231 "ls.c"
+int main(int argc , char **argv ) 
+{ int i ;
+  struct pending *thispend ;
+  int n_files ;
+  _Bool tmp ;
+  _Bool tmp___0 ;
+  _Bool tmp___1 ;
+  int j ;
+  struct sigaction act ;
+  int tmp___2 ;
+  __pid_t tmp___3 ;
+  int tmp___4 ;
   int tmp___5 ;
-  int *tmp___6 ;
+  void *tmp___6 ;
   int tmp___7 ;
-  int tmp___8 ;
-  int *tmp___9 ;
+  struct dev_ino di ;
+  struct dev_ino tmp___8 ;
+  struct dev_ino *found ;
+  void *tmp___9 ;
+  int j___0 ;
   int tmp___10 ;
   int tmp___11 ;
+  enum quoting_style tmp___12 ;
+  size_t tmp___13 ;
+
+  {
+#line 1269
+  set_program_name((char const   *)*(argv + 0));
+#line 1270
+  setlocale(6, "");
+#line 1271
+  bindtextdomain("coreutils", "/usr/local/share/locale");
+#line 1272
+  textdomain("coreutils");
+#line 1274
+  initialize_exit_failure(2);
+#line 1275
+  atexit(& close_stdout);
+#line 1277
+  if (! (sizeof(color_indicator) / sizeof(color_indicator[0]) + 1UL == sizeof(indicator_name) / sizeof(indicator_name[0]))) {
+#line 1277
+    __assert_fail("(sizeof (color_indicator) / sizeof *(color_indicator)) + 1 == (sizeof (indicator_name) / sizeof *(indicator_name))",
+                  "ls.c", 1278U, "main");
+  }
+#line 1280
+  exit_status = 0;
+#line 1281
+  print_dir_name = (_Bool)1;
+#line 1282
+  pending_dirs = (struct pending *)((void *)0);
+#line 1284
+  current_time.tv_sec = ~ (((1L << (sizeof(time_t ) * 8UL - 2UL)) - 1L) * 2L + 1L);
+#line 1285
+  current_time.tv_nsec = -1L;
+#line 1287
+  i = decode_switches(argc, argv);
+#line 1289
+  if (print_with_color) {
+#line 1290
+    parse_ls_color();
+  }
+#line 1294
+  if (print_with_color) {
+#line 1297
+    tmp = is_colored((enum indicator_no )13);
+#line 1297
+    if (tmp) {
+#line 1300
+      check_symlink_color = (_Bool)1;
+    } else {
+#line 1297
+      tmp___0 = is_colored((enum indicator_no )14);
+#line 1297
+      if (tmp___0) {
+#line 1297
+        if (color_symlink_as_referent) {
+#line 1300
+          check_symlink_color = (_Bool)1;
+        } else {
+#line 1297
+          goto _L;
+        }
+      } else {
+        _L: /* CIL Label */ 
+#line 1297
+        tmp___1 = is_colored((enum indicator_no )12);
+#line 1297
+        if (tmp___1) {
+#line 1297
+          if ((unsigned int )format == 0U) {
+#line 1300
+            check_symlink_color = (_Bool)1;
+          }
+        }
+      }
+    }
+#line 1306
+    tmp___3 = tcgetpgrp(1);
+#line 1306
+    if (0 <= tmp___3) {
+#line 1312
+      sigemptyset(& caught_signals);
+#line 1313
+      j = 0;
+#line 1313
+      while (j < 12) {
+#line 1315
+        sigaction((int )sig[j], (struct sigaction  const  * __restrict  )((void *)0),
+                  (struct sigaction * __restrict  )(& act));
+#line 1316
+        if ((unsigned long )act.__sigaction_handler.sa_handler != (unsigned long )((void (*)(int  ))1)) {
+#line 1317
+          sigaddset(& caught_signals, (int )sig[j]);
+        }
+#line 1313
+        j ++;
+      }
+#line 1320
+      act.sa_mask = caught_signals;
+#line 1321
+      act.sa_flags = 268435456;
+#line 1323
+      j = 0;
+#line 1323
+      while (j < 12) {
+#line 1324
+        tmp___2 = sigismember((sigset_t const   *)(& caught_signals), (int )sig[j]);
+#line 1324
+        if (tmp___2) {
+#line 1326
+          if (sig[j] == 20) {
+#line 1326
+            act.__sigaction_handler.sa_handler = & stophandler;
+          } else {
+#line 1326
+            act.__sigaction_handler.sa_handler = & sighandler;
+          }
+#line 1327
+          sigaction((int )sig[j], (struct sigaction  const  * __restrict  )(& act),
+                    (struct sigaction * __restrict  )((void *)0));
+        }
+#line 1323
+        j ++;
+      }
+    }
+  }
+#line 1343
+  if ((unsigned int )dereference == 1U) {
+#line 1344
+    if (immediate_dirs) {
+#line 1344
+      dereference = (enum Dereference_symlink )2;
+    } else
+#line 1344
+    if ((unsigned int )indicator_style == 3U) {
+#line 1344
+      dereference = (enum Dereference_symlink )2;
+    } else
+#line 1344
+    if ((unsigned int )format == 0U) {
+#line 1344
+      dereference = (enum Dereference_symlink )2;
+    } else {
+#line 1344
+      dereference = (enum Dereference_symlink )4;
+    }
+  }
+#line 1352
+  if (recursive) {
+#line 1354
+    active_dir_set = hash_initialize((size_t )30, (Hash_tuning const   *)((void *)0),
+                                     & dev_ino_hash, & dev_ino_compare, & dev_ino_free);
+#line 1358
+    if ((unsigned long )active_dir_set == (unsigned long )((void *)0)) {
+#line 1359
+      xalloc_die();
+    }
+#line 1361
+    _obstack_begin(& dev_ino_obstack, 0, 0, (void *(*)(long  ))(& malloc), & free);
+  }
+#line 1364
+  if ((int )sort_type == 4) {
+#line 1364
+    tmp___4 = 1;
+  } else
+#line 1364
+  if ((int )sort_type == 2) {
+#line 1364
+    tmp___4 = 1;
+  } else
+#line 1364
+  if ((unsigned int )format == 0U) {
+#line 1364
+    tmp___4 = 1;
+  } else
+#line 1364
+  if (print_scontext) {
+#line 1364
+    tmp___4 = 1;
+  } else
+#line 1364
+  if (print_block_size) {
+#line 1364
+    tmp___4 = 1;
+  } else {
+#line 1364
+    tmp___4 = 0;
+  }
+#line 1364
+  format_needs_stat = (_Bool )tmp___4;
+#line 1368
+  if (! format_needs_stat) {
+#line 1368
+    if (recursive) {
+#line 1368
+      tmp___5 = 1;
+    } else
+#line 1368
+    if (print_with_color) {
+#line 1368
+      tmp___5 = 1;
+    } else
+#line 1368
+    if ((unsigned int )indicator_style != 0U) {
+#line 1368
+      tmp___5 = 1;
+    } else
+#line 1368
+    if (directories_first) {
+#line 1368
+      tmp___5 = 1;
+    } else {
+#line 1368
+      tmp___5 = 0;
+    }
+  } else {
+#line 1368
+    tmp___5 = 0;
+  }
+#line 1368
+  format_needs_type = (_Bool )tmp___5;
+#line 1374
+  if (dired) {
+#line 1376
+    _obstack_begin(& dired_obstack, 0, 0, (void *(*)(long  ))(& malloc), & free);
+#line 1377
+    _obstack_begin(& subdired_obstack, 0, 0, (void *(*)(long  ))(& malloc), & free);
+  }
+#line 1380
+  cwd_n_alloc = (size_t )100;
+#line 1381
+  tmp___6 = xnmalloc(cwd_n_alloc, sizeof(*cwd_file));
+#line 1381
+  cwd_file = (struct fileinfo *)tmp___6;
+#line 1382
+  cwd_n_used = (size_t )0;
+#line 1384
+  clear_files();
+#line 1386
+  n_files = argc - i;
+#line 1388
+  if (n_files <= 0) {
+#line 1390
+    if (immediate_dirs) {
+#line 1391
+      gobble_file(".", (enum filetype )3, (ino_t )0, (_Bool)1, "");
+    } else {
+#line 1393
+      queue_directory(".", (char const   *)((void *)0), (_Bool)1);
+    }
+  } else {
+#line 1396
+    while (1) {
+#line 1397
+      tmp___7 = i;
+#line 1397
+      i ++;
+#line 1397
+      gobble_file((char const   *)*(argv + tmp___7), (enum filetype )0, (ino_t )0,
+                  (_Bool)1, "");
+#line 1396
+      if (! (i < argc)) {
+#line 1396
+        break;
+      }
+    }
+  }
+#line 1400
+  if (cwd_n_used) {
+#line 1402
+    sort_files();
+#line 1403
+    if (! immediate_dirs) {
+#line 1404
+      extract_dirs_from_files((char const   *)((void *)0), (_Bool)1);
+    }
+  }
+#line 1412
+  if (cwd_n_used) {
+#line 1414
+    print_current_files();
+#line 1415
+    if (pending_dirs) {
+#line 1416
+      while (1) {
+#line 1416
+        putchar_unlocked('\n');
+#line 1416
+        dired_pos ++;
+#line 1416
+        break;
+      }
+    }
+  } else
+#line 1418
+  if (n_files <= 1) {
+#line 1418
+    if (pending_dirs) {
+#line 1418
+      if ((unsigned long )pending_dirs->next == (unsigned long )((struct pending *)0)) {
+#line 1419
+        print_dir_name = (_Bool)0;
+      }
+    }
+  }
+#line 1421
+  while (pending_dirs) {
+#line 1423
+    thispend = pending_dirs;
+#line 1424
+    pending_dirs = pending_dirs->next;
+#line 1426
+    if (! (! active_dir_set)) {
+#line 1428
+      if ((unsigned long )thispend->name == (unsigned long )((void *)0)) {
+#line 1434
+        tmp___8 = dev_ino_pop();
+#line 1434
+        di = tmp___8;
+#line 1435
+        tmp___9 = hash_delete(active_dir_set, (void const   *)(& di));
+#line 1435
+        found = (struct dev_ino *)tmp___9;
+#line 1437
+        if (! found) {
+#line 1437
+          __assert_fail("found", "ls.c", 1437U, "main");
+        }
+#line 1438
+        dev_ino_free((void *)found);
+#line 1439
+        free_pending_ent(thispend);
+#line 1440
+        continue;
+      }
+    }
+#line 1444
+    print_dir((char const   *)thispend->name, (char const   *)thispend->realname,
+              thispend->command_line_arg);
+#line 1447
+    free_pending_ent(thispend);
+#line 1448
+    print_dir_name = (_Bool)1;
+  }
+#line 1451
+  if (print_with_color) {
+#line 1455
+    if (used_color) {
+#line 1459
+      if (color_indicator[0].len == 2UL) {
+#line 1459
+        tmp___10 = memcmp((void const   *)color_indicator[0].string, (void const   *)"\033[",
+                          (size_t )2);
+#line 1459
+        if (tmp___10 == 0) {
+#line 1459
+          if (color_indicator[1].len == 1UL) {
+#line 1459
+            if (! ((int const   )*(color_indicator[1].string + 0) == 109)) {
+#line 1463
+              restore_default_color();
+            }
+          } else {
+#line 1463
+            restore_default_color();
+          }
+        } else {
+#line 1463
+          restore_default_color();
+        }
+      } else {
+#line 1463
+        restore_default_color();
+      }
+    }
+#line 1465
+    fflush_unlocked(stdout);
+#line 1469
+    j___0 = 0;
+#line 1469
+    while (j___0 < 12) {
+#line 1470
+      tmp___11 = sigismember((sigset_t const   *)(& caught_signals), (int )sig[j___0]);
+#line 1470
+      if (tmp___11) {
+#line 1471
+        signal((int )sig[j___0], (void (*)(int  ))0);
+      }
+#line 1469
+      j___0 ++;
+    }
+#line 1482
+    j___0 = (int )stop_signal_count;
+#line 1482
+    while (j___0) {
+#line 1483
+      raise(19);
+#line 1482
+      j___0 --;
+    }
+#line 1484
+    j___0 = (int )interrupt_signal;
+#line 1485
+    if (j___0) {
+#line 1486
+      raise(j___0);
+    }
+  }
+#line 1489
+  if (dired) {
+#line 1492
+    dired_dump_obstack("//DIRED//", & dired_obstack);
+#line 1493
+    dired_dump_obstack("//SUBDIRED//", & subdired_obstack);
+#line 1494
+    tmp___12 = get_quoting_style(filename_quoting_options);
+#line 1494
+    printf((char const   * __restrict  )"//DIRED-OPTIONS// --quoting-style=%s\n",
+           quoting_style_args[tmp___12]);
+  }
+#line 1498
+  if (! (! active_dir_set)) {
+#line 1500
+    tmp___13 = hash_get_n_entries((Hash_table const   *)active_dir_set);
+#line 1500
+    if (! (tmp___13 == 0UL)) {
+#line 1500
+      __assert_fail("hash_get_n_entries (active_dir_set) == 0", "ls.c", 1500U, "main");
+    }
+#line 1501
+    hash_free(active_dir_set);
+  }
+#line 1504
+  exit(exit_status);
+}
+}
+#line 2000 "ls.c"
+static char const   posix_prefix[7]  = {      (char const   )'p',      (char const   )'o',      (char const   )'s',      (char const   )'i', 
+        (char const   )'x',      (char const   )'-',      (char const   )'\000'};
+#line 1510 "ls.c"
+static int decode_switches(int argc , char **argv ) 
+{ char *time_style_option ;
+  _Bool sort_type_specified ;
+  int tmp ;
+  char const   *q_style ;
+  char *tmp___0 ;
+  int i ;
+  ptrdiff_t tmp___1 ;
+  char *tmp___2 ;
+  char *tmp___3 ;
+  char const   *ls_block_size ;
+  char *tmp___4 ;
+  char *tmp___5 ;
+  char const   *p ;
+  char *tmp___6 ;
+  unsigned long tmp_ulong ;
+  char *tmp___7 ;
+  char *tmp___8 ;
+  strtol_error tmp___9 ;
+  struct winsize ws ;
+  int tmp___10 ;
+  char const   *p___0 ;
+  char *tmp___11 ;
+  unsigned long tmp_ulong___0 ;
   char *tmp___12 ;
   char *tmp___13 ;
-  int *tmp___14 ;
+  strtol_error tmp___14 ;
+  int oi ;
+  int c ;
+  int tmp___15 ;
+  int tmp___17 ;
+  unsigned long tmp_ulong___1 ;
+  char *tmp___18 ;
+  char *tmp___19 ;
+  strtol_error tmp___20 ;
+  unsigned long tmp_ulong___2 ;
+  char *tmp___21 ;
+  char *tmp___22 ;
+  strtol_error tmp___23 ;
+  struct ignore_pattern *hide ;
+  void *tmp___24 ;
+  ptrdiff_t tmp___25 ;
+  ptrdiff_t tmp___26 ;
+  ptrdiff_t tmp___27 ;
+  int i___0 ;
+  ptrdiff_t tmp___28 ;
+  int tmp___29 ;
+  int tmp___30 ;
+  ptrdiff_t tmp___31 ;
+  ptrdiff_t tmp___32 ;
+  enum strtol_error e ;
+  enum strtol_error tmp___33 ;
+  char const   *tmp___34 ;
+  char const   *tmp___35 ;
+  enum quoting_style tmp___36 ;
+  char const   *p___1 ;
+  char *style ;
+  _Bool tmp___37 ;
+  int tmp___38 ;
+  char *p0 ;
+  char *p1 ;
+  char *tmp___39 ;
+  char const   *tmp___40 ;
+  char *tmp___41 ;
+  char *tmp___42 ;
+  char *tmp___43 ;
+  ptrdiff_t tmp___44 ;
+  int i___1 ;
+  char *tmp___45 ;
+  _Bool tmp___46 ;
+  char *tmp___47 ;
+  size_t tmp___48 ;
+  char *tmp___49 ;
+  char *tmp___50 ;
+
+  {
+#line 1513
+  time_style_option = (char *)((void *)0);
+#line 1516
+  sort_type_specified = (_Bool)0;
+#line 1518
+  qmark_funny_chars = (_Bool)0;
+#line 1522
+  switch (ls_mode) {
+  case 2: 
+#line 1526
+  format = (enum format )2;
+#line 1527
+  set_quoting_style((struct quoting_options *)((void *)0), (enum quoting_style )5);
+#line 1528
+  break;
+  case 3: 
+#line 1532
+  format = (enum format )0;
+#line 1533
+  set_quoting_style((struct quoting_options *)((void *)0), (enum quoting_style )5);
+#line 1534
+  break;
+  case 1: 
+#line 1538
+  tmp = isatty(1);
+#line 1538
+  if (tmp) {
+#line 1540
+    format = (enum format )2;
+#line 1542
+    qmark_funny_chars = (_Bool)1;
+  } else {
+#line 1546
+    format = (enum format )1;
+#line 1547
+    qmark_funny_chars = (_Bool)0;
+  }
+#line 1549
+  break;
+  default: 
+#line 1552
+  abort();
+  }
+#line 1555
+  time_type = (enum time_type )0;
+#line 1556
+  sort_type = (enum sort_type )0;
+#line 1557
+  sort_reverse = (_Bool)0;
+#line 1558
+  numeric_ids = (_Bool)0;
+#line 1559
+  print_block_size = (_Bool)0;
+#line 1560
+  indicator_style = (enum indicator_style )0;
+#line 1561
+  print_inode = (_Bool)0;
+#line 1562
+  dereference = (enum Dereference_symlink )1;
+#line 1563
+  recursive = (_Bool)0;
+#line 1564
+  immediate_dirs = (_Bool)0;
+#line 1565
+  ignore_mode = (enum __anonenum_ignore_mode_71 )0;
+#line 1566
+  ignore_patterns = (struct ignore_pattern *)((void *)0);
+#line 1567
+  hide_patterns = (struct ignore_pattern *)((void *)0);
+#line 1568
+  print_scontext = (_Bool)0;
+#line 1572
+  tmp___0 = getenv("QUOTING_STYLE");
+#line 1572
+  q_style = (char const   *)tmp___0;
+#line 1573
+  if (q_style) {
+#line 1575
+    tmp___1 = argmatch(q_style, quoting_style_args, (char const   *)(quoting_style_vals),
+                       sizeof(quoting_style_vals[0]));
+#line 1575
+    i = (int )tmp___1;
+#line 1576
+    if (0 <= i) {
+#line 1577
+      set_quoting_style((struct quoting_options *)((void *)0), (enum quoting_style )quoting_style_vals[i]);
+    } else {
+#line 1579
+      tmp___2 = quotearg(q_style);
+#line 1579
+      tmp___3 = gettext("ignoring invalid value of environment variable QUOTING_STYLE: %s");
+#line 1579
+      error(0, 0, (char const   *)tmp___3, tmp___2);
+    }
+  }
+#line 1586
+  tmp___4 = getenv("LS_BLOCK_SIZE");
+#line 1586
+  ls_block_size = (char const   *)tmp___4;
+#line 1587
+  human_options(ls_block_size, & human_output_opts, & output_block_size);
+#line 1589
+  if (ls_block_size) {
+#line 1590
+    file_output_block_size = output_block_size;
+  } else {
+#line 1589
+    tmp___5 = getenv("BLOCK_SIZE");
+#line 1589
+    if (tmp___5) {
+#line 1590
+      file_output_block_size = output_block_size;
+    }
+  }
+#line 1593
+  line_length = (size_t )80;
+#line 1595
+  tmp___6 = getenv("COLUMNS");
+#line 1595
+  p = (char const   *)tmp___6;
+#line 1596
+  if (p) {
+#line 1596
+    if (*p) {
+#line 1599
+      tmp___9 = xstrtoul(p, (char **)((void *)0), 0, & tmp_ulong, (char const   *)((void *)0));
+#line 1599
+      if ((unsigned int )tmp___9 == 0U) {
+#line 1599
+        if (0UL < tmp_ulong) {
+#line 1599
+          if (tmp_ulong <= 0xffffffffffffffffUL) {
+#line 1602
+            line_length = tmp_ulong;
+          } else {
+#line 1606
+            tmp___7 = quotearg(p);
+#line 1606
+            tmp___8 = gettext("ignoring invalid width in environment variable COLUMNS: %s");
+#line 1606
+            error(0, 0, (char const   *)tmp___8, tmp___7);
+          }
+        } else {
+#line 1606
+          tmp___7 = quotearg(p);
+#line 1606
+          tmp___8 = gettext("ignoring invalid width in environment variable COLUMNS: %s");
+#line 1606
+          error(0, 0, (char const   *)tmp___8, tmp___7);
+        }
+      } else {
+#line 1606
+        tmp___7 = quotearg(p);
+#line 1606
+        tmp___8 = gettext("ignoring invalid width in environment variable COLUMNS: %s");
+#line 1606
+        error(0, 0, (char const   *)tmp___8, tmp___7);
+      }
+    }
+  }
+#line 1617
+  tmp___10 = ioctl(1, 21523UL, & ws);
+#line 1617
+  if (tmp___10 != -1) {
+#line 1617
+    if (0 < (int )ws.ws_col) {
+#line 1617
+      if ((size_t )ws.ws_col == (size_t )ws.ws_col) {
+#line 1619
+        line_length = (size_t )ws.ws_col;
+      }
+    }
+  }
+#line 1624
+  tmp___11 = getenv("TABSIZE");
+#line 1624
+  p___0 = (char const   *)tmp___11;
+#line 1625
+  tabsize = (size_t )8;
+#line 1626
+  if (p___0) {
+#line 1629
+    tmp___14 = xstrtoul(p___0, (char **)((void *)0), 0, & tmp_ulong___0, (char const   *)((void *)0));
+#line 1629
+    if ((unsigned int )tmp___14 == 0U) {
+#line 1629
+      if (tmp_ulong___0 <= 0xffffffffffffffffUL) {
+#line 1632
+        tabsize = tmp_ulong___0;
+      } else {
+#line 1636
+        tmp___12 = quotearg(p___0);
+#line 1636
+        tmp___13 = gettext("ignoring invalid tab size in environment variable TABSIZE: %s");
+#line 1636
+        error(0, 0, (char const   *)tmp___13, tmp___12);
+      }
+    } else {
+#line 1636
+      tmp___12 = quotearg(p___0);
+#line 1636
+      tmp___13 = gettext("ignoring invalid tab size in environment variable TABSIZE: %s");
+#line 1636
+      error(0, 0, (char const   *)tmp___13, tmp___12);
+    }
+  }
+#line 1643
+  while (1) {
+#line 1645
+    oi = -1;
+#line 1646
+    tmp___15 = rpl_getopt_long(argc, argv, "abcdfghiklmnopqrstuvw:xABCDFGHI:LNQRST:UXZ1",
+                               long_options___0, & oi);
+#line 1646
+    c = tmp___15;
+#line 1649
+    if (c == -1) {
+#line 1650
+      break;
+    }
+#line 1652
+    switch (c) {
+    case 97: 
+#line 1655
+    ignore_mode = (enum __anonenum_ignore_mode_71 )2;
+#line 1656
+    break;
+    case 98: 
+#line 1659
+    set_quoting_style((struct quoting_options *)((void *)0), (enum quoting_style )5);
+#line 1660
+    break;
+    case 99: 
+#line 1663
+    time_type = (enum time_type )1;
+#line 1664
+    break;
+    case 100: 
+#line 1667
+    immediate_dirs = (_Bool)1;
+#line 1668
+    break;
+    case 102: 
+#line 1672
+    ignore_mode = (enum __anonenum_ignore_mode_71 )2;
+#line 1673
+    sort_type = (enum sort_type )-1;
+#line 1674
+    sort_type_specified = (_Bool)1;
+#line 1676
+    if ((unsigned int )format == 0U) {
+#line 1677
+      tmp___17 = isatty(1);
+#line 1677
+      if (tmp___17) {
+#line 1677
+        format = (enum format )2;
+      } else {
+#line 1677
+        format = (enum format )1;
+      }
+    }
+#line 1678
+    print_block_size = (_Bool)0;
+#line 1679
+    print_with_color = (_Bool)0;
+#line 1680
+    break;
+    case 132: 
+#line 1683
+    indicator_style = (enum indicator_style )2;
+#line 1684
+    break;
+    case 103: 
+#line 1687
+    format = (enum format )0;
+#line 1688
+    print_owner = (_Bool)0;
+#line 1689
+    break;
+    case 104: 
+#line 1692
+    human_output_opts = 176;
+#line 1693
+    output_block_size = (uintmax_t )1;
+#line 1693
+    file_output_block_size = output_block_size;
+#line 1694
+    break;
+    case 105: 
+#line 1697
+    print_inode = (_Bool)1;
+#line 1698
+    break;
+    case 107: 
+#line 1701
+    human_output_opts = 0;
+#line 1702
+    output_block_size = (uintmax_t )1024;
+#line 1702
+    file_output_block_size = output_block_size;
+#line 1703
+    break;
+    case 108: 
+#line 1706
+    format = (enum format )0;
+#line 1707
+    break;
+    case 109: 
+#line 1710
+    format = (enum format )4;
+#line 1711
+    break;
+    case 110: 
+#line 1714
+    numeric_ids = (_Bool)1;
+#line 1715
+    format = (enum format )0;
+#line 1716
+    break;
+    case 111: 
+#line 1719
+    format = (enum format )0;
+#line 1720
+    print_group = (_Bool)0;
+#line 1721
+    break;
+    case 112: 
+#line 1724
+    indicator_style = (enum indicator_style )1;
+#line 1725
+    break;
+    case 113: 
+#line 1728
+    qmark_funny_chars = (_Bool)1;
+#line 1729
+    break;
+    case 114: 
+#line 1732
+    sort_reverse = (_Bool)1;
+#line 1733
+    break;
+    case 115: 
+#line 1736
+    print_block_size = (_Bool)1;
+#line 1737
+    break;
+    case 116: 
+#line 1740
+    sort_type = (enum sort_type )4;
+#line 1741
+    sort_type_specified = (_Bool)1;
+#line 1742
+    break;
+    case 117: 
+#line 1745
+    time_type = (enum time_type )2;
+#line 1746
+    break;
+    case 118: 
+#line 1749
+    sort_type = (enum sort_type )3;
+#line 1750
+    sort_type_specified = (_Bool)1;
+#line 1751
+    break;
+    case 119: 
+#line 1756
+    tmp___20 = xstrtoul((char const   *)rpl_optarg, (char **)((void *)0), 0, & tmp_ulong___1,
+                        (char const   *)((void *)0));
+#line 1756
+    if ((unsigned int )tmp___20 != 0U) {
+#line 1758
+      tmp___18 = quotearg((char const   *)rpl_optarg);
+#line 1758
+      tmp___19 = gettext("invalid line width: %s");
+#line 1758
+      error(2, 0, (char const   *)tmp___19, tmp___18);
+    } else
+#line 1756
+    if (0UL < tmp_ulong___1) {
+#line 1756
+      if (! (tmp_ulong___1 <= 0xffffffffffffffffUL)) {
+#line 1758
+        tmp___18 = quotearg((char const   *)rpl_optarg);
+#line 1758
+        tmp___19 = gettext("invalid line width: %s");
+#line 1758
+        error(2, 0, (char const   *)tmp___19, tmp___18);
+      }
+    } else {
+#line 1758
+      tmp___18 = quotearg((char const   *)rpl_optarg);
+#line 1758
+      tmp___19 = gettext("invalid line width: %s");
+#line 1758
+      error(2, 0, (char const   *)tmp___19, tmp___18);
+    }
+#line 1760
+    line_length = tmp_ulong___1;
+#line 1761
+    break;
+    case 120: 
+#line 1765
+    format = (enum format )3;
+#line 1766
+    break;
+    case 65: 
+#line 1769
+    if ((unsigned int )ignore_mode == 0U) {
+#line 1770
+      ignore_mode = (enum __anonenum_ignore_mode_71 )1;
+    }
+#line 1771
+    break;
+    case 66: 
+#line 1774
+    add_ignore_pattern("*~");
+#line 1775
+    add_ignore_pattern(".*~");
+#line 1776
+    break;
+    case 67: 
+#line 1779
+    format = (enum format )2;
+#line 1780
+    break;
+    case 68: 
+#line 1783
+    dired = (_Bool)1;
+#line 1784
+    break;
+    case 70: 
+#line 1787
+    indicator_style = (enum indicator_style )3;
+#line 1788
+    break;
+    case 71: 
+#line 1791
+    print_group = (_Bool)0;
+#line 1792
+    break;
+    case 72: 
+#line 1795
+    dereference = (enum Dereference_symlink )3;
+#line 1796
+    break;
+    case 131: 
+#line 1799
+    dereference = (enum Dereference_symlink )4;
+#line 1800
+    break;
+    case 73: 
+#line 1803
+    add_ignore_pattern((char const   *)rpl_optarg);
+#line 1804
+    break;
+    case 76: 
+#line 1807
+    dereference = (enum Dereference_symlink )5;
+#line 1808
+    break;
+    case 78: 
+#line 1811
+    set_quoting_style((struct quoting_options *)((void *)0), (enum quoting_style )0);
+#line 1812
+    break;
+    case 81: 
+#line 1815
+    set_quoting_style((struct quoting_options *)((void *)0), (enum quoting_style )3);
+#line 1816
+    break;
+    case 82: 
+#line 1819
+    recursive = (_Bool)1;
+#line 1820
+    break;
+    case 83: 
+#line 1823
+    sort_type = (enum sort_type )2;
+#line 1824
+    sort_type_specified = (_Bool)1;
+#line 1825
+    break;
+    case 84: 
+#line 1830
+    tmp___23 = xstrtoul((char const   *)rpl_optarg, (char **)((void *)0), 0, & tmp_ulong___2,
+                        (char const   *)((void *)0));
+#line 1830
+    if ((unsigned int )tmp___23 != 0U) {
+#line 1832
+      tmp___21 = quotearg((char const   *)rpl_optarg);
+#line 1832
+      tmp___22 = gettext("invalid tab size: %s");
+#line 1832
+      error(2, 0, (char const   *)tmp___22, tmp___21);
+    } else
+#line 1830
+    if (0xffffffffffffffffUL < tmp_ulong___2) {
+#line 1832
+      tmp___21 = quotearg((char const   *)rpl_optarg);
+#line 1832
+      tmp___22 = gettext("invalid tab size: %s");
+#line 1832
+      error(2, 0, (char const   *)tmp___22, tmp___21);
+    }
+#line 1834
+    tabsize = tmp_ulong___2;
+#line 1835
+    break;
+    case 85: 
+#line 1839
+    sort_type = (enum sort_type )-1;
+#line 1840
+    sort_type_specified = (_Bool)1;
+#line 1841
+    break;
+    case 88: 
+#line 1844
+    sort_type = (enum sort_type )1;
+#line 1845
+    sort_type_specified = (_Bool)1;
+#line 1846
+    break;
+    case 49: 
+#line 1850
+    if ((unsigned int )format != 0U) {
+#line 1851
+      format = (enum format )1;
+    }
+#line 1852
+    break;
+    case 128: 
+#line 1855
+    print_author = (_Bool)1;
+#line 1856
+    break;
+    case 136: 
+#line 1860
+    tmp___24 = xmalloc(sizeof(*hide));
+#line 1860
+    hide = (struct ignore_pattern *)tmp___24;
+#line 1861
+    hide->pattern = (char const   *)rpl_optarg;
+#line 1862
+    hide->next = hide_patterns;
+#line 1863
+    hide_patterns = hide;
+#line 1865
+    break;
+    case 141: 
+#line 1868
+    tmp___25 = __xargmatch_internal("--sort", (char const   *)rpl_optarg, sort_args,
+                                    (char const   *)(sort_types), sizeof(sort_types[0]),
+                                    argmatch_die);
+#line 1868
+    sort_type = (enum sort_type )sort_types[tmp___25];
+#line 1869
+    sort_type_specified = (_Bool)1;
+#line 1870
+    break;
+    case 135: 
+#line 1873
+    directories_first = (_Bool)1;
+#line 1874
+    break;
+    case 142: 
+#line 1877
+    tmp___26 = __xargmatch_internal("--time", (char const   *)rpl_optarg, time_args,
+                                    (char const   *)(time_types), sizeof(time_types[0]),
+                                    argmatch_die);
+#line 1877
+    time_type = (enum time_type )time_types[tmp___26];
+#line 1878
+    break;
+    case 133: 
+#line 1881
+    tmp___27 = __xargmatch_internal("--format", (char const   *)rpl_optarg, format_args,
+                                    (char const   *)(format_types), sizeof(format_types[0]),
+                                    argmatch_die);
+#line 1881
+    format = (enum format )format_types[tmp___27];
+#line 1882
+    break;
+    case 134: 
+#line 1885
+    format = (enum format )0;
+#line 1886
+    time_style_option = bad_cast("full-iso");
+#line 1887
+    break;
+    case 130: 
+#line 1892
+    if (rpl_optarg) {
+#line 1893
+      tmp___28 = __xargmatch_internal("--color", (char const   *)rpl_optarg, color_args,
+                                      (char const   *)(color_types), sizeof(color_types[0]),
+                                      argmatch_die);
+#line 1893
+      i___0 = (int )color_types[tmp___28];
+    } else {
+#line 1897
+      i___0 = 1;
+    }
+#line 1899
+    if (i___0 == 1) {
+#line 1899
+      tmp___30 = 1;
+    } else
+#line 1899
+    if (i___0 == 2) {
+#line 1899
+      tmp___29 = isatty(1);
+#line 1899
+      if (tmp___29) {
+#line 1899
+        tmp___30 = 1;
+      } else {
+#line 1899
+        tmp___30 = 0;
+      }
+    } else {
+#line 1899
+      tmp___30 = 0;
+    }
+#line 1899
+    print_with_color = (_Bool )tmp___30;
+#line 1903
+    if (print_with_color) {
+#line 1908
+      tabsize = (size_t )0;
+    }
+#line 1910
+    break;
+    case 137: 
+#line 1914
+    tmp___31 = __xargmatch_internal("--indicator-style", (char const   *)rpl_optarg,
+                                    indicator_style_args, (char const   *)(indicator_style_types),
+                                    sizeof(indicator_style_types[0]), argmatch_die);
+#line 1914
+    indicator_style = (enum indicator_style )indicator_style_types[tmp___31];
+#line 1917
+    break;
+    case 138: 
+#line 1920
+    tmp___32 = __xargmatch_internal("--quoting-style", (char const   *)rpl_optarg,
+                                    quoting_style_args, (char const   *)(quoting_style_vals),
+                                    sizeof(quoting_style_vals[0]), argmatch_die);
+#line 1920
+    set_quoting_style((struct quoting_options *)((void *)0), (enum quoting_style )quoting_style_vals[tmp___32]);
+#line 1924
+    break;
+    case 143: 
+#line 1927
+    time_style_option = rpl_optarg;
+#line 1928
+    break;
+    case 139: 
+#line 1931
+    qmark_funny_chars = (_Bool)0;
+#line 1932
+    break;
+    case 129: 
+#line 1936
+    tmp___33 = human_options((char const   *)rpl_optarg, & human_output_opts, & output_block_size);
+#line 1936
+    e = tmp___33;
+#line 1938
+    if ((unsigned int )e != 0U) {
+#line 1939
+      xstrtol_fatal(e, oi, (char)0, long_options___0, (char const   *)rpl_optarg);
+    }
+#line 1940
+    file_output_block_size = output_block_size;
+#line 1942
+    break;
+    case 140: 
+#line 1945
+    human_output_opts = 144;
+#line 1946
+    output_block_size = (uintmax_t )1;
+#line 1946
+    file_output_block_size = output_block_size;
+#line 1947
+    break;
+    case 90: 
+#line 1950
+    print_scontext = (_Bool)1;
+#line 1951
+    break;
+    case -130: 
+#line 1953
+    usage(0);
+#line 1953
+    break;
+    case -131: 
+#line 1955
+    if (ls_mode == 1) {
+#line 1955
+      tmp___35 = "ls";
+    } else {
+#line 1955
+      if (ls_mode == 2) {
+#line 1955
+        tmp___34 = "dir";
+      } else {
+#line 1955
+        tmp___34 = "vdir";
+      }
+#line 1955
+      tmp___35 = tmp___34;
+    }
+#line 1955
+    version_etc(stdout, tmp___35, "GNU coreutils", Version, "Richard M. Stallman",
+                "David MacKenzie", (char *)((void *)0));
+#line 1955
+    exit(0);
+#line 1955
+    break;
+    default: 
+#line 1958
+    usage(2);
+    }
+  }
+#line 1962
+  if (1UL > line_length / 3UL) {
+#line 1962
+    max_idx = (size_t )1;
+  } else {
+#line 1962
+    max_idx = line_length / 3UL;
+  }
+#line 1964
+  filename_quoting_options = clone_quoting_options((struct quoting_options *)((void *)0));
+#line 1965
+  tmp___36 = get_quoting_style(filename_quoting_options);
+#line 1965
+  if ((unsigned int )tmp___36 == 5U) {
+#line 1966
+    set_char_quoting(filename_quoting_options, (char )' ', 1);
+  }
+#line 1967
+  if (2U <= (unsigned int )indicator_style) {
+#line 1970
+    p___1 = ("*=>@|" + (unsigned int )indicator_style) - 2;
+#line 1970
+    while (*p___1) {
+#line 1971
+      set_char_quoting(filename_quoting_options, (char )*p___1, 1);
+#line 1970
+      p___1 ++;
+    }
+  }
+#line 1974
+  dirname_quoting_options = clone_quoting_options((struct quoting_options *)((void *)0));
+#line 1975
+  set_char_quoting(dirname_quoting_options, (char )':', 1);
+#line 1980
+  if (dired) {
+#line 1980
+    if ((unsigned int )format != 0U) {
+#line 1981
+      dired = (_Bool)0;
+    }
+  }
+#line 1991
+  if ((unsigned int )time_type == 1U) {
+#line 1991
+    goto _L;
+  } else
+#line 1991
+  if ((unsigned int )time_type == 2U) {
+    _L: /* CIL Label */ 
+#line 1991
+    if (! sort_type_specified) {
+#line 1991
+      if ((unsigned int )format != 0U) {
+#line 1994
+        sort_type = (enum sort_type )4;
+      }
+    }
+  }
+#line 1997
+  if ((unsigned int )format == 0U) {
+#line 1999
+    style = time_style_option;
+#line 2002
+    if (! style) {
+#line 2003
+      style = getenv("TIME_STYLE");
+#line 2003
+      if (! style) {
+#line 2004
+        style = bad_cast("locale");
+      }
+    }
+#line 2006
+    while (1) {
+#line 2006
+      tmp___38 = strncmp((char const   *)style, posix_prefix, sizeof(posix_prefix) - 1UL);
+#line 2006
+      if (! (tmp___38 == 0)) {
+#line 2006
+        break;
+      }
+#line 2008
+      tmp___37 = hard_locale(2);
+#line 2008
+      if (! tmp___37) {
+#line 2009
+        return (rpl_optind);
+      }
+#line 2010
+      style += sizeof(posix_prefix) - 1UL;
+    }
+#line 2013
+    if ((int )*style == 43) {
+#line 2015
+      p0 = style + 1;
+#line 2016
+      tmp___39 = strchr((char const   *)p0, '\n');
+#line 2016
+      p1 = tmp___39;
+#line 2017
+      if (! p1) {
+#line 2018
+        p1 = p0;
+      } else {
+#line 2021
+        tmp___42 = strchr((char const   *)(p1 + 1), '\n');
+#line 2021
+        if (tmp___42) {
+#line 2022
+          tmp___40 = quote((char const   *)p0);
+#line 2022
+          tmp___41 = gettext("invalid time style format %s");
+#line 2022
+          error(2, 0, (char const   *)tmp___41, tmp___40);
+        }
+#line 2024
+        tmp___43 = p1;
+#line 2024
+        p1 ++;
+#line 2024
+        *tmp___43 = (char )'\000';
+      }
+#line 2026
+      long_time_format[0] = (char const   *)p0;
+#line 2027
+      long_time_format[1] = (char const   *)p1;
+    } else {
+#line 2030
+      tmp___44 = __xargmatch_internal("time style", (char const   *)style, time_style_args,
+                                      (char const   *)(time_style_types), sizeof(time_style_types[0]),
+                                      argmatch_die);
+#line 2030
+      switch ((int )time_style_types[tmp___44]) {
+      case 0: 
+#line 2035
+      long_time_format[1] = "%Y-%m-%d %H:%M:%S.%N %z";
+#line 2035
+      long_time_format[0] = long_time_format[1];
+#line 2037
+      break;
+      case 1: 
+#line 2040
+      long_time_format[1] = "%Y-%m-%d %H:%M";
+#line 2040
+      long_time_format[0] = long_time_format[1];
+#line 2041
+      break;
+      case 2: 
+#line 2044
+      long_time_format[0] = "%Y-%m-%d ";
+#line 2045
+      long_time_format[1] = "%m-%d %H:%M";
+#line 2046
+      break;
+      case 3: 
+#line 2049
+      tmp___46 = hard_locale(2);
+#line 2049
+      if (tmp___46) {
+#line 2052
+        i___1 = 0;
+#line 2052
+        while (i___1 < 2) {
+#line 2053
+          tmp___45 = dcgettext((char const   *)((void *)0), long_time_format[i___1],
+                               2);
+#line 2053
+          long_time_format[i___1] = (char const   *)tmp___45;
+#line 2052
+          i___1 ++;
+        }
+      }
+      }
+    }
+#line 2058
+    tmp___49 = strstr(long_time_format[0], "%b");
+#line 2058
+    if (tmp___49) {
+#line 2058
+      goto _L___0;
+    } else {
+#line 2058
+      tmp___50 = strstr(long_time_format[1], "%b");
+#line 2058
+      if (tmp___50) {
+        _L___0: /* CIL Label */ 
+#line 2060
+        tmp___48 = abmon_init();
+#line 2060
+        if (! tmp___48) {
+#line 2061
+          tmp___47 = gettext("error initializing month strings");
+#line 2061
+          error(0, 0, (char const   *)tmp___47);
+        }
+      }
+    }
+  }
+#line 2064
+  return (rpl_optind);
+}
+}
+#line 2080 "ls.c"
+static _Bool get_funky_string(char **dest , char const   **src , _Bool equals_end ,
+                              size_t *output_count ) 
+{ char num ;
+  size_t count ;
+  enum __anonenum_state_85 state ;
+  char const   *p ;
+  char *q ;
+  char *tmp ;
+  char const   *tmp___0 ;
+  char *tmp___1 ;
+  char *tmp___2 ;
+  char const   *tmp___3 ;
+  char const   *tmp___4 ;
+  char const   *tmp___5 ;
+  char const   *tmp___6 ;
+  char *tmp___7 ;
+  char *tmp___8 ;
+  char const   *tmp___9 ;
+  char *tmp___10 ;
+
+  {
+#line 2092
+  p = *src;
+#line 2093
+  q = *dest;
+#line 2095
+  count = (size_t )0;
+#line 2096
+  num = (char)0;
+#line 2098
+  state = (enum __anonenum_state_85 )0;
+#line 2099
+  while ((unsigned int )state < 5U) {
+#line 2101
+    switch ((int )state) {
+    case 0: 
+#line 2104
+    switch ((int )*p) {
+    case 58: 
+    case 0: 
+#line 2108
+    state = (enum __anonenum_state_85 )5;
+#line 2109
+    break;
+    case 92: 
+#line 2111
+    state = (enum __anonenum_state_85 )1;
+#line 2112
+    p ++;
+#line 2113
+    break;
+    case 94: 
+#line 2115
+    state = (enum __anonenum_state_85 )4;
+#line 2116
+    p ++;
+#line 2117
+    break;
+    case 61: 
+#line 2119
+    if (equals_end) {
+#line 2121
+      state = (enum __anonenum_state_85 )5;
+#line 2122
+      break;
+    }
+    default: 
+#line 2126
+    tmp = q;
+#line 2126
+    q ++;
+#line 2126
+    tmp___0 = p;
+#line 2126
+    p ++;
+#line 2126
+    *tmp = (char )*tmp___0;
+#line 2127
+    count ++;
+#line 2128
+    break;
+    }
+#line 2130
+    break;
+    case 1: 
+#line 2133
+    switch ((int )*p) {
+    case 48: 
+    case 49: 
+    case 50: 
+    case 51: 
+    case 52: 
+    case 53: 
+    case 54: 
+    case 55: 
+#line 2143
+    state = (enum __anonenum_state_85 )2;
+#line 2144
+    num = (char )((int const   )*p - 48);
+#line 2145
+    break;
+    case 120: 
+    case 88: 
+#line 2148
+    state = (enum __anonenum_state_85 )3;
+#line 2149
+    num = (char)0;
+#line 2150
+    break;
+    case 97: 
+#line 2152
+    num = (char )'\a';
+#line 2153
+    break;
+    case 98: 
+#line 2155
+    num = (char )'\b';
+#line 2156
+    break;
+    case 101: 
+#line 2158
+    num = (char)27;
+#line 2159
+    break;
+    case 102: 
+#line 2161
+    num = (char )'\f';
+#line 2162
+    break;
+    case 110: 
+#line 2164
+    num = (char )'\n';
+#line 2165
+    break;
+    case 114: 
+#line 2167
+    num = (char )'\r';
+#line 2168
+    break;
+    case 116: 
+#line 2170
+    num = (char )'\t';
+#line 2171
+    break;
+    case 118: 
+#line 2173
+    num = (char )'\v';
+#line 2174
+    break;
+    case 63: 
+#line 2176
+    num = (char)127;
+#line 2177
+    break;
+    case 95: 
+#line 2179
+    num = (char )' ';
+#line 2180
+    break;
+    case 0: 
+#line 2182
+    state = (enum __anonenum_state_85 )6;
+#line 2183
+    break;
+    default: 
+#line 2185
+    num = (char )*p;
+#line 2186
+    break;
+    }
+#line 2188
+    if ((unsigned int )state == 1U) {
+#line 2190
+      tmp___1 = q;
+#line 2190
+      q ++;
+#line 2190
+      *tmp___1 = num;
+#line 2191
+      count ++;
+#line 2192
+      state = (enum __anonenum_state_85 )0;
+    }
+#line 2194
+    p ++;
+#line 2195
+    break;
+    case 2: 
+#line 2198
+    if ((int const   )*p < 48) {
+#line 2200
+      tmp___2 = q;
+#line 2200
+      q ++;
+#line 2200
+      *tmp___2 = num;
+#line 2201
+      count ++;
+#line 2202
+      state = (enum __anonenum_state_85 )0;
+    } else
+#line 2198
+    if ((int const   )*p > 55) {
+#line 2200
+      tmp___2 = q;
+#line 2200
+      q ++;
+#line 2200
+      *tmp___2 = num;
+#line 2201
+      count ++;
+#line 2202
+      state = (enum __anonenum_state_85 )0;
+    } else {
+#line 2205
+      tmp___3 = p;
+#line 2205
+      p ++;
+#line 2205
+      num = (char )(((int )num << 3) + (int )((int const   )*tmp___3 - 48));
+    }
+#line 2206
+    break;
+    case 3: 
+#line 2209
+    switch ((int )*p) {
+    case 48: 
+    case 49: 
+    case 50: 
+    case 51: 
+    case 52: 
+    case 53: 
+    case 54: 
+    case 55: 
+    case 56: 
+    case 57: 
+#line 2221
+    tmp___4 = p;
+#line 2221
+    p ++;
+#line 2221
+    num = (char )(((int )num << 4) + (int )((int const   )*tmp___4 - 48));
+#line 2222
+    break;
+    case 97: 
+    case 98: 
+    case 99: 
+    case 100: 
+    case 101: 
+    case 102: 
+#line 2229
+    tmp___5 = p;
+#line 2229
+    p ++;
+#line 2229
+    num = (char )((((int )num << 4) + (int )((int const   )*tmp___5 - 97)) + 10);
+#line 2230
+    break;
+    case 65: 
+    case 66: 
+    case 67: 
+    case 68: 
+    case 69: 
+    case 70: 
+#line 2237
+    tmp___6 = p;
+#line 2237
+    p ++;
+#line 2237
+    num = (char )((((int )num << 4) + (int )((int const   )*tmp___6 - 65)) + 10);
+#line 2238
+    break;
+    default: 
+#line 2240
+    tmp___7 = q;
+#line 2240
+    q ++;
+#line 2240
+    *tmp___7 = num;
+#line 2241
+    count ++;
+#line 2242
+    state = (enum __anonenum_state_85 )0;
+#line 2243
+    break;
+    }
+#line 2245
+    break;
+    case 4: 
+#line 2248
+    state = (enum __anonenum_state_85 )0;
+#line 2249
+    if ((int const   )*p >= 64) {
+#line 2249
+      if ((int const   )*p <= 126) {
+#line 2251
+        tmp___8 = q;
+#line 2251
+        q ++;
+#line 2251
+        tmp___9 = p;
+#line 2251
+        p ++;
+#line 2251
+        *tmp___8 = (char )((int const   )*tmp___9 & 31);
+#line 2252
+        count ++;
+      } else {
+#line 2249
+        goto _L;
+      }
+    } else
+    _L: /* CIL Label */ 
+#line 2254
+    if ((int const   )*p == 63) {
+#line 2256
+      tmp___10 = q;
+#line 2256
+      q ++;
+#line 2256
+      *tmp___10 = (char)127;
+#line 2257
+      count ++;
+    } else {
+#line 2260
+      state = (enum __anonenum_state_85 )6;
+    }
+#line 2261
+    break;
+    default: 
+#line 2264
+    abort();
+    }
+  }
+#line 2268
+  *dest = q;
+#line 2269
+  *src = p;
+#line 2270
+  *output_count = count;
+#line 2272
+  return ((_Bool )((unsigned int )state != 6U));
+}
+}
+#line 2285 "ls.c"
+static void parse_ls_color(void) 
+{ char const   *p ;
+  char *buf___1 ;
+  int ind_no ;
+  char label[3] ;
+  struct color_ext_type *ext ;
+  char *tmp ;
+  enum parse_state state ;
+  void *tmp___0 ;
+  _Bool tmp___2 ;
+  char const   *tmp___3 ;
+  char const   *tmp___4 ;
+  _Bool tmp___6 ;
+  int tmp___7 ;
+  char *tmp___8 ;
+  char *tmp___9 ;
+  char const   *tmp___10 ;
+  _Bool tmp___12 ;
+  char const   *tmp___13 ;
+  struct color_ext_type *e ;
+  struct color_ext_type *e2 ;
+  char *tmp___14 ;
   int tmp___15 ;
 
   {
-#line 185
-  crc = (uint_fast32_t )0;
-#line 186
-  length = (uintmax_t )0;
-#line 192
-  tmp___1 = strcmp(file, "-");
-#line 192
-  if (tmp___1 == 0) {
-#line 194
-    fp = stdin;
-#line 195
-    have_read_stdin = (_Bool)1;
-  } else {
-#line 201
-    fp = fopen((char const   * __restrict  )file, (char const   * __restrict  )"r");
-#line 202
-    if ((unsigned long )fp == (unsigned long )((void *)0)) {
-#line 204
-      tmp___0 = __errno_location();
-#line 204
-      error(0, *tmp___0, "%s", file);
-#line 205
-      return ((_Bool)0);
+#line 2294
+  tmp = getenv("LS_COLORS");
+#line 2294
+  p = (char const   *)tmp;
+#line 2294
+  if ((unsigned long )p == (unsigned long )((void *)0)) {
+#line 2295
+    return;
+  } else
+#line 2294
+  if ((int const   )*p == 0) {
+#line 2295
+    return;
+  }
+#line 2297
+  ext = (struct color_ext_type *)((void *)0);
+#line 2298
+  strcpy((char * __restrict  )(label), (char const   * __restrict  )"??");
+#line 2304
+  color_buf = xstrdup(p);
+#line 2304
+  buf___1 = color_buf;
+#line 2306
+  state = (enum parse_state )1;
+#line 2307
+  while (1) {
+#line 2309
+    switch ((int )state) {
+    case 1: 
+#line 2312
+    switch ((int )*p) {
+    case 58: 
+#line 2315
+    p ++;
+#line 2316
+    break;
+    case 42: 
+#line 2324
+    tmp___0 = xmalloc(sizeof(*ext));
+#line 2324
+    ext = (struct color_ext_type *)tmp___0;
+#line 2325
+    ext->next = color_ext_list;
+#line 2326
+    color_ext_list = ext;
+#line 2328
+    p ++;
+#line 2329
+    ext->ext.string = (char const   *)buf___1;
+#line 2331
+    tmp___2 = get_funky_string(& buf___1, & p, (_Bool)1, & ext->ext.len);
+#line 2331
+    if (tmp___2) {
+#line 2331
+      state = (enum parse_state )4;
+    } else {
+#line 2331
+      state = (enum parse_state )6;
+    }
+#line 2333
+    break;
+    case 0: 
+#line 2336
+    state = (enum parse_state )5;
+#line 2337
+    goto done;
+    default: 
+#line 2340
+    tmp___3 = p;
+#line 2340
+    p ++;
+#line 2340
+    label[0] = (char )*tmp___3;
+#line 2341
+    state = (enum parse_state )2;
+#line 2342
+    break;
+    }
+#line 2344
+    break;
+    case 2: 
+#line 2347
+    if (*p) {
+#line 2349
+      tmp___4 = p;
+#line 2349
+      p ++;
+#line 2349
+      label[1] = (char )*tmp___4;
+#line 2350
+      state = (enum parse_state )3;
+    } else {
+#line 2353
+      state = (enum parse_state )6;
+    }
+#line 2354
+    break;
+    case 3: 
+#line 2357
+    state = (enum parse_state )6;
+#line 2358
+    tmp___10 = p;
+#line 2358
+    p ++;
+#line 2358
+    if ((int const   )*tmp___10 == 61) {
+#line 2360
+      ind_no = 0;
+#line 2360
+      while ((unsigned long )indicator_name[ind_no] != (unsigned long )((void *)0)) {
+#line 2362
+        tmp___7 = strcmp((char const   *)(label), (char const   *)indicator_name[ind_no]);
+#line 2362
+        if (tmp___7 == 0) {
+#line 2364
+          color_indicator[ind_no].string = (char const   *)buf___1;
+#line 2365
+          tmp___6 = get_funky_string(& buf___1, & p, (_Bool)0, & color_indicator[ind_no].len);
+#line 2365
+          if (tmp___6) {
+#line 2365
+            state = (enum parse_state )1;
+          } else {
+#line 2365
+            state = (enum parse_state )6;
+          }
+#line 2368
+          break;
+        }
+#line 2360
+        ind_no ++;
+      }
+#line 2371
+      if ((unsigned int )state == 6U) {
+#line 2372
+        tmp___8 = quotearg((char const   *)(label));
+#line 2372
+        tmp___9 = gettext("unrecognized prefix: %s");
+#line 2372
+        error(0, 0, (char const   *)tmp___9, tmp___8);
+      }
+    }
+#line 2374
+    break;
+    case 4: 
+#line 2377
+    tmp___13 = p;
+#line 2377
+    p ++;
+#line 2377
+    if ((int const   )*tmp___13 == 61) {
+#line 2379
+      ext->seq.string = (char const   *)buf___1;
+#line 2380
+      tmp___12 = get_funky_string(& buf___1, & p, (_Bool)0, & ext->seq.len);
+#line 2380
+      if (tmp___12) {
+#line 2380
+        state = (enum parse_state )1;
+      } else {
+#line 2380
+        state = (enum parse_state )6;
+      }
+    } else {
+#line 2384
+      state = (enum parse_state )6;
+    }
+#line 2385
+    break;
+    case 6: 
+#line 2388
+    goto done;
+    default: 
+#line 2391
+    abort();
     }
   }
-#line 209
-  fadvise(fp, (fadvice_t )2);
-#line 211
-  while (1) {
-#line 211
-    bytes_read = (size_t )fread_unlocked((void * __restrict  )(buf___1), (size_t )1,
-                                         (size_t )(1 << 16), (FILE * __restrict  )fp);
-#line 211
-    if (! (bytes_read > 0UL)) {
-#line 211
+  done: 
+#line 2396
+  if ((unsigned int )state == 6U) {
+#line 2401
+    tmp___14 = gettext("unparsable value for LS_COLORS environment variable");
+#line 2401
+    error(0, 0, (char const   *)tmp___14);
+#line 2403
+    free((void *)color_buf);
+#line 2404
+    e = color_ext_list;
+#line 2404
+    while ((unsigned long )e != (unsigned long )((void *)0)) {
+#line 2406
+      e2 = e;
+#line 2407
+      e = e->next;
+#line 2408
+      free((void *)e2);
+    }
+#line 2410
+    print_with_color = (_Bool)0;
+  }
+#line 2413
+  if (color_indicator[7].len == 6UL) {
+#line 2413
+    tmp___15 = strncmp(color_indicator[7].string, "target", sizeof("target") - 1UL);
+#line 2413
+    if (! tmp___15) {
+#line 2415
+      color_symlink_as_referent = (_Bool)1;
+    }
+  }
+#line 2416
+  return;
+}
+}
+#line 2421 "ls.c"
+static void set_exit_status(_Bool serious ) 
+{ 
+
+  {
+#line 2424
+  if (serious) {
+#line 2425
+    exit_status = 2;
+  } else
+#line 2426
+  if (exit_status == 0) {
+#line 2427
+    exit_status = 1;
+  }
+#line 2428
+  return;
+}
+}
+#line 2434 "ls.c"
+static void file_failure(_Bool serious , char const   *message , char const   *file ) 
+{ char *tmp ;
+  int *tmp___0 ;
+
+  {
+#line 2437
+  tmp = quotearg_colon(file);
+#line 2437
+  tmp___0 = __errno_location();
+#line 2437
+  error(0, *tmp___0, message, tmp);
+#line 2438
+  set_exit_status(serious);
+#line 2439
+  return;
+}
+}
+#line 2451 "ls.c"
+static void queue_directory(char const   *name , char const   *realname , _Bool command_line_arg ) 
+{ struct pending *new ;
+  void *tmp ;
+  char *tmp___0 ;
+  char *tmp___1 ;
+
+  {
+#line 2454
+  tmp = xmalloc(sizeof(*new));
+#line 2454
+  new = (struct pending *)tmp;
+#line 2455
+  if (realname) {
+#line 2455
+    tmp___0 = xstrdup(realname);
+#line 2455
+    new->realname = tmp___0;
+  } else {
+#line 2455
+    new->realname = (char *)((void *)0);
+  }
+#line 2456
+  if (name) {
+#line 2456
+    tmp___1 = xstrdup(name);
+#line 2456
+    new->name = tmp___1;
+  } else {
+#line 2456
+    new->name = (char *)((void *)0);
+  }
+#line 2457
+  new->command_line_arg = command_line_arg;
+#line 2458
+  new->next = pending_dirs;
+#line 2459
+  pending_dirs = new;
+#line 2460
+  return;
+}
+}
+#line 2473 "ls.c"
+static _Bool first  =    (_Bool)1;
+#line 2467 "ls.c"
+static void print_dir(char const   *name , char const   *realname , _Bool command_line_arg ) 
+{ DIR *dirp ;
+  struct dirent *next ;
+  uintmax_t total_blocks ;
+  int *tmp ;
+  char *tmp___0 ;
+  struct stat dir_stat ;
+  int fd ;
+  int tmp___1 ;
+  char *tmp___2 ;
+  int tmp___3 ;
+  int tmp___4 ;
+  int tmp___5 ;
+  char *tmp___6 ;
+  char *tmp___7 ;
+  _Bool tmp___8 ;
+  struct dev_ino *di ;
+  struct obstack *__o ;
+  int __len ;
+  struct obstack *__o___0 ;
+  int __len___0 ;
+  char const   *tmp___9 ;
+  size_t tmp___10 ;
+  struct obstack *__o___1 ;
+  int __len___1 ;
+  int *tmp___11 ;
+  enum filetype type ;
+  uintmax_t tmp___12 ;
+  _Bool tmp___13 ;
+  char *tmp___14 ;
+  int *tmp___15 ;
+  int *tmp___16 ;
+  char *tmp___17 ;
+  int tmp___18 ;
+  char const   *p ;
+  char buf___1[(((((((2UL * sizeof(uintmax_t )) * 8UL) * 146UL) / 485UL + 1UL) * 17UL - 16UL) + 1UL) + 3UL) + 1UL] ;
+  char *tmp___19 ;
+  size_t tmp___20 ;
+  char *tmp___21 ;
+  size_t tmp___22 ;
+
+  {
+#line 2472
+  total_blocks = (uintmax_t )0;
+#line 2475
+  tmp = __errno_location();
+#line 2475
+  *tmp = 0;
+#line 2476
+  dirp = opendir(name);
+#line 2477
+  if (! dirp) {
+#line 2479
+    tmp___0 = gettext("cannot open directory %s");
+#line 2479
+    file_failure(command_line_arg, (char const   *)tmp___0, name);
+#line 2480
+    return;
+  }
+#line 2483
+  if (! (! active_dir_set)) {
+#line 2486
+    tmp___1 = dirfd(dirp);
+#line 2486
+    fd = tmp___1;
+#line 2489
+    if (0 <= fd) {
+#line 2489
+      tmp___3 = fstat(fd, & dir_stat);
+#line 2489
+      tmp___5 = tmp___3;
+    } else {
+#line 2489
+      tmp___4 = stat((char const   * __restrict  )name, (struct stat * __restrict  )(& dir_stat));
+#line 2489
+      tmp___5 = tmp___4;
+    }
+#line 2489
+    if (tmp___5 < 0) {
+#line 2493
+      tmp___2 = gettext("cannot determine device and inode of %s");
+#line 2493
+      file_failure(command_line_arg, (char const   *)tmp___2, name);
+#line 2495
+      closedir(dirp);
+#line 2496
+      return;
+    }
+#line 2501
+    tmp___8 = visit_dir(dir_stat.st_dev, dir_stat.st_ino);
+#line 2501
+    if (tmp___8) {
+#line 2503
+      tmp___6 = quotearg_colon(name);
+#line 2503
+      tmp___7 = gettext("%s: not listing already-listed directory");
+#line 2503
+      error(0, 0, (char const   *)tmp___7, tmp___6);
+#line 2505
+      closedir(dirp);
+#line 2506
+      set_exit_status((_Bool)1);
+#line 2507
+      return;
+    }
+#line 2510
+    while (1) {
+#line 2510
+      __o = & dev_ino_obstack;
+#line 2510
+      __len = (int )sizeof(struct dev_ino );
+#line 2510
+      if (__o->chunk_limit - __o->next_free < __len) {
+#line 2510
+        _obstack_newchunk(__o, __len);
+      }
+#line 2510
+      __o->next_free += __len;
+#line 2510
+      di = (struct dev_ino *)dev_ino_obstack.next_free + -1;
+#line 2510
+      di->st_dev = dir_stat.st_dev;
+#line 2510
+      di->st_ino = dir_stat.st_ino;
+#line 2510
       break;
     }
-#line 213
-    cp = buf___1;
-#line 215
-    if (length + bytes_read < length) {
-#line 216
-      tmp___2 = gettext("%s: file too long");
-#line 216
-      error(1, 0, (char const   *)tmp___2, file);
-    }
-#line 217
-    length += bytes_read;
-#line 218
-    while (1) {
-#line 218
-      tmp___4 = bytes_read;
-#line 218
-      bytes_read --;
-#line 218
-      if (! tmp___4) {
-#line 218
+  }
+#line 2513
+  if (recursive) {
+#line 2513
+    goto _L;
+  } else
+#line 2513
+  if (print_dir_name) {
+    _L: /* CIL Label */ 
+#line 2515
+    if (! first) {
+#line 2516
+      while (1) {
+#line 2516
+        putchar_unlocked('\n');
+#line 2516
+        dired_pos ++;
+#line 2516
         break;
       }
-#line 219
-      tmp___3 = cp;
-#line 219
-      cp ++;
-#line 219
-      crc = (crc << 8) ^ (unsigned long )crctab[((crc >> 24) ^ (unsigned long )*tmp___3) & 255UL];
     }
-#line 220
-    tmp___5 = feof_unlocked(fp);
-#line 220
-    if (tmp___5) {
-#line 221
+#line 2517
+    first = (_Bool)0;
+#line 2518
+    while (1) {
+#line 2518
+      if (dired) {
+#line 2518
+        while (1) {
+#line 2518
+          fputs_unlocked((char const   * __restrict  )"  ", (FILE * __restrict  )stdout);
+#line 2518
+          dired_pos += sizeof("  ") - 1UL;
+#line 2518
+          break;
+        }
+      }
+#line 2518
+      break;
+    }
+#line 2519
+    while (1) {
+#line 2519
+      if (dired) {
+#line 2519
+        __o___0 = & subdired_obstack;
+#line 2519
+        __len___0 = (int )sizeof(dired_pos);
+#line 2519
+        if ((unsigned long )(__o___0->next_free + __len___0) > (unsigned long )__o___0->chunk_limit) {
+#line 2519
+          _obstack_newchunk(__o___0, __len___0);
+        }
+#line 2519
+        memcpy((void * __restrict  )__o___0->next_free, (void const   * __restrict  )(& dired_pos),
+               (size_t )__len___0);
+#line 2519
+        __o___0->next_free += __len___0;
+      }
+#line 2519
+      break;
+    }
+#line 2520
+    if (realname) {
+#line 2520
+      tmp___9 = realname;
+    } else {
+#line 2520
+      tmp___9 = name;
+    }
+#line 2520
+    tmp___10 = quote_name(stdout, tmp___9, (struct quoting_options  const  *)dirname_quoting_options,
+                          (size_t *)((void *)0));
+#line 2520
+    dired_pos += tmp___10;
+#line 2522
+    while (1) {
+#line 2522
+      if (dired) {
+#line 2522
+        __o___1 = & subdired_obstack;
+#line 2522
+        __len___1 = (int )sizeof(dired_pos);
+#line 2522
+        if ((unsigned long )(__o___1->next_free + __len___1) > (unsigned long )__o___1->chunk_limit) {
+#line 2522
+          _obstack_newchunk(__o___1, __len___1);
+        }
+#line 2522
+        memcpy((void * __restrict  )__o___1->next_free, (void const   * __restrict  )(& dired_pos),
+               (size_t )__len___1);
+#line 2522
+        __o___1->next_free += __len___1;
+      }
+#line 2522
+      break;
+    }
+#line 2523
+    while (1) {
+#line 2523
+      fputs_unlocked((char const   * __restrict  )":\n", (FILE * __restrict  )stdout);
+#line 2523
+      dired_pos += sizeof(":\n") - 1UL;
+#line 2523
       break;
     }
   }
-#line 224
-  tmp___8 = ferror_unlocked(fp);
-#line 224
-  if (tmp___8) {
-#line 226
-    tmp___6 = __errno_location();
-#line 226
-    error(0, *tmp___6, "%s", file);
-#line 227
-    tmp___7 = strcmp(file, "-");
-#line 227
-    if (! (tmp___7 == 0)) {
-#line 228
-      rpl_fclose(fp);
+#line 2529
+  clear_files();
+#line 2531
+  while (1) {
+#line 2535
+    tmp___11 = __errno_location();
+#line 2535
+    *tmp___11 = 0;
+#line 2536
+    next = readdir(dirp);
+#line 2537
+    if (next) {
+#line 2539
+      tmp___13 = file_ignored((char const   *)(next->d_name));
+#line 2539
+      if (! tmp___13) {
+#line 2541
+        type = (enum filetype )0;
+#line 2544
+        switch ((int )next->d_type) {
+        case 6: 
+#line 2546
+        type = (enum filetype )4;
+#line 2546
+        break;
+        case 2: 
+#line 2547
+        type = (enum filetype )2;
+#line 2547
+        break;
+        case 4: 
+#line 2548
+        type = (enum filetype )3;
+#line 2548
+        break;
+        case 1: 
+#line 2549
+        type = (enum filetype )1;
+#line 2549
+        break;
+        case 10: 
+#line 2550
+        type = (enum filetype )6;
+#line 2550
+        break;
+        case 8: 
+#line 2551
+        type = (enum filetype )5;
+#line 2551
+        break;
+        case 12: 
+#line 2552
+        type = (enum filetype )7;
+#line 2552
+        break;
+        case 14: 
+#line 2554
+        type = (enum filetype )8;
+#line 2554
+        break;
+        }
+#line 2558
+        tmp___12 = gobble_file((char const   *)(next->d_name), type, (ino_t )0, (_Bool)0,
+                               name);
+#line 2558
+        total_blocks += tmp___12;
+#line 2566
+        if ((unsigned int )format == 1U) {
+#line 2566
+          if ((int )sort_type == -1) {
+#line 2566
+            if (! print_block_size) {
+#line 2566
+              if (! recursive) {
+#line 2572
+                sort_files();
+#line 2573
+                print_current_files();
+#line 2574
+                clear_files();
+              }
+            }
+          }
+        }
+      }
+    } else {
+#line 2578
+      tmp___16 = __errno_location();
+#line 2578
+      if (*tmp___16 != 0) {
+#line 2580
+        tmp___14 = gettext("reading directory %s");
+#line 2580
+        file_failure(command_line_arg, (char const   *)tmp___14, name);
+#line 2581
+        tmp___15 = __errno_location();
+#line 2581
+        if (*tmp___15 != 75) {
+#line 2582
+          break;
+        }
+      } else {
+#line 2585
+        break;
+      }
     }
-#line 229
+  }
+#line 2588
+  tmp___18 = closedir(dirp);
+#line 2588
+  if (tmp___18 != 0) {
+#line 2590
+    tmp___17 = gettext("closing directory %s");
+#line 2590
+    file_failure(command_line_arg, (char const   *)tmp___17, name);
+  }
+#line 2595
+  sort_files();
+#line 2600
+  if (recursive) {
+#line 2601
+    extract_dirs_from_files(name, command_line_arg);
+  }
+#line 2603
+  if ((unsigned int )format == 0U) {
+#line 2603
+    goto _L___0;
+  } else
+#line 2603
+  if (print_block_size) {
+    _L___0: /* CIL Label */ 
+#line 2608
+    while (1) {
+#line 2608
+      if (dired) {
+#line 2608
+        while (1) {
+#line 2608
+          fputs_unlocked((char const   * __restrict  )"  ", (FILE * __restrict  )stdout);
+#line 2608
+          dired_pos += sizeof("  ") - 1UL;
+#line 2608
+          break;
+        }
+      }
+#line 2608
+      break;
+    }
+#line 2609
+    tmp___19 = gettext("total");
+#line 2609
+    p = (char const   *)tmp___19;
+#line 2610
+    while (1) {
+#line 2610
+      fputs_unlocked((char const   * __restrict  )p, (FILE * __restrict  )stdout);
+#line 2610
+      tmp___20 = strlen(p);
+#line 2610
+      dired_pos += tmp___20;
+#line 2610
+      break;
+    }
+#line 2611
+    while (1) {
+#line 2611
+      putchar_unlocked(' ');
+#line 2611
+      dired_pos ++;
+#line 2611
+      break;
+    }
+#line 2612
+    tmp___21 = human_readable(total_blocks, buf___1, human_output_opts, (uintmax_t )512,
+                              output_block_size);
+#line 2612
+    p = (char const   *)tmp___21;
+#line 2614
+    while (1) {
+#line 2614
+      fputs_unlocked((char const   * __restrict  )p, (FILE * __restrict  )stdout);
+#line 2614
+      tmp___22 = strlen(p);
+#line 2614
+      dired_pos += tmp___22;
+#line 2614
+      break;
+    }
+#line 2615
+    while (1) {
+#line 2615
+      putchar_unlocked('\n');
+#line 2615
+      dired_pos ++;
+#line 2615
+      break;
+    }
+  }
+#line 2618
+  if (cwd_n_used) {
+#line 2619
+    print_current_files();
+  }
+#line 2620
+  return;
+}
+}
+#line 2625 "ls.c"
+static void add_ignore_pattern(char const   *pattern ) 
+{ struct ignore_pattern *ignore ;
+  void *tmp ;
+
+  {
+#line 2630
+  tmp = xmalloc(sizeof(*ignore));
+#line 2630
+  ignore = (struct ignore_pattern *)tmp;
+#line 2631
+  ignore->pattern = pattern;
+#line 2633
+  ignore->next = ignore_patterns;
+#line 2634
+  ignore_patterns = ignore;
+#line 2635
+  return;
+}
+}
+#line 2639 "ls.c"
+static _Bool patterns_match(struct ignore_pattern  const  *patterns , char const   *file ) 
+{ struct ignore_pattern  const  *p ;
+  int tmp ;
+
+  {
+#line 2643
+  p = patterns;
+#line 2643
+  while (p) {
+#line 2644
+    tmp = fnmatch((char const   *)p->pattern, file, 1 << 2);
+#line 2644
+    if (tmp == 0) {
+#line 2645
+      return ((_Bool)1);
+    }
+#line 2643
+    p = (struct ignore_pattern  const  *)p->next;
+  }
+#line 2646
+  return ((_Bool)0);
+}
+}
+#line 2651 "ls.c"
+static _Bool file_ignored(char const   *name ) 
+{ _Bool tmp ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 2654
+  if ((unsigned int )ignore_mode != 2U) {
+#line 2654
+    if ((int const   )*(name + 0) == 46) {
+#line 2654
+      if ((unsigned int )ignore_mode == 0U) {
+#line 2654
+        tmp___1 = 1;
+      } else
+#line 2654
+      if (! *(name + (1 + ((int const   )*(name + 1) == 46)))) {
+#line 2654
+        tmp___1 = 1;
+      } else {
+#line 2654
+        goto _L___1;
+      }
+    } else {
+#line 2654
+      goto _L___1;
+    }
+  } else
+  _L___1: /* CIL Label */ 
+#line 2654
+  if ((unsigned int )ignore_mode == 0U) {
+#line 2654
+    tmp = patterns_match((struct ignore_pattern  const  *)hide_patterns, name);
+#line 2654
+    if (tmp) {
+#line 2654
+      tmp___1 = 1;
+    } else {
+#line 2654
+      goto _L;
+    }
+  } else {
+    _L: /* CIL Label */ 
+#line 2654
+    tmp___0 = patterns_match((struct ignore_pattern  const  *)ignore_patterns, name);
+#line 2654
+    if (tmp___0) {
+#line 2654
+      tmp___1 = 1;
+    } else {
+#line 2654
+      tmp___1 = 0;
+    }
+  }
+#line 2654
+  return ((_Bool )tmp___1);
+}
+}
+#line 2666 "ls.c"
+static uintmax_t unsigned_file_size(off_t size ) 
+{ 
+
+  {
+#line 2669
+  return ((uintmax_t )size + (uintmax_t )(size < 0L) * (((uintmax_t )(((1L << (sizeof(off_t ) * 8UL - 2UL)) - 1L) * 2L + 1L) - (uintmax_t )(~ (((1L << (sizeof(off_t ) * 8UL - 2UL)) - 1L) * 2L + 1L))) + 1UL));
+}
+}
+#line 2696 "ls.c"
+static _Bool has_capability(char const   *name  __attribute__((__unused__)) ) 
+{ 
+
+  {
+#line 2699
+  return ((_Bool)0);
+}
+}
+#line 2707 "ls.c"
+static void clear_files(void) 
+{ size_t i ;
+  struct fileinfo *f ;
+
+  {
+#line 2712
+  i = (size_t )0;
+#line 2712
+  while (i < cwd_n_used) {
+#line 2714
+    f = (struct fileinfo *)*(sorted_file + i);
+#line 2715
+    free((void *)f->name);
+#line 2716
+    free((void *)f->linkname);
+#line 2717
+    if ((unsigned long )f->scontext != (unsigned long )(UNKNOWN_SECURITY_CONTEXT)) {
+#line 2718
+      freecon(f->scontext);
+    }
+#line 2712
+    i ++;
+  }
+#line 2721
+  cwd_n_used = (size_t )0;
+#line 2722
+  any_has_acl = (_Bool)0;
+#line 2723
+  inode_number_width = 0;
+#line 2724
+  block_size_width = 0;
+#line 2725
+  nlink_width = 0;
+#line 2726
+  owner_width = 0;
+#line 2727
+  group_width = 0;
+#line 2728
+  author_width = 0;
+#line 2729
+  scontext_width = 0;
+#line 2730
+  major_device_number_width = 0;
+#line 2731
+  minor_device_number_width = 0;
+#line 2732
+  file_size_width = 0;
+#line 2733
+  return;
+}
+}
+#line 2739 "ls.c"
+static uintmax_t gobble_file(char const   *name , enum filetype type , ino_t inode ,
+                             _Bool command_line_arg , char const   *dirname ) 
+{ uintmax_t blocks ;
+  struct fileinfo *f ;
+  void *tmp ;
+  char *absolute_name ;
+  _Bool do_deref ;
+  int err ;
+  size_t tmp___0 ;
+  size_t tmp___1 ;
+  void *tmp___2 ;
+  _Bool need_lstat ;
+  int *tmp___3 ;
+  char *tmp___4 ;
+  _Bool tmp___5 ;
+  _Bool have_selinux ;
+  _Bool have_acl ;
+  int attr_len ;
+  int tmp___6 ;
+  int tmp___7 ;
+  int tmp___8 ;
+  int tmp___9 ;
+  int tmp___10 ;
+  int *tmp___11 ;
+  int *tmp___12 ;
+  int *tmp___13 ;
+  int n ;
+  int tmp___14 ;
+  int tmp___15 ;
+  char *tmp___16 ;
+  int *tmp___17 ;
+  char *linkname ;
+  struct stat linkstats ;
+  int tmp___18 ;
+  char buf___1[(((((((2UL * sizeof(uintmax_t )) * 8UL) * 146UL) / 485UL + 1UL) * 17UL - 16UL) + 1UL) + 3UL) + 1UL] ;
+  int len ;
+  char *tmp___19 ;
+  int tmp___20 ;
+  int len___0 ;
+  int tmp___21 ;
+  int len___1 ;
+  int tmp___22 ;
+  int len___2 ;
+  int tmp___23 ;
+  int len___3 ;
+  size_t tmp___24 ;
+  char b[((sizeof(uintmax_t ) * 8UL) * 146UL + 484UL) / 485UL + 1UL] ;
+  int b_len ;
+  char *tmp___25 ;
+  size_t tmp___26 ;
+  char buf___2[((sizeof(uintmax_t ) * 8UL) * 146UL + 484UL) / 485UL + 1UL] ;
+  int len___4 ;
+  unsigned int tmp___27 ;
+  char *tmp___28 ;
+  size_t tmp___29 ;
+  unsigned int tmp___30 ;
+  char *tmp___31 ;
+  size_t tmp___32 ;
+  char buf___3[(((((((2UL * sizeof(uintmax_t )) * 8UL) * 146UL) / 485UL + 1UL) * 17UL - 16UL) + 1UL) + 3UL) + 1UL] ;
+  uintmax_t size ;
+  uintmax_t tmp___33 ;
+  int len___5 ;
+  char *tmp___34 ;
+  int tmp___35 ;
+  _Bool tmp___36 ;
+  _Bool tmp___37 ;
+  _Bool tmp___38 ;
+  _Bool tmp___39 ;
+  _Bool tmp___40 ;
+  _Bool tmp___41 ;
+  _Bool tmp___42 ;
+  char buf___4[((sizeof(uintmax_t ) * 8UL) * 146UL + 484UL) / 485UL + 1UL] ;
+  int len___6 ;
+  char *tmp___43 ;
+  size_t tmp___44 ;
+
+  {
+#line 2743
+  blocks = (uintmax_t )0;
+#line 2748
+  if (! (! command_line_arg)) {
+#line 2748
+    if (! (inode == 0UL)) {
+#line 2748
+      __assert_fail("! command_line_arg || inode == NOT_AN_INODE_NUMBER", "ls.c",
+                    2748U, "gobble_file");
+    }
+  }
+#line 2750
+  if (cwd_n_used == cwd_n_alloc) {
+#line 2752
+    tmp = xnrealloc((void *)cwd_file, cwd_n_alloc, 2UL * sizeof(*cwd_file));
+#line 2752
+    cwd_file = (struct fileinfo *)tmp;
+#line 2753
+    cwd_n_alloc *= 2UL;
+  }
+#line 2756
+  f = cwd_file + cwd_n_used;
+#line 2757
+  memset((void *)f, '\000', sizeof(*f));
+#line 2758
+  f->stat.st_ino = inode;
+#line 2759
+  f->filetype = type;
+#line 2761
+  if (command_line_arg) {
+#line 2761
+    goto _L___9;
+  } else
+#line 2761
+  if (format_needs_stat) {
+#line 2761
+    goto _L___9;
+  } else
+#line 2761
+  if ((unsigned int )type == 3U) {
+#line 2761
+    if (print_with_color) {
+#line 2761
+      tmp___36 = is_colored((enum indicator_no )19);
+#line 2761
+      if (tmp___36) {
+#line 2761
+        goto _L___9;
+      } else {
+#line 2761
+        tmp___37 = is_colored((enum indicator_no )18);
+#line 2761
+        if (tmp___37) {
+#line 2761
+          goto _L___9;
+        } else {
+#line 2761
+          tmp___38 = is_colored((enum indicator_no )20);
+#line 2761
+          if (tmp___38) {
+#line 2761
+            goto _L___9;
+          } else {
+#line 2761
+            goto _L___17;
+          }
+        }
+      }
+    } else {
+#line 2761
+      goto _L___17;
+    }
+  } else
+  _L___17: /* CIL Label */ 
+#line 2761
+  if (print_inode) {
+#line 2761
+    goto _L___15;
+  } else
+#line 2761
+  if (format_needs_type) {
+    _L___15: /* CIL Label */ 
+#line 2761
+    if ((unsigned int )type == 6U) {
+#line 2761
+      goto _L___14;
+    } else
+#line 2761
+    if ((unsigned int )type == 0U) {
+      _L___14: /* CIL Label */ 
+#line 2761
+      if ((unsigned int )dereference == 5U) {
+#line 2761
+        goto _L___9;
+      } else
+#line 2761
+      if (command_line_arg) {
+#line 2761
+        if ((unsigned int )dereference != 2U) {
+#line 2761
+          goto _L___9;
+        } else {
+#line 2761
+          goto _L___12;
+        }
+      } else
+      _L___12: /* CIL Label */ 
+#line 2761
+      if (color_symlink_as_referent) {
+#line 2761
+        goto _L___9;
+      } else
+#line 2761
+      if (check_symlink_color) {
+#line 2761
+        goto _L___9;
+      } else {
+#line 2761
+        goto _L___13;
+      }
+    } else {
+#line 2761
+      goto _L___13;
+    }
+  } else
+  _L___13: /* CIL Label */ 
+#line 2761
+  if (print_inode) {
+#line 2761
+    if (inode == 0UL) {
+#line 2761
+      goto _L___9;
+    } else {
+#line 2761
+      goto _L___10;
+    }
+  } else
+  _L___10: /* CIL Label */ 
+#line 2761
+  if (format_needs_type) {
+#line 2761
+    if ((unsigned int )type == 0U) {
+#line 2761
+      goto _L___9;
+    } else
+#line 2761
+    if (command_line_arg) {
+#line 2761
+      goto _L___9;
+    } else
+#line 2761
+    if ((unsigned int )type == 5U) {
+#line 2761
+      if ((unsigned int )indicator_style == 3U) {
+#line 2761
+        goto _L___9;
+      } else
+#line 2761
+      if (print_with_color) {
+#line 2761
+        tmp___39 = is_colored((enum indicator_no )14);
+#line 2761
+        if (tmp___39) {
+#line 2761
+          goto _L___9;
+        } else {
+#line 2761
+          tmp___40 = is_colored((enum indicator_no )16);
+#line 2761
+          if (tmp___40) {
+#line 2761
+            goto _L___9;
+          } else {
+#line 2761
+            tmp___41 = is_colored((enum indicator_no )17);
+#line 2761
+            if (tmp___41) {
+#line 2761
+              goto _L___9;
+            } else {
+#line 2761
+              tmp___42 = is_colored((enum indicator_no )21);
+#line 2761
+              if (tmp___42) {
+                _L___9: /* CIL Label */ 
+#line 2805
+                if ((int const   )*(name + 0) == 47) {
+#line 2806
+                  absolute_name = (char *)name;
+                } else
+#line 2805
+                if ((int const   )*(dirname + 0) == 0) {
+#line 2806
+                  absolute_name = (char *)name;
+                } else {
+#line 2809
+                  tmp___0 = strlen(name);
+#line 2809
+                  tmp___1 = strlen(dirname);
+#line 2809
+                  tmp___2 = __builtin_alloca((tmp___0 + tmp___1) + 2UL);
+#line 2809
+                  absolute_name = (char *)tmp___2;
+#line 2810
+                  attach(absolute_name, dirname, name);
+                }
+#line 2813
+                switch ((int )dereference) {
+                case 5: 
+#line 2816
+                err = stat((char const   * __restrict  )absolute_name, (struct stat * __restrict  )(& f->stat));
+#line 2817
+                do_deref = (_Bool)1;
+#line 2818
+                break;
+                case 3: 
+                case 4: 
+#line 2822
+                if (command_line_arg) {
+#line 2825
+                  err = stat((char const   * __restrict  )absolute_name, (struct stat * __restrict  )(& f->stat));
+#line 2826
+                  do_deref = (_Bool)1;
+#line 2828
+                  if ((unsigned int )dereference == 3U) {
+#line 2829
+                    break;
+                  }
+#line 2831
+                  if (err < 0) {
+#line 2831
+                    tmp___3 = __errno_location();
+#line 2831
+                    need_lstat = (_Bool )(*tmp___3 == 2);
+                  } else {
+#line 2831
+                    need_lstat = (_Bool )(! ((f->stat.st_mode & 61440U) == 16384U));
+                  }
+#line 2834
+                  if (! need_lstat) {
+#line 2835
+                    break;
+                  }
+                }
+                default: 
+#line 2844
+                err = lstat((char const   * __restrict  )absolute_name, (struct stat * __restrict  )(& f->stat));
+#line 2845
+                do_deref = (_Bool)0;
+#line 2846
+                break;
+                }
+#line 2849
+                if (err != 0) {
+#line 2854
+                  tmp___4 = gettext("cannot access %s");
+#line 2854
+                  file_failure(command_line_arg, (char const   *)tmp___4, (char const   *)absolute_name);
+#line 2856
+                  if (command_line_arg) {
+#line 2857
+                    return ((uintmax_t )0);
+                  }
+#line 2859
+                  f->name = xstrdup(name);
+#line 2860
+                  cwd_n_used ++;
+#line 2862
+                  return ((uintmax_t )0);
+                }
+#line 2865
+                f->stat_ok = (_Bool)1;
+#line 2868
+                if ((unsigned int )type == 5U) {
+#line 2868
+                  goto _L;
+                } else
+#line 2868
+                if ((f->stat.st_mode & 61440U) == 32768U) {
+                  _L: /* CIL Label */ 
+#line 2868
+                  if (print_with_color) {
+#line 2868
+                    tmp___5 = is_colored((enum indicator_no )21);
+#line 2868
+                    if (tmp___5) {
+#line 2870
+                      f->has_capability = has_capability((char const   *)absolute_name);
+                    }
+                  }
+                }
+#line 2872
+                if ((unsigned int )format == 0U) {
+#line 2872
+                  goto _L___1;
+                } else
+#line 2872
+                if (print_scontext) {
+                  _L___1: /* CIL Label */ 
+#line 2874
+                  have_selinux = (_Bool)0;
+#line 2875
+                  have_acl = (_Bool)0;
+#line 2876
+                  if (do_deref) {
+#line 2876
+                    tmp___6 = getfilecon((char const   *)absolute_name, & f->scontext);
+#line 2876
+                    tmp___8 = tmp___6;
+                  } else {
+#line 2876
+                    tmp___7 = getfilecon((char const   *)absolute_name, & f->scontext);
+#line 2876
+                    tmp___8 = tmp___7;
+                  }
+#line 2876
+                  attr_len = tmp___8;
+#line 2879
+                  err = attr_len < 0;
+#line 2881
+                  if (err == 0) {
+#line 2882
+                    tmp___9 = strcmp("unlabeled", (char const   *)f->scontext);
+#line 2882
+                    if (tmp___9 == 0) {
+#line 2882
+                      tmp___10 = 0;
+                    } else {
+#line 2882
+                      tmp___10 = 1;
+                    }
+#line 2882
+                    have_selinux = (_Bool )tmp___10;
+                  } else {
+#line 2885
+                    f->scontext = UNKNOWN_SECURITY_CONTEXT;
+#line 2891
+                    tmp___11 = __errno_location();
+#line 2891
+                    if (*tmp___11 == 95) {
+#line 2892
+                      err = 0;
+                    } else {
+#line 2891
+                      tmp___12 = __errno_location();
+#line 2891
+                      if (*tmp___12 == 95) {
+#line 2892
+                        err = 0;
+                      } else {
+#line 2891
+                        tmp___13 = __errno_location();
+#line 2891
+                        if (*tmp___13 == 61) {
+#line 2892
+                          err = 0;
+                        }
+                      }
+                    }
+                  }
+#line 2895
+                  if (err == 0) {
+#line 2895
+                    if ((unsigned int )format == 0U) {
+#line 2897
+                      tmp___14 = file_has_acl((char const   *)absolute_name, (struct stat  const  *)(& f->stat));
+#line 2897
+                      n = tmp___14;
+#line 2898
+                      err = n < 0;
+#line 2899
+                      have_acl = (_Bool )(0 < n);
+                    }
+                  }
+#line 2902
+                  if (! have_selinux) {
+#line 2902
+                    if (! have_acl) {
+#line 2902
+                      f->acl_type = (enum acl_type )0;
+                    } else {
+#line 2902
+                      goto _L___0;
+                    }
+                  } else {
+                    _L___0: /* CIL Label */ 
+#line 2902
+                    if (have_selinux) {
+#line 2902
+                      if (! have_acl) {
+#line 2902
+                        tmp___15 = 1;
+                      } else {
+#line 2902
+                        tmp___15 = 2;
+                      }
+                    } else {
+#line 2902
+                      tmp___15 = 2;
+                    }
+#line 2902
+                    f->acl_type = (enum acl_type )tmp___15;
+                  }
+#line 2907
+                  any_has_acl = (_Bool )((int )any_has_acl | ((unsigned int )f->acl_type != 0U));
+#line 2909
+                  if (err) {
+#line 2910
+                    tmp___16 = quotearg_colon((char const   *)absolute_name);
+#line 2910
+                    tmp___17 = __errno_location();
+#line 2910
+                    error(0, *tmp___17, "%s", tmp___16);
+                  }
+                }
+#line 2913
+                if ((f->stat.st_mode & 61440U) == 40960U) {
+#line 2913
+                  if ((unsigned int )format == 0U) {
+#line 2913
+                    goto _L___3;
+                  } else
+#line 2913
+                  if (check_symlink_color) {
+                    _L___3: /* CIL Label */ 
+#line 2919
+                    get_link_name((char const   *)absolute_name, f, command_line_arg);
+#line 2920
+                    linkname = make_link_name((char const   *)absolute_name, (char const   *)f->linkname);
+#line 2924
+                    if (linkname) {
+#line 2924
+                      if (2U <= (unsigned int )indicator_style) {
+#line 2924
+                        goto _L___2;
+                      } else
+#line 2924
+                      if (check_symlink_color) {
+                        _L___2: /* CIL Label */ 
+#line 2924
+                        tmp___18 = stat((char const   * __restrict  )linkname, (struct stat * __restrict  )(& linkstats));
+#line 2924
+                        if (tmp___18 == 0) {
+#line 2928
+                          f->linkok = (_Bool)1;
+#line 2933
+                          if (! command_line_arg) {
+#line 2938
+                            f->linkmode = linkstats.st_mode;
+                          } else
+#line 2933
+                          if ((unsigned int )format == 0U) {
+#line 2938
+                            f->linkmode = linkstats.st_mode;
+                          } else
+#line 2933
+                          if (! ((linkstats.st_mode & 61440U) == 16384U)) {
+#line 2938
+                            f->linkmode = linkstats.st_mode;
+                          }
+                        }
+                      }
+                    }
+#line 2941
+                    free((void *)linkname);
+                  }
+                }
+#line 2947
+                if ((f->stat.st_mode & 61440U) == 40960U) {
+#line 2947
+                  if (! check_symlink_color) {
+#line 2948
+                    f->linkok = (_Bool)1;
+                  }
+                }
+#line 2950
+                if ((f->stat.st_mode & 61440U) == 40960U) {
+#line 2951
+                  f->filetype = (enum filetype )6;
+                } else
+#line 2952
+                if ((f->stat.st_mode & 61440U) == 16384U) {
+#line 2954
+                  if (command_line_arg) {
+#line 2954
+                    if (! immediate_dirs) {
+#line 2955
+                      f->filetype = (enum filetype )9;
+                    } else {
+#line 2957
+                      f->filetype = (enum filetype )3;
+                    }
+                  } else {
+#line 2957
+                    f->filetype = (enum filetype )3;
+                  }
+                } else {
+#line 2960
+                  f->filetype = (enum filetype )5;
+                }
+#line 2962
+                blocks = (uintmax_t )f->stat.st_blocks;
+#line 2963
+                if ((unsigned int )format == 0U) {
+#line 2963
+                  goto _L___4;
+                } else
+#line 2963
+                if (print_block_size) {
+                  _L___4: /* CIL Label */ 
+#line 2966
+                  tmp___19 = human_readable(blocks, buf___1, human_output_opts, (uintmax_t )512,
+                                            output_block_size);
+#line 2966
+                  tmp___20 = gnu_mbswidth((char const   *)tmp___19, 0);
+#line 2966
+                  len = tmp___20;
+#line 2969
+                  if (block_size_width < len) {
+#line 2970
+                    block_size_width = len;
+                  }
+                }
+#line 2973
+                if ((unsigned int )format == 0U) {
+#line 2975
+                  if (print_owner) {
+#line 2977
+                    tmp___21 = format_user_width(f->stat.st_uid);
+#line 2977
+                    len___0 = tmp___21;
+#line 2978
+                    if (owner_width < len___0) {
+#line 2979
+                      owner_width = len___0;
+                    }
+                  }
+#line 2982
+                  if (print_group) {
+#line 2984
+                    tmp___22 = format_group_width(f->stat.st_gid);
+#line 2984
+                    len___1 = tmp___22;
+#line 2985
+                    if (group_width < len___1) {
+#line 2986
+                      group_width = len___1;
+                    }
+                  }
+#line 2989
+                  if (print_author) {
+#line 2991
+                    tmp___23 = format_user_width(f->stat.st_uid);
+#line 2991
+                    len___2 = tmp___23;
+#line 2992
+                    if (author_width < len___2) {
+#line 2993
+                      author_width = len___2;
+                    }
+                  }
+                }
+#line 2997
+                if (print_scontext) {
+#line 2999
+                  tmp___24 = strlen((char const   *)f->scontext);
+#line 2999
+                  len___3 = (int )tmp___24;
+#line 3000
+                  if (scontext_width < len___3) {
+#line 3001
+                    scontext_width = len___3;
+                  }
+                }
+#line 3004
+                if ((unsigned int )format == 0U) {
+#line 3007
+                  tmp___25 = (char *)umaxtostr(f->stat.st_nlink, b);
+#line 3007
+                  tmp___26 = strlen((char const   *)tmp___25);
+#line 3007
+                  b_len = (int )tmp___26;
+#line 3008
+                  if (nlink_width < b_len) {
+#line 3009
+                    nlink_width = b_len;
+                  }
+#line 3011
+                  if ((f->stat.st_mode & 61440U) == 8192U) {
+#line 3011
+                    goto _L___5;
+                  } else
+#line 3011
+                  if ((f->stat.st_mode & 61440U) == 24576U) {
+                    _L___5: /* CIL Label */ 
+#line 3014
+                    tmp___27 = gnu_dev_major((unsigned long long )f->stat.st_rdev);
+#line 3014
+                    tmp___28 = (char *)umaxtostr((uintmax_t )tmp___27, buf___2);
+#line 3014
+                    tmp___29 = strlen((char const   *)tmp___28);
+#line 3014
+                    len___4 = (int )tmp___29;
+#line 3015
+                    if (major_device_number_width < len___4) {
+#line 3016
+                      major_device_number_width = len___4;
+                    }
+#line 3017
+                    tmp___30 = gnu_dev_minor((unsigned long long )f->stat.st_rdev);
+#line 3017
+                    tmp___31 = (char *)umaxtostr((uintmax_t )tmp___30, buf___2);
+#line 3017
+                    tmp___32 = strlen((char const   *)tmp___31);
+#line 3017
+                    len___4 = (int )tmp___32;
+#line 3018
+                    if (minor_device_number_width < len___4) {
+#line 3019
+                      minor_device_number_width = len___4;
+                    }
+#line 3020
+                    len___4 = (major_device_number_width + 2) + minor_device_number_width;
+#line 3021
+                    if (file_size_width < len___4) {
+#line 3022
+                      file_size_width = len___4;
+                    }
+                  } else {
+#line 3027
+                    tmp___33 = unsigned_file_size(f->stat.st_size);
+#line 3027
+                    size = tmp___33;
+#line 3028
+                    tmp___34 = human_readable(size, buf___3, human_output_opts, (uintmax_t )1,
+                                              file_output_block_size);
+#line 3028
+                    tmp___35 = gnu_mbswidth((char const   *)tmp___34, 0);
+#line 3028
+                    len___5 = tmp___35;
+#line 3031
+                    if (file_size_width < len___5) {
+#line 3032
+                      file_size_width = len___5;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+#line 3037
+  if (print_inode) {
+#line 3040
+    tmp___43 = (char *)umaxtostr(f->stat.st_ino, buf___4);
+#line 3040
+    tmp___44 = strlen((char const   *)tmp___43);
+#line 3040
+    len___6 = (int )tmp___44;
+#line 3041
+    if (inode_number_width < len___6) {
+#line 3042
+      inode_number_width = len___6;
+    }
+  }
+#line 3045
+  f->name = xstrdup(name);
+#line 3046
+  cwd_n_used ++;
+#line 3048
+  return (blocks);
+}
+}
+#line 3052 "ls.c"
+static _Bool is_directory(struct fileinfo  const  *f ) 
+{ int tmp ;
+
+  {
+#line 3055
+  if ((unsigned int const   )f->filetype == 3U) {
+#line 3055
+    tmp = 1;
+  } else
+#line 3055
+  if ((unsigned int const   )f->filetype == 9U) {
+#line 3055
+    tmp = 1;
+  } else {
+#line 3055
+    tmp = 0;
+  }
+#line 3055
+  return ((_Bool )tmp);
+}
+}
+#line 3062 "ls.c"
+static void get_link_name(char const   *filename , struct fileinfo *f , _Bool command_line_arg ) 
+{ char *tmp ;
+
+  {
+#line 3065
+  f->linkname = areadlink_with_size(filename, (size_t )f->stat.st_size);
+#line 3066
+  if ((unsigned long )f->linkname == (unsigned long )((void *)0)) {
+#line 3067
+    tmp = gettext("cannot read symbolic link %s");
+#line 3067
+    file_failure(command_line_arg, (char const   *)tmp, filename);
+  }
+#line 3069
+  return;
+}
+}
+#line 3076 "ls.c"
+static char *make_link_name(char const   *name , char const   *linkname ) 
+{ char *linkbuf ;
+  size_t bufsiz ;
+  char *tmp ;
+  char *tmp___0 ;
+  size_t tmp___1 ;
+  void *tmp___2 ;
+
+  {
+#line 3082
+  if (! linkname) {
+#line 3083
+    return ((char *)((void *)0));
+  }
+#line 3085
+  if ((int const   )*linkname == 47) {
+#line 3086
+    tmp = xstrdup(linkname);
+#line 3086
+    return (tmp);
+  }
+#line 3090
+  linkbuf = strrchr(name, '/');
+#line 3091
+  if ((unsigned long )linkbuf == (unsigned long )((char *)0)) {
+#line 3092
+    tmp___0 = xstrdup(linkname);
+#line 3092
+    return (tmp___0);
+  }
+#line 3094
+  bufsiz = (size_t )((linkbuf - (char *)name) + 1);
+#line 3095
+  tmp___1 = strlen(linkname);
+#line 3095
+  tmp___2 = xmalloc((bufsiz + tmp___1) + 1UL);
+#line 3095
+  linkbuf = (char *)tmp___2;
+#line 3096
+  strncpy((char * __restrict  )linkbuf, (char const   * __restrict  )name, bufsiz);
+#line 3097
+  strcpy((char * __restrict  )(linkbuf + bufsiz), (char const   * __restrict  )linkname);
+#line 3098
+  return (linkbuf);
+}
+}
+#line 3104 "ls.c"
+static _Bool basename_is_dot_or_dotdot(char const   *name ) 
+{ char const   *base ;
+  char *tmp ;
+  _Bool tmp___0 ;
+
+  {
+#line 3107
+  tmp = last_component(name);
+#line 3107
+  base = (char const   *)tmp;
+#line 3108
+  tmp___0 = dot_or_dotdot(base);
+#line 3108
+  return (tmp___0);
+}
+}
+#line 3119 "ls.c"
+static void extract_dirs_from_files(char const   *dirname , _Bool command_line_arg ) 
+{ size_t i ;
+  size_t j ;
+  _Bool ignore_dot_and_dot_dot ;
+  struct fileinfo *f ;
+  char *name ;
+  char *tmp ;
+  _Bool tmp___0 ;
+  _Bool tmp___1 ;
+  size_t tmp___2 ;
+  struct fileinfo *f___0 ;
+
+  {
+#line 3124
+  ignore_dot_and_dot_dot = (_Bool )((unsigned long )dirname != (unsigned long )((void *)0));
+#line 3126
+  if (dirname) {
+#line 3126
+    if (! (! active_dir_set)) {
+#line 3131
+      queue_directory((char const   *)((void *)0), dirname, (_Bool)0);
+    }
+  }
+#line 3136
+  i = cwd_n_used;
+#line 3136
+  while (1) {
+#line 3136
+    tmp___2 = i;
+#line 3136
+    i --;
+#line 3136
+    if (! (tmp___2 != 0UL)) {
+#line 3136
+      break;
+    }
+#line 3138
+    f = (struct fileinfo *)*(sorted_file + i);
+#line 3140
+    tmp___0 = is_directory((struct fileinfo  const  *)f);
+#line 3140
+    if (tmp___0) {
+#line 3140
+      if (! ignore_dot_and_dot_dot) {
+#line 3140
+        goto _L;
+      } else {
+#line 3140
+        tmp___1 = basename_is_dot_or_dotdot((char const   *)f->name);
+#line 3140
+        if (! tmp___1) {
+          _L: /* CIL Label */ 
+#line 3144
+          if (! dirname) {
+#line 3145
+            queue_directory((char const   *)f->name, (char const   *)f->linkname,
+                            command_line_arg);
+          } else
+#line 3144
+          if ((int )*(f->name + 0) == 47) {
+#line 3145
+            queue_directory((char const   *)f->name, (char const   *)f->linkname,
+                            command_line_arg);
+          } else {
+#line 3148
+            tmp = file_name_concat(dirname, (char const   *)f->name, (char **)((void *)0));
+#line 3148
+            name = tmp;
+#line 3149
+            queue_directory((char const   *)name, (char const   *)f->linkname, command_line_arg);
+#line 3150
+            free((void *)name);
+          }
+#line 3152
+          if ((unsigned int )f->filetype == 9U) {
+#line 3153
+            free((void *)f->name);
+          }
+        }
+      }
+    }
+  }
+#line 3160
+  i = (size_t )0;
+#line 3160
+  j = (size_t )0;
+#line 3160
+  while (i < cwd_n_used) {
+#line 3162
+    f___0 = (struct fileinfo *)*(sorted_file + i);
+#line 3163
+    *(sorted_file + j) = (void *)f___0;
+#line 3164
+    j += (size_t )((unsigned int )f___0->filetype != 9U);
+#line 3160
+    i ++;
+  }
+#line 3166
+  cwd_n_used = j;
+#line 3167
+  return;
+}
+}
+#line 3172 "ls.c"
+static jmp_buf failed_strcoll  ;
+#line 3174 "ls.c"
+static int xstrcoll(char const   *a , char const   *b ) 
+{ int diff ;
+  int *tmp ;
+  char const   *tmp___0 ;
+  char const   *tmp___1 ;
+  char *tmp___2 ;
+  int *tmp___3 ;
+  int *tmp___4 ;
+
+  {
+#line 3178
+  tmp = __errno_location();
+#line 3178
+  *tmp = 0;
+#line 3179
+  diff = strcoll(a, b);
+#line 3180
+  tmp___4 = __errno_location();
+#line 3180
+  if (*tmp___4) {
+#line 3182
+    tmp___0 = quote_n(1, b);
+#line 3182
+    tmp___1 = quote_n(0, a);
+#line 3182
+    tmp___2 = gettext("cannot compare file names %s and %s");
+#line 3182
+    tmp___3 = __errno_location();
+#line 3182
+    error(0, *tmp___3, (char const   *)tmp___2, tmp___1, tmp___0);
+#line 3184
+    set_exit_status((_Bool)0);
+#line 3185
+    longjmp((struct __jmp_buf_tag *)(failed_strcoll), 1);
+  }
+#line 3187
+  return (diff);
+}
+}
+#line 3240 "ls.c"
+__inline static int cmp_ctime(struct fileinfo  const  *a , struct fileinfo  const  *b ,
+                              int (*cmp)(char const   * , char const   * ) ) 
+{ int diff ;
+  struct timespec tmp ;
+  struct timespec tmp___0 ;
+  int tmp___1 ;
+  int tmp___2 ;
+  int tmp___3 ;
+
+  {
+#line 3244
+  tmp = get_stat_ctime(& a->stat);
+#line 3244
+  tmp___0 = get_stat_ctime(& b->stat);
+#line 3244
+  tmp___1 = timespec_cmp(tmp___0, tmp);
+#line 3244
+  diff = tmp___1;
+#line 3246
+  if (diff) {
+#line 3246
+    tmp___3 = diff;
+  } else {
+#line 3246
+    tmp___2 = (*cmp)((char const   *)a->name, (char const   *)b->name);
+#line 3246
+    tmp___3 = tmp___2;
+  }
+#line 3246
+  return (tmp___3);
+}
+}
+#line 3249 "ls.c"
+__inline static int cmp_mtime(struct fileinfo  const  *a , struct fileinfo  const  *b ,
+                              int (*cmp)(char const   * , char const   * ) ) 
+{ int diff ;
+  struct timespec tmp ;
+  struct timespec tmp___0 ;
+  int tmp___1 ;
+  int tmp___2 ;
+  int tmp___3 ;
+
+  {
+#line 3253
+  tmp = get_stat_mtime(& a->stat);
+#line 3253
+  tmp___0 = get_stat_mtime(& b->stat);
+#line 3253
+  tmp___1 = timespec_cmp(tmp___0, tmp);
+#line 3253
+  diff = tmp___1;
+#line 3255
+  if (diff) {
+#line 3255
+    tmp___3 = diff;
+  } else {
+#line 3255
+    tmp___2 = (*cmp)((char const   *)a->name, (char const   *)b->name);
+#line 3255
+    tmp___3 = tmp___2;
+  }
+#line 3255
+  return (tmp___3);
+}
+}
+#line 3258 "ls.c"
+__inline static int cmp_atime(struct fileinfo  const  *a , struct fileinfo  const  *b ,
+                              int (*cmp)(char const   * , char const   * ) ) 
+{ int diff ;
+  struct timespec tmp ;
+  struct timespec tmp___0 ;
+  int tmp___1 ;
+  int tmp___2 ;
+  int tmp___3 ;
+
+  {
+#line 3262
+  tmp = get_stat_atime(& a->stat);
+#line 3262
+  tmp___0 = get_stat_atime(& b->stat);
+#line 3262
+  tmp___1 = timespec_cmp(tmp___0, tmp);
+#line 3262
+  diff = tmp___1;
+#line 3264
+  if (diff) {
+#line 3264
+    tmp___3 = diff;
+  } else {
+#line 3264
+    tmp___2 = (*cmp)((char const   *)a->name, (char const   *)b->name);
+#line 3264
+    tmp___3 = tmp___2;
+  }
+#line 3264
+  return (tmp___3);
+}
+}
+#line 3267 "ls.c"
+__inline static int cmp_size(struct fileinfo  const  *a , struct fileinfo  const  *b ,
+                             int (*cmp)(char const   * , char const   * ) ) 
+{ int diff ;
+  int tmp ;
+  int tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3271
+  if (b->stat.st_size < a->stat.st_size) {
+#line 3271
+    tmp = -1;
+  } else {
+#line 3271
+    tmp = b->stat.st_size > a->stat.st_size;
+  }
+#line 3271
+  diff = tmp;
+#line 3272
+  if (diff) {
+#line 3272
+    tmp___1 = diff;
+  } else {
+#line 3272
+    tmp___0 = (*cmp)((char const   *)a->name, (char const   *)b->name);
+#line 3272
+    tmp___1 = tmp___0;
+  }
+#line 3272
+  return (tmp___1);
+}
+}
+#line 3275 "ls.c"
+__inline static int cmp_name(struct fileinfo  const  *a , struct fileinfo  const  *b ,
+                             int (*cmp)(char const   * , char const   * ) ) 
+{ int tmp ;
+
+  {
+#line 3279
+  tmp = (*cmp)((char const   *)a->name, (char const   *)b->name);
+#line 3279
+  return (tmp);
+}
+}
+#line 3285 "ls.c"
+__inline static int cmp_extension(struct fileinfo  const  *a , struct fileinfo  const  *b ,
+                                  int (*cmp)(char const   * , char const   * ) ) 
+{ char const   *base1 ;
+  char *tmp ;
+  char const   *base2 ;
+  char *tmp___0 ;
+  int diff ;
+  char const   *tmp___1 ;
+  char const   *tmp___2 ;
+  int tmp___3 ;
+  int tmp___4 ;
+  int tmp___5 ;
+
+  {
+#line 3289
+  tmp = strrchr((char const   *)a->name, '.');
+#line 3289
+  base1 = (char const   *)tmp;
+#line 3290
+  tmp___0 = strrchr((char const   *)b->name, '.');
+#line 3290
+  base2 = (char const   *)tmp___0;
+#line 3291
+  if (base2) {
+#line 3291
+    tmp___1 = base2;
+  } else {
+#line 3291
+    tmp___1 = "";
+  }
+#line 3291
+  if (base1) {
+#line 3291
+    tmp___2 = base1;
+  } else {
+#line 3291
+    tmp___2 = "";
+  }
+#line 3291
+  tmp___3 = (*cmp)(tmp___2, tmp___1);
+#line 3291
+  diff = tmp___3;
+#line 3292
+  if (diff) {
+#line 3292
+    tmp___5 = diff;
+  } else {
+#line 3292
+    tmp___4 = (*cmp)((char const   *)a->name, (char const   *)b->name);
+#line 3292
+    tmp___5 = tmp___4;
+  }
+#line 3292
+  return (tmp___5);
+}
+}
+#line 3295 "ls.c"
+static int xstrcoll_ctime(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3295
+  tmp = cmp_ctime((struct fileinfo  const  *)a, (struct fileinfo  const  *)b, & xstrcoll);
+#line 3295
+  return (tmp);
+}
+}
+#line 3295 "ls.c"
+static int strcmp_ctime(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3295
+  tmp = cmp_ctime((struct fileinfo  const  *)a, (struct fileinfo  const  *)b, & strcmp);
+#line 3295
+  return (tmp);
+}
+}
+#line 3295 "ls.c"
+static int rev_xstrcoll_ctime(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3295
+  tmp = cmp_ctime((struct fileinfo  const  *)b, (struct fileinfo  const  *)a, & xstrcoll);
+#line 3295
+  return (tmp);
+}
+}
+#line 3295 "ls.c"
+static int rev_strcmp_ctime(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3295
+  tmp = cmp_ctime((struct fileinfo  const  *)b, (struct fileinfo  const  *)a, & strcmp);
+#line 3295
+  return (tmp);
+}
+}
+#line 3295 "ls.c"
+static int xstrcoll_df_ctime(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3295
+  while (1) {
+#line 3295
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3295
+    a_is_dir = tmp;
+#line 3295
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3295
+    b_is_dir = tmp___0;
+#line 3295
+    if (a_is_dir) {
+#line 3295
+      if (! b_is_dir) {
+#line 3295
+        return (-1);
+      }
+    }
+#line 3295
+    if (! a_is_dir) {
+#line 3295
+      if (b_is_dir) {
+#line 3295
+        return (1);
+      }
+    }
+#line 3295
+    break;
+  }
+#line 3295
+  tmp___1 = cmp_ctime((struct fileinfo  const  *)a, (struct fileinfo  const  *)b,
+                      & xstrcoll);
+#line 3295
+  return (tmp___1);
+}
+}
+#line 3295 "ls.c"
+static int strcmp_df_ctime(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3295
+  while (1) {
+#line 3295
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3295
+    a_is_dir = tmp;
+#line 3295
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3295
+    b_is_dir = tmp___0;
+#line 3295
+    if (a_is_dir) {
+#line 3295
+      if (! b_is_dir) {
+#line 3295
+        return (-1);
+      }
+    }
+#line 3295
+    if (! a_is_dir) {
+#line 3295
+      if (b_is_dir) {
+#line 3295
+        return (1);
+      }
+    }
+#line 3295
+    break;
+  }
+#line 3295
+  tmp___1 = cmp_ctime((struct fileinfo  const  *)a, (struct fileinfo  const  *)b,
+                      & strcmp);
+#line 3295
+  return (tmp___1);
+}
+}
+#line 3295 "ls.c"
+static int rev_xstrcoll_df_ctime(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3295
+  while (1) {
+#line 3295
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3295
+    a_is_dir = tmp;
+#line 3295
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3295
+    b_is_dir = tmp___0;
+#line 3295
+    if (a_is_dir) {
+#line 3295
+      if (! b_is_dir) {
+#line 3295
+        return (-1);
+      }
+    }
+#line 3295
+    if (! a_is_dir) {
+#line 3295
+      if (b_is_dir) {
+#line 3295
+        return (1);
+      }
+    }
+#line 3295
+    break;
+  }
+#line 3295
+  tmp___1 = cmp_ctime((struct fileinfo  const  *)b, (struct fileinfo  const  *)a,
+                      & xstrcoll);
+#line 3295
+  return (tmp___1);
+}
+}
+#line 3295 "ls.c"
+static int rev_strcmp_df_ctime(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3295
+  while (1) {
+#line 3295
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3295
+    a_is_dir = tmp;
+#line 3295
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3295
+    b_is_dir = tmp___0;
+#line 3295
+    if (a_is_dir) {
+#line 3295
+      if (! b_is_dir) {
+#line 3295
+        return (-1);
+      }
+    }
+#line 3295
+    if (! a_is_dir) {
+#line 3295
+      if (b_is_dir) {
+#line 3295
+        return (1);
+      }
+    }
+#line 3295
+    break;
+  }
+#line 3295
+  tmp___1 = cmp_ctime((struct fileinfo  const  *)b, (struct fileinfo  const  *)a,
+                      & strcmp);
+#line 3295
+  return (tmp___1);
+}
+}
+#line 3296 "ls.c"
+static int xstrcoll_mtime(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3296
+  tmp = cmp_mtime((struct fileinfo  const  *)a, (struct fileinfo  const  *)b, & xstrcoll);
+#line 3296
+  return (tmp);
+}
+}
+#line 3296 "ls.c"
+static int strcmp_mtime(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3296
+  tmp = cmp_mtime((struct fileinfo  const  *)a, (struct fileinfo  const  *)b, & strcmp);
+#line 3296
+  return (tmp);
+}
+}
+#line 3296 "ls.c"
+static int rev_xstrcoll_mtime(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3296
+  tmp = cmp_mtime((struct fileinfo  const  *)b, (struct fileinfo  const  *)a, & xstrcoll);
+#line 3296
+  return (tmp);
+}
+}
+#line 3296 "ls.c"
+static int rev_strcmp_mtime(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3296
+  tmp = cmp_mtime((struct fileinfo  const  *)b, (struct fileinfo  const  *)a, & strcmp);
+#line 3296
+  return (tmp);
+}
+}
+#line 3296 "ls.c"
+static int xstrcoll_df_mtime(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3296
+  while (1) {
+#line 3296
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3296
+    a_is_dir = tmp;
+#line 3296
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3296
+    b_is_dir = tmp___0;
+#line 3296
+    if (a_is_dir) {
+#line 3296
+      if (! b_is_dir) {
+#line 3296
+        return (-1);
+      }
+    }
+#line 3296
+    if (! a_is_dir) {
+#line 3296
+      if (b_is_dir) {
+#line 3296
+        return (1);
+      }
+    }
+#line 3296
+    break;
+  }
+#line 3296
+  tmp___1 = cmp_mtime((struct fileinfo  const  *)a, (struct fileinfo  const  *)b,
+                      & xstrcoll);
+#line 3296
+  return (tmp___1);
+}
+}
+#line 3296 "ls.c"
+static int strcmp_df_mtime(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3296
+  while (1) {
+#line 3296
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3296
+    a_is_dir = tmp;
+#line 3296
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3296
+    b_is_dir = tmp___0;
+#line 3296
+    if (a_is_dir) {
+#line 3296
+      if (! b_is_dir) {
+#line 3296
+        return (-1);
+      }
+    }
+#line 3296
+    if (! a_is_dir) {
+#line 3296
+      if (b_is_dir) {
+#line 3296
+        return (1);
+      }
+    }
+#line 3296
+    break;
+  }
+#line 3296
+  tmp___1 = cmp_mtime((struct fileinfo  const  *)a, (struct fileinfo  const  *)b,
+                      & strcmp);
+#line 3296
+  return (tmp___1);
+}
+}
+#line 3296 "ls.c"
+static int rev_xstrcoll_df_mtime(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3296
+  while (1) {
+#line 3296
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3296
+    a_is_dir = tmp;
+#line 3296
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3296
+    b_is_dir = tmp___0;
+#line 3296
+    if (a_is_dir) {
+#line 3296
+      if (! b_is_dir) {
+#line 3296
+        return (-1);
+      }
+    }
+#line 3296
+    if (! a_is_dir) {
+#line 3296
+      if (b_is_dir) {
+#line 3296
+        return (1);
+      }
+    }
+#line 3296
+    break;
+  }
+#line 3296
+  tmp___1 = cmp_mtime((struct fileinfo  const  *)b, (struct fileinfo  const  *)a,
+                      & xstrcoll);
+#line 3296
+  return (tmp___1);
+}
+}
+#line 3296 "ls.c"
+static int rev_strcmp_df_mtime(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3296
+  while (1) {
+#line 3296
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3296
+    a_is_dir = tmp;
+#line 3296
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3296
+    b_is_dir = tmp___0;
+#line 3296
+    if (a_is_dir) {
+#line 3296
+      if (! b_is_dir) {
+#line 3296
+        return (-1);
+      }
+    }
+#line 3296
+    if (! a_is_dir) {
+#line 3296
+      if (b_is_dir) {
+#line 3296
+        return (1);
+      }
+    }
+#line 3296
+    break;
+  }
+#line 3296
+  tmp___1 = cmp_mtime((struct fileinfo  const  *)b, (struct fileinfo  const  *)a,
+                      & strcmp);
+#line 3296
+  return (tmp___1);
+}
+}
+#line 3297 "ls.c"
+static int xstrcoll_atime(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3297
+  tmp = cmp_atime((struct fileinfo  const  *)a, (struct fileinfo  const  *)b, & xstrcoll);
+#line 3297
+  return (tmp);
+}
+}
+#line 3297 "ls.c"
+static int strcmp_atime(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3297
+  tmp = cmp_atime((struct fileinfo  const  *)a, (struct fileinfo  const  *)b, & strcmp);
+#line 3297
+  return (tmp);
+}
+}
+#line 3297 "ls.c"
+static int rev_xstrcoll_atime(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3297
+  tmp = cmp_atime((struct fileinfo  const  *)b, (struct fileinfo  const  *)a, & xstrcoll);
+#line 3297
+  return (tmp);
+}
+}
+#line 3297 "ls.c"
+static int rev_strcmp_atime(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3297
+  tmp = cmp_atime((struct fileinfo  const  *)b, (struct fileinfo  const  *)a, & strcmp);
+#line 3297
+  return (tmp);
+}
+}
+#line 3297 "ls.c"
+static int xstrcoll_df_atime(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3297
+  while (1) {
+#line 3297
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3297
+    a_is_dir = tmp;
+#line 3297
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3297
+    b_is_dir = tmp___0;
+#line 3297
+    if (a_is_dir) {
+#line 3297
+      if (! b_is_dir) {
+#line 3297
+        return (-1);
+      }
+    }
+#line 3297
+    if (! a_is_dir) {
+#line 3297
+      if (b_is_dir) {
+#line 3297
+        return (1);
+      }
+    }
+#line 3297
+    break;
+  }
+#line 3297
+  tmp___1 = cmp_atime((struct fileinfo  const  *)a, (struct fileinfo  const  *)b,
+                      & xstrcoll);
+#line 3297
+  return (tmp___1);
+}
+}
+#line 3297 "ls.c"
+static int strcmp_df_atime(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3297
+  while (1) {
+#line 3297
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3297
+    a_is_dir = tmp;
+#line 3297
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3297
+    b_is_dir = tmp___0;
+#line 3297
+    if (a_is_dir) {
+#line 3297
+      if (! b_is_dir) {
+#line 3297
+        return (-1);
+      }
+    }
+#line 3297
+    if (! a_is_dir) {
+#line 3297
+      if (b_is_dir) {
+#line 3297
+        return (1);
+      }
+    }
+#line 3297
+    break;
+  }
+#line 3297
+  tmp___1 = cmp_atime((struct fileinfo  const  *)a, (struct fileinfo  const  *)b,
+                      & strcmp);
+#line 3297
+  return (tmp___1);
+}
+}
+#line 3297 "ls.c"
+static int rev_xstrcoll_df_atime(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3297
+  while (1) {
+#line 3297
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3297
+    a_is_dir = tmp;
+#line 3297
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3297
+    b_is_dir = tmp___0;
+#line 3297
+    if (a_is_dir) {
+#line 3297
+      if (! b_is_dir) {
+#line 3297
+        return (-1);
+      }
+    }
+#line 3297
+    if (! a_is_dir) {
+#line 3297
+      if (b_is_dir) {
+#line 3297
+        return (1);
+      }
+    }
+#line 3297
+    break;
+  }
+#line 3297
+  tmp___1 = cmp_atime((struct fileinfo  const  *)b, (struct fileinfo  const  *)a,
+                      & xstrcoll);
+#line 3297
+  return (tmp___1);
+}
+}
+#line 3297 "ls.c"
+static int rev_strcmp_df_atime(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3297
+  while (1) {
+#line 3297
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3297
+    a_is_dir = tmp;
+#line 3297
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3297
+    b_is_dir = tmp___0;
+#line 3297
+    if (a_is_dir) {
+#line 3297
+      if (! b_is_dir) {
+#line 3297
+        return (-1);
+      }
+    }
+#line 3297
+    if (! a_is_dir) {
+#line 3297
+      if (b_is_dir) {
+#line 3297
+        return (1);
+      }
+    }
+#line 3297
+    break;
+  }
+#line 3297
+  tmp___1 = cmp_atime((struct fileinfo  const  *)b, (struct fileinfo  const  *)a,
+                      & strcmp);
+#line 3297
+  return (tmp___1);
+}
+}
+#line 3298 "ls.c"
+static int xstrcoll_size(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3298
+  tmp = cmp_size((struct fileinfo  const  *)a, (struct fileinfo  const  *)b, & xstrcoll);
+#line 3298
+  return (tmp);
+}
+}
+#line 3298 "ls.c"
+static int strcmp_size(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3298
+  tmp = cmp_size((struct fileinfo  const  *)a, (struct fileinfo  const  *)b, & strcmp);
+#line 3298
+  return (tmp);
+}
+}
+#line 3298 "ls.c"
+static int rev_xstrcoll_size(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3298
+  tmp = cmp_size((struct fileinfo  const  *)b, (struct fileinfo  const  *)a, & xstrcoll);
+#line 3298
+  return (tmp);
+}
+}
+#line 3298 "ls.c"
+static int rev_strcmp_size(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3298
+  tmp = cmp_size((struct fileinfo  const  *)b, (struct fileinfo  const  *)a, & strcmp);
+#line 3298
+  return (tmp);
+}
+}
+#line 3298 "ls.c"
+static int xstrcoll_df_size(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3298
+  while (1) {
+#line 3298
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3298
+    a_is_dir = tmp;
+#line 3298
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3298
+    b_is_dir = tmp___0;
+#line 3298
+    if (a_is_dir) {
+#line 3298
+      if (! b_is_dir) {
+#line 3298
+        return (-1);
+      }
+    }
+#line 3298
+    if (! a_is_dir) {
+#line 3298
+      if (b_is_dir) {
+#line 3298
+        return (1);
+      }
+    }
+#line 3298
+    break;
+  }
+#line 3298
+  tmp___1 = cmp_size((struct fileinfo  const  *)a, (struct fileinfo  const  *)b, & xstrcoll);
+#line 3298
+  return (tmp___1);
+}
+}
+#line 3298 "ls.c"
+static int strcmp_df_size(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3298
+  while (1) {
+#line 3298
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3298
+    a_is_dir = tmp;
+#line 3298
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3298
+    b_is_dir = tmp___0;
+#line 3298
+    if (a_is_dir) {
+#line 3298
+      if (! b_is_dir) {
+#line 3298
+        return (-1);
+      }
+    }
+#line 3298
+    if (! a_is_dir) {
+#line 3298
+      if (b_is_dir) {
+#line 3298
+        return (1);
+      }
+    }
+#line 3298
+    break;
+  }
+#line 3298
+  tmp___1 = cmp_size((struct fileinfo  const  *)a, (struct fileinfo  const  *)b, & strcmp);
+#line 3298
+  return (tmp___1);
+}
+}
+#line 3298 "ls.c"
+static int rev_xstrcoll_df_size(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3298
+  while (1) {
+#line 3298
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3298
+    a_is_dir = tmp;
+#line 3298
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3298
+    b_is_dir = tmp___0;
+#line 3298
+    if (a_is_dir) {
+#line 3298
+      if (! b_is_dir) {
+#line 3298
+        return (-1);
+      }
+    }
+#line 3298
+    if (! a_is_dir) {
+#line 3298
+      if (b_is_dir) {
+#line 3298
+        return (1);
+      }
+    }
+#line 3298
+    break;
+  }
+#line 3298
+  tmp___1 = cmp_size((struct fileinfo  const  *)b, (struct fileinfo  const  *)a, & xstrcoll);
+#line 3298
+  return (tmp___1);
+}
+}
+#line 3298 "ls.c"
+static int rev_strcmp_df_size(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3298
+  while (1) {
+#line 3298
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3298
+    a_is_dir = tmp;
+#line 3298
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3298
+    b_is_dir = tmp___0;
+#line 3298
+    if (a_is_dir) {
+#line 3298
+      if (! b_is_dir) {
+#line 3298
+        return (-1);
+      }
+    }
+#line 3298
+    if (! a_is_dir) {
+#line 3298
+      if (b_is_dir) {
+#line 3298
+        return (1);
+      }
+    }
+#line 3298
+    break;
+  }
+#line 3298
+  tmp___1 = cmp_size((struct fileinfo  const  *)b, (struct fileinfo  const  *)a, & strcmp);
+#line 3298
+  return (tmp___1);
+}
+}
+#line 3299 "ls.c"
+static int xstrcoll_name(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3299
+  tmp = cmp_name((struct fileinfo  const  *)a, (struct fileinfo  const  *)b, & xstrcoll);
+#line 3299
+  return (tmp);
+}
+}
+#line 3299 "ls.c"
+static int strcmp_name(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3299
+  tmp = cmp_name((struct fileinfo  const  *)a, (struct fileinfo  const  *)b, & strcmp);
+#line 3299
+  return (tmp);
+}
+}
+#line 3299 "ls.c"
+static int rev_xstrcoll_name(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3299
+  tmp = cmp_name((struct fileinfo  const  *)b, (struct fileinfo  const  *)a, & xstrcoll);
+#line 3299
+  return (tmp);
+}
+}
+#line 3299 "ls.c"
+static int rev_strcmp_name(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3299
+  tmp = cmp_name((struct fileinfo  const  *)b, (struct fileinfo  const  *)a, & strcmp);
+#line 3299
+  return (tmp);
+}
+}
+#line 3299 "ls.c"
+static int xstrcoll_df_name(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3299
+  while (1) {
+#line 3299
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3299
+    a_is_dir = tmp;
+#line 3299
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3299
+    b_is_dir = tmp___0;
+#line 3299
+    if (a_is_dir) {
+#line 3299
+      if (! b_is_dir) {
+#line 3299
+        return (-1);
+      }
+    }
+#line 3299
+    if (! a_is_dir) {
+#line 3299
+      if (b_is_dir) {
+#line 3299
+        return (1);
+      }
+    }
+#line 3299
+    break;
+  }
+#line 3299
+  tmp___1 = cmp_name((struct fileinfo  const  *)a, (struct fileinfo  const  *)b, & xstrcoll);
+#line 3299
+  return (tmp___1);
+}
+}
+#line 3299 "ls.c"
+static int strcmp_df_name(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3299
+  while (1) {
+#line 3299
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3299
+    a_is_dir = tmp;
+#line 3299
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3299
+    b_is_dir = tmp___0;
+#line 3299
+    if (a_is_dir) {
+#line 3299
+      if (! b_is_dir) {
+#line 3299
+        return (-1);
+      }
+    }
+#line 3299
+    if (! a_is_dir) {
+#line 3299
+      if (b_is_dir) {
+#line 3299
+        return (1);
+      }
+    }
+#line 3299
+    break;
+  }
+#line 3299
+  tmp___1 = cmp_name((struct fileinfo  const  *)a, (struct fileinfo  const  *)b, & strcmp);
+#line 3299
+  return (tmp___1);
+}
+}
+#line 3299 "ls.c"
+static int rev_xstrcoll_df_name(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3299
+  while (1) {
+#line 3299
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3299
+    a_is_dir = tmp;
+#line 3299
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3299
+    b_is_dir = tmp___0;
+#line 3299
+    if (a_is_dir) {
+#line 3299
+      if (! b_is_dir) {
+#line 3299
+        return (-1);
+      }
+    }
+#line 3299
+    if (! a_is_dir) {
+#line 3299
+      if (b_is_dir) {
+#line 3299
+        return (1);
+      }
+    }
+#line 3299
+    break;
+  }
+#line 3299
+  tmp___1 = cmp_name((struct fileinfo  const  *)b, (struct fileinfo  const  *)a, & xstrcoll);
+#line 3299
+  return (tmp___1);
+}
+}
+#line 3299 "ls.c"
+static int rev_strcmp_df_name(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3299
+  while (1) {
+#line 3299
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3299
+    a_is_dir = tmp;
+#line 3299
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3299
+    b_is_dir = tmp___0;
+#line 3299
+    if (a_is_dir) {
+#line 3299
+      if (! b_is_dir) {
+#line 3299
+        return (-1);
+      }
+    }
+#line 3299
+    if (! a_is_dir) {
+#line 3299
+      if (b_is_dir) {
+#line 3299
+        return (1);
+      }
+    }
+#line 3299
+    break;
+  }
+#line 3299
+  tmp___1 = cmp_name((struct fileinfo  const  *)b, (struct fileinfo  const  *)a, & strcmp);
+#line 3299
+  return (tmp___1);
+}
+}
+#line 3300 "ls.c"
+static int xstrcoll_extension(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3300
+  tmp = cmp_extension((struct fileinfo  const  *)a, (struct fileinfo  const  *)b,
+                      & xstrcoll);
+#line 3300
+  return (tmp);
+}
+}
+#line 3300 "ls.c"
+static int strcmp_extension(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3300
+  tmp = cmp_extension((struct fileinfo  const  *)a, (struct fileinfo  const  *)b,
+                      & strcmp);
+#line 3300
+  return (tmp);
+}
+}
+#line 3300 "ls.c"
+static int rev_xstrcoll_extension(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3300
+  tmp = cmp_extension((struct fileinfo  const  *)b, (struct fileinfo  const  *)a,
+                      & xstrcoll);
+#line 3300
+  return (tmp);
+}
+}
+#line 3300 "ls.c"
+static int rev_strcmp_extension(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3300
+  tmp = cmp_extension((struct fileinfo  const  *)b, (struct fileinfo  const  *)a,
+                      & strcmp);
+#line 3300
+  return (tmp);
+}
+}
+#line 3300 "ls.c"
+static int xstrcoll_df_extension(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3300
+  while (1) {
+#line 3300
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3300
+    a_is_dir = tmp;
+#line 3300
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3300
+    b_is_dir = tmp___0;
+#line 3300
+    if (a_is_dir) {
+#line 3300
+      if (! b_is_dir) {
+#line 3300
+        return (-1);
+      }
+    }
+#line 3300
+    if (! a_is_dir) {
+#line 3300
+      if (b_is_dir) {
+#line 3300
+        return (1);
+      }
+    }
+#line 3300
+    break;
+  }
+#line 3300
+  tmp___1 = cmp_extension((struct fileinfo  const  *)a, (struct fileinfo  const  *)b,
+                          & xstrcoll);
+#line 3300
+  return (tmp___1);
+}
+}
+#line 3300 "ls.c"
+static int strcmp_df_extension(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3300
+  while (1) {
+#line 3300
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3300
+    a_is_dir = tmp;
+#line 3300
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3300
+    b_is_dir = tmp___0;
+#line 3300
+    if (a_is_dir) {
+#line 3300
+      if (! b_is_dir) {
+#line 3300
+        return (-1);
+      }
+    }
+#line 3300
+    if (! a_is_dir) {
+#line 3300
+      if (b_is_dir) {
+#line 3300
+        return (1);
+      }
+    }
+#line 3300
+    break;
+  }
+#line 3300
+  tmp___1 = cmp_extension((struct fileinfo  const  *)a, (struct fileinfo  const  *)b,
+                          & strcmp);
+#line 3300
+  return (tmp___1);
+}
+}
+#line 3300 "ls.c"
+static int rev_xstrcoll_df_extension(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3300
+  while (1) {
+#line 3300
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3300
+    a_is_dir = tmp;
+#line 3300
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3300
+    b_is_dir = tmp___0;
+#line 3300
+    if (a_is_dir) {
+#line 3300
+      if (! b_is_dir) {
+#line 3300
+        return (-1);
+      }
+    }
+#line 3300
+    if (! a_is_dir) {
+#line 3300
+      if (b_is_dir) {
+#line 3300
+        return (1);
+      }
+    }
+#line 3300
+    break;
+  }
+#line 3300
+  tmp___1 = cmp_extension((struct fileinfo  const  *)b, (struct fileinfo  const  *)a,
+                          & xstrcoll);
+#line 3300
+  return (tmp___1);
+}
+}
+#line 3300 "ls.c"
+static int rev_strcmp_df_extension(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3300
+  while (1) {
+#line 3300
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3300
+    a_is_dir = tmp;
+#line 3300
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3300
+    b_is_dir = tmp___0;
+#line 3300
+    if (a_is_dir) {
+#line 3300
+      if (! b_is_dir) {
+#line 3300
+        return (-1);
+      }
+    }
+#line 3300
+    if (! a_is_dir) {
+#line 3300
+      if (b_is_dir) {
+#line 3300
+        return (1);
+      }
+    }
+#line 3300
+    break;
+  }
+#line 3300
+  tmp___1 = cmp_extension((struct fileinfo  const  *)b, (struct fileinfo  const  *)a,
+                          & strcmp);
+#line 3300
+  return (tmp___1);
+}
+}
+#line 3311 "ls.c"
+__inline static int cmp_version(struct fileinfo  const  *a , struct fileinfo  const  *b ) 
+{ int tmp ;
+
+  {
+#line 3314
+  tmp = filevercmp((char const   *)a->name, (char const   *)b->name);
+#line 3314
+  return (tmp);
+}
+}
+#line 3317 "ls.c"
+static int xstrcoll_version(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3318
+  tmp = cmp_version((struct fileinfo  const  *)a, (struct fileinfo  const  *)b);
+#line 3318
+  return (tmp);
+}
+}
+#line 3319 "ls.c"
+static int rev_xstrcoll_version(V a , V b ) 
+{ int tmp ;
+
+  {
+#line 3320
+  tmp = cmp_version((struct fileinfo  const  *)b, (struct fileinfo  const  *)a);
+#line 3320
+  return (tmp);
+}
+}
+#line 3321 "ls.c"
+static int xstrcoll_df_version(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3322
+  while (1) {
+#line 3322
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3322
+    a_is_dir = tmp;
+#line 3322
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3322
+    b_is_dir = tmp___0;
+#line 3322
+    if (a_is_dir) {
+#line 3322
+      if (! b_is_dir) {
+#line 3322
+        return (-1);
+      }
+    }
+#line 3322
+    if (! a_is_dir) {
+#line 3322
+      if (b_is_dir) {
+#line 3322
+        return (1);
+      }
+    }
+#line 3322
+    break;
+  }
+#line 3322
+  tmp___1 = cmp_version((struct fileinfo  const  *)a, (struct fileinfo  const  *)b);
+#line 3322
+  return (tmp___1);
+}
+}
+#line 3323 "ls.c"
+static int rev_xstrcoll_df_version(V a , V b ) 
+{ _Bool a_is_dir ;
+  _Bool tmp ;
+  _Bool b_is_dir ;
+  _Bool tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3324
+  while (1) {
+#line 3324
+    tmp = is_directory((struct fileinfo  const  *)a);
+#line 3324
+    a_is_dir = tmp;
+#line 3324
+    tmp___0 = is_directory((struct fileinfo  const  *)b);
+#line 3324
+    b_is_dir = tmp___0;
+#line 3324
+    if (a_is_dir) {
+#line 3324
+      if (! b_is_dir) {
+#line 3324
+        return (-1);
+      }
+    }
+#line 3324
+    if (! a_is_dir) {
+#line 3324
+      if (b_is_dir) {
+#line 3324
+        return (1);
+      }
+    }
+#line 3324
+    break;
+  }
+#line 3324
+  tmp___1 = cmp_version((struct fileinfo  const  *)b, (struct fileinfo  const  *)a);
+#line 3324
+  return (tmp___1);
+}
+}
+#line 3349 "ls.c"
+static qsortFunc const   sort_functions[7][2][2][2]  = { { { {            (qsortFunc const   )(& xstrcoll_name),            (qsortFunc const   )(& xstrcoll_df_name)}, 
+       {            (qsortFunc const   )(& rev_xstrcoll_name),            (qsortFunc const   )(& rev_xstrcoll_df_name)}}, 
+     { {            (qsortFunc const   )(& strcmp_name),            (qsortFunc const   )(& strcmp_df_name)}, 
+       {            (qsortFunc const   )(& rev_strcmp_name),            (qsortFunc const   )(& rev_strcmp_df_name)}}}, 
+   { { {            (qsortFunc const   )(& xstrcoll_extension),            (qsortFunc const   )(& xstrcoll_df_extension)}, 
+       {            (qsortFunc const   )(& rev_xstrcoll_extension),            (qsortFunc const   )(& rev_xstrcoll_df_extension)}}, 
+     { {            (qsortFunc const   )(& strcmp_extension),            (qsortFunc const   )(& strcmp_df_extension)}, 
+       {            (qsortFunc const   )(& rev_strcmp_extension),            (qsortFunc const   )(& rev_strcmp_df_extension)}}}, 
+   { { {            (qsortFunc const   )(& xstrcoll_size),            (qsortFunc const   )(& xstrcoll_df_size)}, 
+       {            (qsortFunc const   )(& rev_xstrcoll_size),            (qsortFunc const   )(& rev_xstrcoll_df_size)}}, 
+     { {            (qsortFunc const   )(& strcmp_size),            (qsortFunc const   )(& strcmp_df_size)}, 
+       {            (qsortFunc const   )(& rev_strcmp_size),            (qsortFunc const   )(& rev_strcmp_df_size)}}}, 
+   { { {            (qsortFunc const   )(& xstrcoll_version),            (qsortFunc const   )(& xstrcoll_df_version)}, 
+       {            (qsortFunc const   )(& rev_xstrcoll_version),            (qsortFunc const   )(& rev_xstrcoll_df_version)}}, 
+     { {            (qsortFunc const   )((void *)0),            (qsortFunc const   )((void *)0)}, 
+       {            (qsortFunc const   )((void *)0),            (qsortFunc const   )((void *)0)}}}, 
+   { { {            (qsortFunc const   )(& xstrcoll_mtime),            (qsortFunc const   )(& xstrcoll_df_mtime)}, 
+       {            (qsortFunc const   )(& rev_xstrcoll_mtime),            (qsortFunc const   )(& rev_xstrcoll_df_mtime)}}, 
+     { {            (qsortFunc const   )(& strcmp_mtime),            (qsortFunc const   )(& strcmp_df_mtime)}, 
+       {            (qsortFunc const   )(& rev_strcmp_mtime),            (qsortFunc const   )(& rev_strcmp_df_mtime)}}}, 
+   { { {            (qsortFunc const   )(& xstrcoll_ctime),            (qsortFunc const   )(& xstrcoll_df_ctime)}, 
+       {            (qsortFunc const   )(& rev_xstrcoll_ctime),            (qsortFunc const   )(& rev_xstrcoll_df_ctime)}}, 
+     { {            (qsortFunc const   )(& strcmp_ctime),            (qsortFunc const   )(& strcmp_df_ctime)}, 
+       {            (qsortFunc const   )(& rev_strcmp_ctime),            (qsortFunc const   )(& rev_strcmp_df_ctime)}}}, 
+   { { {            (qsortFunc const   )(& xstrcoll_atime),            (qsortFunc const   )(& xstrcoll_df_atime)}, 
+       {            (qsortFunc const   )(& rev_xstrcoll_atime),            (qsortFunc const   )(& rev_xstrcoll_df_atime)}}, 
+     { {            (qsortFunc const   )(& strcmp_atime),            (qsortFunc const   )(& strcmp_df_atime)}, 
+       {            (qsortFunc const   )(& rev_strcmp_atime),            (qsortFunc const   )(& rev_strcmp_df_atime)}}}};
+#line 3390 "ls.c"
+static void initialize_ordering_vector(void) 
+{ size_t i ;
+
+  {
+#line 3394
+  i = (size_t )0;
+#line 3394
+  while (i < cwd_n_used) {
+#line 3395
+    *(sorted_file + i) = (void *)(cwd_file + i);
+#line 3394
+    i ++;
+  }
+#line 3396
+  return;
+}
+}
+#line 3400 "ls.c"
+static void sort_files(void) 
+{ _Bool use_strcmp ;
+  void *tmp ;
+  int tmp___0 ;
+  unsigned int tmp___1 ;
+
+  {
+#line 3405
+  if (sorted_file_alloc < cwd_n_used + cwd_n_used / 2UL) {
+#line 3407
+    free((void *)sorted_file);
+#line 3408
+    tmp = xnmalloc(cwd_n_used, 3UL * sizeof(*sorted_file));
+#line 3408
+    sorted_file = (void **)tmp;
+#line 3409
+    sorted_file_alloc = 3UL * cwd_n_used;
+  }
+#line 3412
+  initialize_ordering_vector();
+#line 3414
+  if ((int )sort_type == -1) {
+#line 3415
+    return;
+  }
+#line 3422
+  tmp___0 = _setjmp((struct __jmp_buf_tag *)(failed_strcoll));
+#line 3422
+  if (tmp___0) {
+#line 3426
+    use_strcmp = (_Bool)1;
+#line 3427
+    if (! ((int )sort_type != 3)) {
+#line 3427
+      __assert_fail("sort_type != sort_version", "ls.c", 3427U, "sort_files");
+    }
+#line 3428
+    initialize_ordering_vector();
+  } else {
+#line 3423
+    use_strcmp = (_Bool)0;
+  }
+#line 3432
+  if ((int )sort_type == 4) {
+#line 3432
+    tmp___1 = (unsigned int )time_type;
+  } else {
+#line 3432
+    tmp___1 = 0U;
+  }
+#line 3432
+  mpsort((void const   **)sorted_file, cwd_n_used, (int (*)(void const   * , void const   * ))sort_functions[(unsigned int )sort_type + tmp___1][use_strcmp][sort_reverse][directories_first]);
+#line 3436
+  return;
+}
+}
+#line 3440 "ls.c"
+static void print_current_files(void) 
+{ size_t i ;
+
+  {
+#line 3445
+  switch ((int )format) {
+  case 1: 
+#line 3448
+  i = (size_t )0;
+#line 3448
+  while (i < cwd_n_used) {
+#line 3450
+    print_file_name_and_frills((struct fileinfo  const  *)*(sorted_file + i), (size_t )0);
+#line 3451
+    putchar_unlocked('\n');
+#line 3448
+    i ++;
+  }
+#line 3453
+  break;
+  case 2: 
+#line 3456
+  print_many_per_line();
+#line 3457
+  break;
+  case 3: 
+#line 3460
+  print_horizontal();
+#line 3461
+  break;
+  case 4: 
+#line 3464
+  print_with_commas();
+#line 3465
+  break;
+  case 0: 
+#line 3468
+  i = (size_t )0;
+#line 3468
+  while (i < cwd_n_used) {
+#line 3470
+    set_normal_color();
+#line 3471
+    print_long_format((struct fileinfo  const  *)*(sorted_file + i));
+#line 3472
+    while (1) {
+#line 3472
+      putchar_unlocked('\n');
+#line 3472
+      dired_pos ++;
+#line 3472
+      break;
+    }
+#line 3468
+    i ++;
+  }
+#line 3474
+  break;
+  }
+#line 3476
+  return;
+}
+}
+#line 3482 "ls.c"
+static size_t align_nstrftime(char *buf___1 , size_t size , char const   *fmt___0 ,
+                              struct tm  const  *tm , int __utc , int __ns ) 
+{ char const   *nfmt ;
+  char rpl_fmt[sizeof(abmon[0]) + 100UL] ;
+  char const   *pb ;
+  char *pfmt ;
+  void *tmp ;
+  size_t tmp___0 ;
+  char *tmp___1 ;
+  size_t ret ;
+  size_t tmp___2 ;
+
+  {
+#line 3486
+  nfmt = fmt___0;
+#line 3491
+  if (required_mon_width) {
+#line 3491
+    tmp___1 = strstr(fmt___0, "%b");
+#line 3491
+    pb = (char const   *)tmp___1;
+#line 3491
+    if (pb) {
+#line 3493
+      tmp___0 = strlen(fmt___0);
+#line 3493
+      if (tmp___0 < (sizeof(rpl_fmt) - sizeof(abmon[0])) + 2UL) {
+#line 3495
+        pfmt = rpl_fmt;
+#line 3496
+        nfmt = (char const   *)(rpl_fmt);
+#line 3498
+        tmp = (void *)mempcpy((void * __restrict  )pfmt, (void const   * __restrict  )fmt___0,
+                              (size_t )(pb - fmt___0));
+#line 3498
+        pfmt = (char *)tmp;
+#line 3499
+        pfmt = (char *)stpcpy((char * __restrict  )pfmt, (char const   * __restrict  )(abmon[tm->tm_mon]));
+#line 3500
+        strcpy((char * __restrict  )pfmt, (char const   * __restrict  )(pb + 2));
+      }
+    }
+  }
+#line 3503
+  tmp___2 = nstrftime(buf___1, size, nfmt, tm, __utc, __ns);
+#line 3503
+  ret = tmp___2;
+#line 3504
+  return (ret);
+}
+}
+#line 3513
+static int long_time_expected_width(void) ;
+#line 3513 "ls.c"
+static int width  =    -1;
+#line 3510 "ls.c"
+static int long_time_expected_width(void) 
+{ time_t epoch ;
+  struct tm  const  *tm ;
+  struct tm *tmp ;
+  char buf___1[1001] ;
+  size_t len ;
+  size_t tmp___0 ;
+
+  {
+#line 3515
+  if (width < 0) {
+#line 3517
+    epoch = (time_t )0;
+#line 3518
+    tmp = localtime((time_t const   *)(& epoch));
+#line 3518
+    tm = (struct tm  const  *)tmp;
+#line 3528
+    if (tm) {
+#line 3530
+      tmp___0 = align_nstrftime(buf___1, sizeof(buf___1), long_time_format[0], tm,
+                                0, 0);
+#line 3530
+      len = tmp___0;
+#line 3532
+      if (len != 0UL) {
+#line 3533
+        width = mbsnwidth((char const   *)(buf___1), len, 0);
+      }
+    }
+#line 3536
+    if (width < 0) {
+#line 3537
+      width = 0;
+    }
+  }
+#line 3540
+  return (width);
+}
+}
+#line 3546 "ls.c"
+static void format_user_or_group(char const   *name , unsigned long id , int width___0 ) 
+{ size_t len ;
+  int width_gap ;
+  int tmp ;
+  int pad ;
+  int tmp___0 ;
+  size_t tmp___1 ;
+  int tmp___2 ;
+
+  {
+#line 3551
+  if (name) {
+#line 3553
+    tmp = gnu_mbswidth(name, 0);
+#line 3553
+    width_gap = width___0 - tmp;
+#line 3554
+    if (0 > width_gap) {
+#line 3554
+      tmp___0 = 0;
+    } else {
+#line 3554
+      tmp___0 = width_gap;
+    }
+#line 3554
+    pad = tmp___0;
+#line 3555
+    fputs_unlocked((char const   * __restrict  )name, (FILE * __restrict  )stdout);
+#line 3556
+    tmp___1 = strlen(name);
+#line 3556
+    len = tmp___1 + (size_t )pad;
+#line 3558
+    while (1) {
+#line 3559
+      putchar_unlocked(' ');
+#line 3558
+      tmp___2 = pad;
+#line 3558
+      pad --;
+#line 3558
+      if (! tmp___2) {
+#line 3558
+        break;
+      }
+    }
+  } else {
+#line 3564
+    printf((char const   * __restrict  )"%*lu ", width___0, id);
+#line 3565
+    len = (size_t )width___0;
+  }
+#line 3568
+  dired_pos += len + 1UL;
+#line 3569
+  return;
+}
+}
+#line 3574 "ls.c"
+static void format_user(uid_t u , int width___0 , _Bool stat_ok ) 
+{ char *tmp ;
+  char *tmp___0 ;
+  char const   *tmp___1 ;
+
+  {
+#line 3577
+  if (! stat_ok) {
+#line 3577
+    tmp___1 = "?";
+  } else {
+#line 3577
+    if (numeric_ids) {
+#line 3577
+      tmp___0 = (char *)((void *)0);
+    } else {
+#line 3577
+      tmp = getuser(u);
+#line 3577
+      tmp___0 = tmp;
+    }
+#line 3577
+    tmp___1 = (char const   *)tmp___0;
+  }
+#line 3577
+  format_user_or_group(tmp___1, (unsigned long )u, width___0);
+#line 3579
+  return;
+}
+}
+#line 3583 "ls.c"
+static void format_group(gid_t g , int width___0 , _Bool stat_ok ) 
+{ char *tmp ;
+  char *tmp___0 ;
+  char const   *tmp___1 ;
+
+  {
+#line 3586
+  if (! stat_ok) {
+#line 3586
+    tmp___1 = "?";
+  } else {
+#line 3586
+    if (numeric_ids) {
+#line 3586
+      tmp___0 = (char *)((void *)0);
+    } else {
+#line 3586
+      tmp = getgroup(g);
+#line 3586
+      tmp___0 = tmp;
+    }
+#line 3586
+    tmp___1 = (char const   *)tmp___0;
+  }
+#line 3586
+  format_user_or_group(tmp___1, (unsigned long )g, width___0);
+#line 3588
+  return;
+}
+}
+#line 3592 "ls.c"
+static int format_user_or_group_width(char const   *name , unsigned long id ) 
+{ int len ;
+  int tmp ;
+  int tmp___0 ;
+  char buf___1[((sizeof(id) * 8UL) * 146UL + 484UL) / 485UL + 1UL] ;
+  size_t tmp___1 ;
+
+  {
+#line 3595
+  if (name) {
+#line 3597
+    tmp = gnu_mbswidth(name, 0);
+#line 3597
+    len = tmp;
+#line 3598
+    if (0 > len) {
+#line 3598
+      tmp___0 = 0;
+    } else {
+#line 3598
+      tmp___0 = len;
+    }
+#line 3598
+    return (tmp___0);
+  } else {
+#line 3603
+    sprintf((char * __restrict  )(buf___1), (char const   * __restrict  )"%lu", id);
+#line 3604
+    tmp___1 = strlen((char const   *)(buf___1));
+#line 3604
+    return ((int )tmp___1);
+  }
+}
+}
+#line 3610 "ls.c"
+static int format_user_width(uid_t u ) 
+{ char *tmp ;
+  char *tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3613
+  if (numeric_ids) {
+#line 3613
+    tmp___0 = (char *)((void *)0);
+  } else {
+#line 3613
+    tmp = getuser(u);
+#line 3613
+    tmp___0 = tmp;
+  }
+#line 3613
+  tmp___1 = format_user_or_group_width((char const   *)tmp___0, (unsigned long )u);
+#line 3613
+  return (tmp___1);
+}
+}
+#line 3618 "ls.c"
+static int format_group_width(gid_t g ) 
+{ char *tmp ;
+  char *tmp___0 ;
+  int tmp___1 ;
+
+  {
+#line 3621
+  if (numeric_ids) {
+#line 3621
+    tmp___0 = (char *)((void *)0);
+  } else {
+#line 3621
+    tmp = getgroup(g);
+#line 3621
+    tmp___0 = tmp;
+  }
+#line 3621
+  tmp___1 = format_user_or_group_width((char const   *)tmp___0, (unsigned long )g);
+#line 3621
+  return (tmp___1);
+}
+}
+#line 3627 "ls.c"
+static char *format_inode(char *buf___1 , size_t buflen , struct fileinfo  const  *f ) 
+{ char *tmp ;
+  char *tmp___0 ;
+
+  {
+#line 3630
+  if (! (((sizeof(uintmax_t ) * 8UL) * 146UL + 484UL) / 485UL + 1UL <= buflen)) {
+#line 3630
+    __assert_fail("(((((sizeof (uintmax_t) * 8 - (! ((__typeof__ (uintmax_t)) 0 < (__typeof__ (uintmax_t)) -1))) * 146 + 484) / 485) + (! ((__typeof__ (uintmax_t)) 0 < (__typeof__ (uintmax_t)) -1))) + 1) <= buflen",
+                  "ls.c", 3630U, "format_inode");
+  }
+#line 3631
+  if (f->stat_ok) {
+#line 3631
+    if (f->stat.st_ino != 0UL) {
+#line 3631
+      tmp = (char *)umaxtostr((uintmax_t )f->stat.st_ino, buf___1);
+#line 3631
+      tmp___0 = tmp;
+    } else {
+#line 3631
+      tmp___0 = (char *)"?";
+    }
+  } else {
+#line 3631
+    tmp___0 = (char *)"?";
+  }
+#line 3631
+  return (tmp___0);
+}
+}
+#line 3637 "ls.c"
+static void print_long_format(struct fileinfo  const  *f ) 
+{ char modebuf[12] ;
+  char buf___1[(((((((((((((((((((2UL * sizeof(uintmax_t )) * 8UL) * 146UL) / 485UL + 1UL) * 17UL - 16UL) + 1UL) + 3UL) + 1UL) + (((((((2UL * sizeof(uintmax_t )) * 8UL) * 146UL) / 485UL + 1UL) * 17UL - 16UL) + 1UL) + 3UL)) + 1UL) + sizeof(modebuf)) - 1UL) + 1UL) + (((sizeof(uintmax_t ) * 8UL) * 146UL + 484UL) / 485UL + 1UL)) + (((((((2UL * sizeof(uintmax_t )) * 8UL) * 146UL) / 485UL + 1UL) * 17UL - 16UL) + 1UL) + 3UL)) + 2UL) + (((((((2UL * sizeof(uintmax_t )) * 8UL) * 146UL) / 485UL + 1UL) * 17UL - 16UL) + 1UL) + 3UL)) + 1UL) + 1000UL) + 1UL] ;
+  size_t s ;
+  char *p ;
+  struct timespec when_timespec ;
+  struct tm *when_local ;
+  char hbuf[((sizeof(uintmax_t ) * 8UL) * 146UL + 484UL) / 485UL + 1UL] ;
+  char *tmp ;
+  size_t tmp___0 ;
+  char hbuf___0[(((((((2UL * sizeof(uintmax_t )) * 8UL) * 146UL) / 485UL + 1UL) * 17UL - 16UL) + 1UL) + 3UL) + 1UL] ;
+  char const   *blocks ;
+  char *tmp___1 ;
+  char const   *tmp___2 ;
+  int pad ;
+  int tmp___3 ;
+  char *tmp___4 ;
+  char *tmp___5 ;
+  char tmp___6 ;
+  char const   *tmp___7 ;
+  char hbuf___1[((sizeof(uintmax_t ) * 8UL) * 146UL + 484UL) / 485UL + 1UL] ;
+  char *tmp___8 ;
+  char const   *tmp___9 ;
+  size_t tmp___10 ;
+  char majorbuf[((sizeof(uintmax_t ) * 8UL) * 146UL + 484UL) / 485UL + 1UL] ;
+  char minorbuf[((sizeof(uintmax_t ) * 8UL) * 146UL + 484UL) / 485UL + 1UL] ;
+  int blanks_width ;
+  unsigned int tmp___11 ;
+  char *tmp___12 ;
+  unsigned int tmp___13 ;
+  char *tmp___14 ;
+  int tmp___15 ;
+  char hbuf___2[(((((((2UL * sizeof(uintmax_t )) * 8UL) * 146UL) / 485UL + 1UL) * 17UL - 16UL) + 1UL) + 3UL) + 1UL] ;
+  char const   *size ;
+  uintmax_t tmp___16 ;
+  char *tmp___17 ;
+  char const   *tmp___18 ;
+  int pad___0 ;
+  int tmp___19 ;
+  char *tmp___20 ;
+  char *tmp___21 ;
+  char tmp___22 ;
+  char const   *tmp___23 ;
+  struct timespec six_months_ago ;
+  _Bool recent ;
+  char const   *fmt___0 ;
+  int tmp___24 ;
+  int tmp___25 ;
+  int tmp___26 ;
+  int tmp___27 ;
+  char *tmp___28 ;
+  char hbuf___3[(((sizeof(intmax_t ) * 8UL - 1UL) * 146UL + 484UL) / 485UL + 1UL) + 1UL] ;
+  char *tmp___29 ;
+  char const   *tmp___30 ;
+  int tmp___31 ;
+  size_t tmp___32 ;
+  size_t w ;
+  size_t tmp___33 ;
+
+  {
+#line 3657
+  if (f->stat_ok) {
+#line 3658
+    filemodestring(& f->stat, modebuf);
+  } else {
+#line 3661
+    modebuf[0] = (char )filetype_letter[f->filetype];
+#line 3662
+    memset((void *)(modebuf + 1), '?', (size_t )10);
+#line 3663
+    modebuf[11] = (char )'\000';
+  }
+#line 3665
+  if (! any_has_acl) {
+#line 3666
+    modebuf[10] = (char )'\000';
+  } else
+#line 3667
+  if ((unsigned int const   )f->acl_type == 1U) {
+#line 3668
+    modebuf[10] = (char )'.';
+  } else
+#line 3669
+  if ((unsigned int const   )f->acl_type == 2U) {
+#line 3670
+    modebuf[10] = (char )'+';
+  }
+#line 3672
+  switch ((int )time_type) {
+  case 1: 
+#line 3675
+  when_timespec = get_stat_ctime(& f->stat);
+#line 3676
+  break;
+  case 0: 
+#line 3678
+  when_timespec = get_stat_mtime(& f->stat);
+#line 3679
+  break;
+  case 2: 
+#line 3681
+  when_timespec = get_stat_atime(& f->stat);
+#line 3682
+  break;
+  default: 
+#line 3684
+  abort();
+  }
+#line 3687
+  p = buf___1;
+#line 3689
+  if (print_inode) {
+#line 3692
+    tmp = format_inode(hbuf, sizeof(hbuf), f);
+#line 3692
+    sprintf((char * __restrict  )p, (char const   * __restrict  )"%*s ", inode_number_width,
+            tmp);
+#line 3696
+    tmp___0 = strlen((char const   *)p);
+#line 3696
+    p += tmp___0;
+  }
+#line 3699
+  if (print_block_size) {
+#line 3702
+    if (! f->stat_ok) {
+#line 3702
+      tmp___2 = "?";
+    } else {
+#line 3702
+      tmp___1 = human_readable((uintmax_t )f->stat.st_blocks, hbuf___0, human_output_opts,
+                               (uintmax_t )512, output_block_size);
+#line 3702
+      tmp___2 = (char const   *)tmp___1;
+    }
+#line 3702
+    blocks = tmp___2;
+#line 3708
+    tmp___3 = gnu_mbswidth(blocks, 0);
+#line 3708
+    pad = block_size_width - tmp___3;
+#line 3708
+    while (0 < pad) {
+#line 3709
+      tmp___4 = p;
+#line 3709
+      p ++;
+#line 3709
+      *tmp___4 = (char )' ';
+#line 3708
+      pad --;
+    }
+#line 3710
+    while (1) {
+#line 3710
+      tmp___5 = p;
+#line 3710
+      p ++;
+#line 3710
+      tmp___7 = blocks;
+#line 3710
+      blocks ++;
+#line 3710
+      tmp___6 = (char )*tmp___7;
+#line 3710
+      *tmp___5 = tmp___6;
+#line 3710
+      if (! tmp___6) {
+#line 3710
+        break;
+      }
+#line 3711
+      continue;
+    }
+#line 3712
+    *(p + -1) = (char )' ';
+  }
+#line 3719
+  if (! f->stat_ok) {
+#line 3719
+    tmp___9 = "?";
+  } else {
+#line 3719
+    tmp___8 = (char *)umaxtostr((uintmax_t )f->stat.st_nlink, hbuf___1);
+#line 3719
+    tmp___9 = (char const   *)tmp___8;
+  }
+#line 3719
+  sprintf((char * __restrict  )p, (char const   * __restrict  )"%s %*s ", modebuf,
+          nlink_width, tmp___9);
+#line 3725
+  tmp___10 = strlen((char const   *)p);
+#line 3725
+  p += tmp___10;
+#line 3727
+  while (1) {
+#line 3727
+    if (dired) {
+#line 3727
+      while (1) {
+#line 3727
+        fputs_unlocked((char const   * __restrict  )"  ", (FILE * __restrict  )stdout);
+#line 3727
+        dired_pos += sizeof("  ") - 1UL;
+#line 3727
+        break;
+      }
+    }
+#line 3727
+    break;
+  }
+#line 3729
+  if (print_owner) {
+#line 3729
+    goto _L;
+  } else
+#line 3729
+  if (print_group) {
+#line 3729
+    goto _L;
+  } else
+#line 3729
+  if (print_author) {
+#line 3729
+    goto _L;
+  } else
+#line 3729
+  if (print_scontext) {
+    _L: /* CIL Label */ 
+#line 3731
+    while (1) {
+#line 3731
+      fputs_unlocked((char const   * __restrict  )(buf___1), (FILE * __restrict  )stdout);
+#line 3731
+      dired_pos += (size_t )(p - buf___1);
+#line 3731
+      break;
+    }
+#line 3733
+    if (print_owner) {
+#line 3734
+      format_user((uid_t )f->stat.st_uid, owner_width, (_Bool )f->stat_ok);
+    }
+#line 3736
+    if (print_group) {
+#line 3737
+      format_group((gid_t )f->stat.st_gid, group_width, (_Bool )f->stat_ok);
+    }
+#line 3739
+    if (print_author) {
+#line 3740
+      format_user((uid_t )f->stat.st_uid, author_width, (_Bool )f->stat_ok);
+    }
+#line 3742
+    if (print_scontext) {
+#line 3743
+      format_user_or_group((char const   *)f->scontext, 0UL, scontext_width);
+    }
+#line 3745
+    p = buf___1;
+  }
+#line 3748
+  if (f->stat_ok) {
+#line 3748
+    if ((f->stat.st_mode & 61440U) == 8192U) {
+#line 3748
+      goto _L___1;
+    } else
+#line 3748
+    if ((f->stat.st_mode & 61440U) == 24576U) {
+      _L___1: /* CIL Label */ 
+#line 3753
+      blanks_width = file_size_width - ((major_device_number_width + 2) + minor_device_number_width);
+#line 3756
+      tmp___11 = gnu_dev_minor((unsigned long long )f->stat.st_rdev);
+#line 3756
+      tmp___12 = (char *)umaxtostr((uintmax_t )tmp___11, minorbuf);
+#line 3756
+      tmp___13 = gnu_dev_major((unsigned long long )f->stat.st_rdev);
+#line 3756
+      tmp___14 = (char *)umaxtostr((uintmax_t )tmp___13, majorbuf);
+#line 3756
+      if (0 > blanks_width) {
+#line 3756
+        tmp___15 = 0;
+      } else {
+#line 3756
+        tmp___15 = blanks_width;
+      }
+#line 3756
+      sprintf((char * __restrict  )p, (char const   * __restrict  )"%*s, %*s ", major_device_number_width + tmp___15,
+              tmp___14, minor_device_number_width, tmp___12);
+#line 3761
+      p += file_size_width + 1;
+    } else {
+#line 3748
+      goto _L___0;
+    }
+  } else {
+    _L___0: /* CIL Label */ 
+#line 3766
+    if (! f->stat_ok) {
+#line 3766
+      tmp___18 = "?";
+    } else {
+#line 3766
+      tmp___16 = unsigned_file_size((off_t )f->stat.st_size);
+#line 3766
+      tmp___17 = human_readable(tmp___16, hbuf___2, human_output_opts, (uintmax_t )1,
+                                file_output_block_size);
+#line 3766
+      tmp___18 = (char const   *)tmp___17;
+    }
+#line 3766
+    size = tmp___18;
+#line 3772
+    tmp___19 = gnu_mbswidth(size, 0);
+#line 3772
+    pad___0 = file_size_width - tmp___19;
+#line 3772
+    while (0 < pad___0) {
+#line 3773
+      tmp___20 = p;
+#line 3773
+      p ++;
+#line 3773
+      *tmp___20 = (char )' ';
+#line 3772
+      pad___0 --;
+    }
+#line 3774
+    while (1) {
+#line 3774
+      tmp___21 = p;
+#line 3774
+      p ++;
+#line 3774
+      tmp___23 = size;
+#line 3774
+      size ++;
+#line 3774
+      tmp___22 = (char )*tmp___23;
+#line 3774
+      *tmp___21 = tmp___22;
+#line 3774
+      if (! tmp___22) {
+#line 3774
+        break;
+      }
+#line 3775
+      continue;
+    }
+#line 3776
+    *(p + -1) = (char )' ';
+  }
+#line 3779
+  when_local = localtime((time_t const   *)(& when_timespec.tv_sec));
+#line 3780
+  s = (size_t )0;
+#line 3781
+  *p = (char )'\001';
+#line 3783
+  if (f->stat_ok) {
+#line 3783
+    if (when_local) {
+#line 3792
+      tmp___24 = timespec_cmp(current_time, when_timespec);
+#line 3792
+      if (tmp___24 < 0) {
+#line 3798
+        gettime(& current_time);
+      }
+#line 3805
+      six_months_ago.tv_sec = current_time.tv_sec - 15778476L;
+#line 3806
+      six_months_ago.tv_nsec = current_time.tv_nsec;
+#line 3808
+      tmp___25 = timespec_cmp(six_months_ago, when_timespec);
+#line 3808
+      if (tmp___25 < 0) {
+#line 3808
+        tmp___26 = timespec_cmp(when_timespec, current_time);
+#line 3808
+        if (tmp___26 < 0) {
+#line 3808
+          tmp___27 = 1;
+        } else {
+#line 3808
+          tmp___27 = 0;
+        }
+      } else {
+#line 3808
+        tmp___27 = 0;
+      }
+#line 3808
+      recent = (_Bool )tmp___27;
+#line 3810
+      fmt___0 = long_time_format[recent];
+#line 3814
+      s = align_nstrftime(p, (size_t )1001, fmt___0, (struct tm  const  *)when_local,
+                          0, (int )when_timespec.tv_nsec);
+    }
+  }
+#line 3818
+  if (s) {
+#line 3820
+    p += s;
+#line 3821
+    tmp___28 = p;
+#line 3821
+    p ++;
+#line 3821
+    *tmp___28 = (char )' ';
+#line 3824
+    *p = (char )'\000';
+  } else
+#line 3818
+  if (! *p) {
+#line 3820
+    p += s;
+#line 3821
+    tmp___28 = p;
+#line 3821
+    p ++;
+#line 3821
+    *tmp___28 = (char )' ';
+#line 3824
+    *p = (char )'\000';
+  } else {
+#line 3831
+    if (! f->stat_ok) {
+#line 3831
+      tmp___30 = "?";
+    } else {
+#line 3831
+      tmp___29 = timetostr(when_timespec.tv_sec, hbuf___3);
+#line 3831
+      tmp___30 = (char const   *)tmp___29;
+    }
+#line 3831
+    tmp___31 = long_time_expected_width();
+#line 3831
+    sprintf((char * __restrict  )p, (char const   * __restrict  )"%*s ", tmp___31,
+            tmp___30);
+#line 3836
+    tmp___32 = strlen((char const   *)p);
+#line 3836
+    p += tmp___32;
+  }
+#line 3839
+  while (1) {
+#line 3839
+    fputs_unlocked((char const   * __restrict  )(buf___1), (FILE * __restrict  )stdout);
+#line 3839
+    dired_pos += (size_t )(p - buf___1);
+#line 3839
+    break;
+  }
+#line 3840
+  tmp___33 = print_name_with_quoting(f, (_Bool)0, & dired_obstack, (size_t )(p - buf___1));
+#line 3840
+  w = tmp___33;
+#line 3842
+  if ((unsigned int const   )f->filetype == 6U) {
+#line 3844
+    if (f->linkname) {
+#line 3846
+      while (1) {
+#line 3846
+        fputs_unlocked((char const   * __restrict  )" -> ", (FILE * __restrict  )stdout);
+#line 3846
+        dired_pos += sizeof(" -> ") - 1UL;
+#line 3846
+        break;
+      }
+#line 3847
+      print_name_with_quoting(f, (_Bool)1, (struct obstack *)((void *)0), ((size_t )(p - buf___1) + w) + 4UL);
+#line 3848
+      if ((unsigned int )indicator_style != 0U) {
+#line 3849
+        print_type_indicator((_Bool)1, (mode_t )f->linkmode, (enum filetype )0);
+      }
+    }
+  } else
+#line 3852
+  if ((unsigned int )indicator_style != 0U) {
+#line 3853
+    print_type_indicator((_Bool )f->stat_ok, (mode_t )f->stat.st_mode, (enum filetype )f->filetype);
+  }
+#line 3854
+  return;
+}
+}
+#line 3862 "ls.c"
+static size_t quote_name(FILE *out , char const   *name , struct quoting_options  const  *options ,
+                         size_t *width___0 ) 
+{ char smallbuf[8192] ;
+  size_t len ;
+  size_t tmp ;
+  char *buf___1 ;
+  size_t displayed_width ;
+  void *tmp___0 ;
+  char const   *p ;
+  char const   *plimit ;
+  char *q ;
+  char *tmp___1 ;
+  char const   *tmp___2 ;
+  mbstate_t mbstate ;
+  wchar_t wc ;
+  size_t bytes ;
+  int w ;
+  char *tmp___3 ;
+  char *tmp___4 ;
+  char *tmp___5 ;
+  char const   *tmp___6 ;
+  char *tmp___7 ;
+  int tmp___8 ;
+  char *p___0 ;
+  char const   *plimit___0 ;
+  unsigned short const   **tmp___9 ;
+  unsigned char tmp___10 ;
+  size_t tmp___11 ;
+  int tmp___12 ;
+  char const   *p___1 ;
+  char const   *plimit___1 ;
+  unsigned short const   **tmp___13 ;
+  unsigned char tmp___14 ;
+  size_t tmp___15 ;
+
+  {
+#line 3867
+  tmp = quotearg_buffer(smallbuf, sizeof(smallbuf), name, (size_t )-1, options);
+#line 3867
+  len = tmp;
+#line 3871
+  if (len < sizeof(smallbuf)) {
+#line 3872
+    buf___1 = smallbuf;
+  } else {
+#line 3875
+    tmp___0 = __builtin_alloca(len + 1UL);
+#line 3875
+    buf___1 = (char *)tmp___0;
+#line 3876
+    quotearg_buffer(buf___1, len + 1UL, name, (size_t )-1, options);
+  }
+#line 3879
+  if (qmark_funny_chars) {
+#line 3881
+    tmp___11 = __ctype_get_mb_cur_max();
+#line 3881
+    if (tmp___11 > 1UL) {
+#line 3883
+      p = (char const   *)buf___1;
+#line 3884
+      plimit = (char const   *)(buf___1 + len);
+#line 3885
+      q = buf___1;
+#line 3886
+      displayed_width = (size_t )0;
+#line 3888
+      while ((unsigned long )p < (unsigned long )plimit) {
+#line 3889
+        switch ((int )*p) {
+        case 32: 
+        case 33: 
+        case 34: 
+        case 35: 
+        case 37: 
+        case 38: 
+        case 39: 
+        case 40: 
+        case 41: 
+        case 42: 
+        case 43: 
+        case 44: 
+        case 45: 
+        case 46: 
+        case 47: 
+        case 48: 
+        case 49: 
+        case 50: 
+        case 51: 
+        case 52: 
+        case 53: 
+        case 54: 
+        case 55: 
+        case 56: 
+        case 57: 
+        case 58: 
+        case 59: 
+        case 60: 
+        case 61: 
+        case 62: 
+        case 63: 
+        case 65: 
+        case 66: 
+        case 67: 
+        case 68: 
+        case 69: 
+        case 70: 
+        case 71: 
+        case 72: 
+        case 73: 
+        case 74: 
+        case 75: 
+        case 76: 
+        case 77: 
+        case 78: 
+        case 79: 
+        case 80: 
+        case 81: 
+        case 82: 
+        case 83: 
+        case 84: 
+        case 85: 
+        case 86: 
+        case 87: 
+        case 88: 
+        case 89: 
+        case 90: 
+        case 91: 
+        case 92: 
+        case 93: 
+        case 94: 
+        case 95: 
+        case 97: 
+        case 98: 
+        case 99: 
+        case 100: 
+        case 101: 
+        case 102: 
+        case 103: 
+        case 104: 
+        case 105: 
+        case 106: 
+        case 107: 
+        case 108: 
+        case 109: 
+        case 110: 
+        case 111: 
+        case 112: 
+        case 113: 
+        case 114: 
+        case 115: 
+        case 116: 
+        case 117: 
+        case 118: 
+        case 119: 
+        case 120: 
+        case 121: 
+        case 122: 
+        case 123: 
+        case 124: 
+        case 125: 
+        case 126: 
+#line 3912
+        tmp___1 = q;
+#line 3912
+        q ++;
+#line 3912
+        tmp___2 = p;
+#line 3912
+        p ++;
+#line 3912
+        *tmp___1 = (char )*tmp___2;
+#line 3913
+        displayed_width ++;
+#line 3914
+        break;
+        default: 
+#line 3920
+        mbstate.__count = 0;
+#line 3920
+        mbstate.__value.__wch = 0U;
+#line 3921
+        while (1) {
+#line 3927
+          bytes = mbrtowc((wchar_t * __restrict  )(& wc), (char const   * __restrict  )p,
+                          (size_t )(plimit - p), & mbstate);
+#line 3929
+          if (bytes == 0xffffffffffffffffUL) {
+#line 3934
+            p ++;
+#line 3935
+            tmp___3 = q;
+#line 3935
+            q ++;
+#line 3935
+            *tmp___3 = (char )'?';
+#line 3936
+            displayed_width ++;
+#line 3937
+            break;
+          }
+#line 3940
+          if (bytes == 0xfffffffffffffffeUL) {
+#line 3945
+            p = plimit;
+#line 3946
+            tmp___4 = q;
+#line 3946
+            q ++;
+#line 3946
+            *tmp___4 = (char )'?';
+#line 3947
+            displayed_width ++;
+#line 3948
+            break;
+          }
+#line 3951
+          if (bytes == 0UL) {
+#line 3953
+            bytes = (size_t )1;
+          }
+#line 3955
+          w = wcwidth(wc);
+#line 3956
+          if (w >= 0) {
+#line 3960
+            while (bytes > 0UL) {
+#line 3961
+              tmp___5 = q;
+#line 3961
+              q ++;
+#line 3961
+              tmp___6 = p;
+#line 3961
+              p ++;
+#line 3961
+              *tmp___5 = (char )*tmp___6;
+#line 3960
+              bytes --;
+            }
+#line 3962
+            displayed_width += (size_t )w;
+          } else {
+#line 3969
+            p += bytes;
+#line 3970
+            tmp___7 = q;
+#line 3970
+            q ++;
+#line 3970
+            *tmp___7 = (char )'?';
+#line 3971
+            displayed_width ++;
+          }
+#line 3921
+          tmp___8 = mbsinit((mbstate_t const   *)(& mbstate));
+#line 3921
+          if (tmp___8) {
+#line 3921
+            break;
+          }
+        }
+#line 3976
+        break;
+        }
+      }
+#line 3980
+      len = (size_t )(q - buf___1);
+    } else {
+#line 3984
+      p___0 = buf___1;
+#line 3985
+      plimit___0 = (char const   *)(buf___1 + len);
+#line 3987
+      while ((unsigned long )p___0 < (unsigned long )plimit___0) {
+#line 3989
+        tmp___9 = __ctype_b_loc();
+#line 3989
+        tmp___10 = to_uchar(*p___0);
+#line 3989
+        if (! ((int const   )*(*tmp___9 + (int )tmp___10) & 16384)) {
+#line 3990
+          *p___0 = (char )'?';
+        }
+#line 3991
+        p___0 ++;
+      }
+#line 3993
+      displayed_width = len;
+    }
+  } else
+#line 3996
+  if ((unsigned long )width___0 != (unsigned long )((void *)0)) {
+#line 3998
+    tmp___15 = __ctype_get_mb_cur_max();
+#line 3998
+    if (tmp___15 > 1UL) {
+#line 3999
+      tmp___12 = mbsnwidth((char const   *)buf___1, len, 0);
+#line 3999
+      displayed_width = (size_t )tmp___12;
+    } else {
+#line 4002
+      p___1 = (char const   *)buf___1;
+#line 4003
+      plimit___1 = (char const   *)(buf___1 + len);
+#line 4005
+      displayed_width = (size_t )0;
+#line 4006
+      while ((unsigned long )p___1 < (unsigned long )plimit___1) {
+#line 4008
+        tmp___13 = __ctype_b_loc();
+#line 4008
+        tmp___14 = to_uchar((char )*p___1);
+#line 4008
+        if ((int const   )*(*tmp___13 + (int )tmp___14) & 16384) {
+#line 4009
+          displayed_width ++;
+        }
+#line 4010
+        p___1 ++;
+      }
+    }
+  }
+#line 4015
+  if ((unsigned long )out != (unsigned long )((void *)0)) {
+#line 4016
+    fwrite_unlocked((void const   * __restrict  )buf___1, (size_t )1, len, (FILE * __restrict  )out);
+  }
+#line 4017
+  if ((unsigned long )width___0 != (unsigned long )((void *)0)) {
+#line 4018
+    *width___0 = displayed_width;
+  }
+#line 4019
+  return (len);
+}
+}
+#line 4022 "ls.c"
+static size_t print_name_with_quoting(struct fileinfo  const  *f , _Bool symlink_target ,
+                                      struct obstack *stack , size_t start_col ) 
+{ char const   *name ;
+  char *tmp ;
+  _Bool used_color_this_time ;
+  _Bool tmp___0 ;
+  _Bool tmp___1 ;
+  int tmp___2 ;
+  struct obstack *__o ;
+  int __len ;
+  size_t width___0 ;
+  size_t tmp___3 ;
+  struct obstack *__o___0 ;
+  int __len___0 ;
+
+  {
+#line 4028
+  if (symlink_target) {
+#line 4028
+    tmp = f->linkname;
+  } else {
+#line 4028
+    tmp = f->name;
+  }
+#line 4028
+  name = (char const   *)tmp;
+#line 4030
+  if (print_with_color) {
+#line 4030
+    tmp___0 = print_color_indicator(f, symlink_target);
+#line 4030
+    if (tmp___0) {
+#line 4030
+      tmp___2 = 1;
+    } else {
+#line 4030
+      tmp___1 = is_colored((enum indicator_no )4);
+#line 4030
+      if (tmp___1) {
+#line 4030
+        tmp___2 = 1;
+      } else {
+#line 4030
+        tmp___2 = 0;
+      }
+    }
+  } else {
+#line 4030
+    tmp___2 = 0;
+  }
+#line 4030
+  used_color_this_time = (_Bool )tmp___2;
+#line 4035
+  if (stack) {
+#line 4036
+    while (1) {
+#line 4036
+      if (dired) {
+#line 4036
+        __o = stack;
+#line 4036
+        __len = (int )sizeof(dired_pos);
+#line 4036
+        if ((unsigned long )(__o->next_free + __len) > (unsigned long )__o->chunk_limit) {
+#line 4036
+          _obstack_newchunk(__o, __len);
+        }
+#line 4036
+        memcpy((void * __restrict  )__o->next_free, (void const   * __restrict  )(& dired_pos),
+               (size_t )__len);
+#line 4036
+        __o->next_free += __len;
+      }
+#line 4036
+      break;
+    }
+  }
+#line 4038
+  tmp___3 = quote_name(stdout, name, (struct quoting_options  const  *)filename_quoting_options,
+                       (size_t *)((void *)0));
+#line 4038
+  width___0 = tmp___3;
+#line 4039
+  dired_pos += width___0;
+#line 4041
+  if (stack) {
+#line 4042
+    while (1) {
+#line 4042
+      if (dired) {
+#line 4042
+        __o___0 = stack;
+#line 4042
+        __len___0 = (int )sizeof(dired_pos);
+#line 4042
+        if ((unsigned long )(__o___0->next_free + __len___0) > (unsigned long )__o___0->chunk_limit) {
+#line 4042
+          _obstack_newchunk(__o___0, __len___0);
+        }
+#line 4042
+        memcpy((void * __restrict  )__o___0->next_free, (void const   * __restrict  )(& dired_pos),
+               (size_t )__len___0);
+#line 4042
+        __o___0->next_free += __len___0;
+      }
+#line 4042
+      break;
+    }
+  }
+#line 4044
+  if (used_color_this_time) {
+#line 4046
+    process_signals();
+#line 4047
+    prep_non_filename_text();
+#line 4048
+    if (start_col / line_length != ((start_col + width___0) - 1UL) / line_length) {
+#line 4049
+      put_indicator((struct bin_str  const  *)(& color_indicator[23]));
+    }
+  }
+#line 4052
+  return (width___0);
+}
+}
+#line 4055 "ls.c"
+static void prep_non_filename_text(void) 
+{ 
+
+  {
+#line 4058
+  if ((unsigned long )color_indicator[2].string != (unsigned long )((void *)0)) {
+#line 4059
+    put_indicator((struct bin_str  const  *)(& color_indicator[2]));
+  } else {
+#line 4062
+    put_indicator((struct bin_str  const  *)(& color_indicator[0]));
+#line 4063
+    put_indicator((struct bin_str  const  *)(& color_indicator[3]));
+#line 4064
+    put_indicator((struct bin_str  const  *)(& color_indicator[1]));
+  }
+#line 4066
+  return;
+}
+}
+#line 4072 "ls.c"
+static size_t print_file_name_and_frills(struct fileinfo  const  *f , size_t start_col ) 
+{ char buf___1[(((((((2UL * sizeof(uintmax_t )) * 8UL) * 146UL) / 485UL + 1UL) * 17UL - 16UL) + 1UL) + 3UL) + 1UL] ;
+  char *tmp ;
+  int tmp___0 ;
+  char *tmp___1 ;
+  char const   *tmp___2 ;
+  int tmp___3 ;
+  int tmp___4 ;
+  size_t width___0 ;
+  size_t tmp___5 ;
+  _Bool tmp___6 ;
+
+  {
+#line 4077
+  set_normal_color();
+#line 4079
+  if (print_inode) {
+#line 4080
+    tmp = format_inode(buf___1, sizeof(buf___1), f);
+#line 4080
+    if ((unsigned int )format == 4U) {
+#line 4080
+      tmp___0 = 0;
+    } else {
+#line 4080
+      tmp___0 = inode_number_width;
+    }
+#line 4080
+    printf((char const   * __restrict  )"%*s ", tmp___0, tmp);
+  }
+#line 4083
+  if (print_block_size) {
+#line 4084
+    if (! f->stat_ok) {
+#line 4084
+      tmp___2 = "?";
+    } else {
+#line 4084
+      tmp___1 = human_readable((uintmax_t )f->stat.st_blocks, buf___1, human_output_opts,
+                               (uintmax_t )512, output_block_size);
+#line 4084
+      tmp___2 = (char const   *)tmp___1;
+    }
+#line 4084
+    if ((unsigned int )format == 4U) {
+#line 4084
+      tmp___3 = 0;
+    } else {
+#line 4084
+      tmp___3 = block_size_width;
+    }
+#line 4084
+    printf((char const   * __restrict  )"%*s ", tmp___3, tmp___2);
+  }
+#line 4089
+  if (print_scontext) {
+#line 4090
+    if ((unsigned int )format == 4U) {
+#line 4090
+      tmp___4 = 0;
+    } else {
+#line 4090
+      tmp___4 = scontext_width;
+    }
+#line 4090
+    printf((char const   * __restrict  )"%*s ", tmp___4, f->scontext);
+  }
+#line 4092
+  tmp___5 = print_name_with_quoting(f, (_Bool)0, (struct obstack *)((void *)0), start_col);
+#line 4092
+  width___0 = tmp___5;
+#line 4094
+  if ((unsigned int )indicator_style != 0U) {
+#line 4095
+    tmp___6 = print_type_indicator((_Bool )f->stat_ok, (mode_t )f->stat.st_mode, (enum filetype )f->filetype);
+#line 4095
+    width___0 += (size_t )tmp___6;
+  }
+#line 4097
+  return (width___0);
+}
+}
+#line 4102 "ls.c"
+static char get_type_indicator(_Bool stat_ok , mode_t mode , enum filetype type ) 
+{ char c ;
+  int tmp ;
+  int tmp___0 ;
+  int tmp___1 ;
+  int tmp___2 ;
+  int tmp___3 ;
+  int tmp___4 ;
+
+  {
+#line 4107
+  if (stat_ok) {
+#line 4107
+    tmp___4 = (mode & 61440U) == 32768U;
+  } else {
+#line 4107
+    tmp___4 = (unsigned int )type == 5U;
+  }
+#line 4107
+  if (tmp___4) {
+#line 4109
+    if (stat_ok) {
+#line 4109
+      if ((unsigned int )indicator_style == 3U) {
+#line 4109
+        if (mode & (unsigned int )((64 | (64 >> 3)) | ((64 >> 3) >> 3))) {
+#line 4110
+          c = (char )'*';
+        } else {
+#line 4112
+          c = (char)0;
+        }
+      } else {
+#line 4112
+        c = (char)0;
+      }
+    } else {
+#line 4112
+      c = (char)0;
+    }
+  } else {
+#line 4116
+    if (stat_ok) {
+#line 4116
+      tmp___3 = (mode & 61440U) == 16384U;
+    } else {
+#line 4116
+      if ((unsigned int )type == 3U) {
+#line 4116
+        tmp___2 = 1;
+      } else
+#line 4116
+      if ((unsigned int )type == 9U) {
+#line 4116
+        tmp___2 = 1;
+      } else {
+#line 4116
+        tmp___2 = 0;
+      }
+#line 4116
+      tmp___3 = tmp___2;
+    }
+#line 4116
+    if (tmp___3) {
+#line 4117
+      c = (char )'/';
+    } else
+#line 4118
+    if ((unsigned int )indicator_style == 1U) {
+#line 4119
+      c = (char)0;
+    } else {
+#line 4120
+      if (stat_ok) {
+#line 4120
+        tmp___1 = (mode & 61440U) == 40960U;
+      } else {
+#line 4120
+        tmp___1 = (unsigned int )type == 6U;
+      }
+#line 4120
+      if (tmp___1) {
+#line 4121
+        c = (char )'@';
+      } else {
+#line 4122
+        if (stat_ok) {
+#line 4122
+          tmp___0 = (mode & 61440U) == 4096U;
+        } else {
+#line 4122
+          tmp___0 = (unsigned int )type == 1U;
+        }
+#line 4122
+        if (tmp___0) {
+#line 4123
+          c = (char )'|';
+        } else {
+#line 4124
+          if (stat_ok) {
+#line 4124
+            tmp = (mode & 61440U) == 49152U;
+          } else {
+#line 4124
+            tmp = (unsigned int )type == 7U;
+          }
+#line 4124
+          if (tmp) {
+#line 4125
+            c = (char )'=';
+          } else
+#line 4126
+          if (stat_ok) {
+#line 4129
+            c = (char)0;
+          } else {
+#line 4129
+            c = (char)0;
+          }
+        }
+      }
+    }
+  }
+#line 4131
+  return (c);
+}
+}
+#line 4134 "ls.c"
+static _Bool print_type_indicator(_Bool stat_ok , mode_t mode , enum filetype type ) 
+{ char c ;
+  char tmp ;
+
+  {
+#line 4137
+  tmp = get_type_indicator(stat_ok, mode, type);
+#line 4137
+  c = tmp;
+#line 4138
+  if (c) {
+#line 4139
+    while (1) {
+#line 4139
+      putchar_unlocked((int )c);
+#line 4139
+      dired_pos ++;
+#line 4139
+      break;
+    }
+  }
+#line 4140
+  return ((_Bool )(! (! c)));
+}
+}
+#line 4173 "ls.c"
+static enum indicator_no filetype_indicator[10]  = 
+#line 4173
+  {      (enum indicator_no )13,      (enum indicator_no )8,      (enum indicator_no )11,      (enum indicator_no )6, 
+        (enum indicator_no )10,      (enum indicator_no )5,      (enum indicator_no )7,      (enum indicator_no )9, 
+        (enum indicator_no )5,      (enum indicator_no )6};
+#line 4144 "ls.c"
+static _Bool print_color_indicator(struct fileinfo  const  *f , _Bool symlink_target ) 
+{ enum indicator_no type ;
+  struct color_ext_type *ext ;
+  size_t len ;
+  char const   *name ;
+  mode_t mode ;
+  int linkok ;
+  _Bool tmp ;
+  _Bool tmp___0 ;
+  _Bool tmp___1 ;
+  _Bool tmp___2 ;
+  _Bool tmp___3 ;
+  _Bool tmp___4 ;
+  _Bool tmp___5 ;
+  _Bool tmp___6 ;
+  int tmp___8 ;
+  int tmp___9 ;
+  struct bin_str  const  *s ;
+  struct bin_str *tmp___10 ;
+  _Bool tmp___11 ;
+
+  {
+#line 4154
+  if (symlink_target) {
+#line 4156
+    name = (char const   *)f->linkname;
+#line 4157
+    mode = (mode_t )f->linkmode;
+#line 4158
+    if (f->linkok) {
+#line 4158
+      linkok = 0;
+    } else {
+#line 4158
+      linkok = -1;
+    }
+  } else {
+#line 4162
+    name = (char const   *)f->name;
+#line 4163
+    if (color_symlink_as_referent) {
+#line 4163
+      if (f->linkok) {
+#line 4163
+        mode = (mode_t )f->linkmode;
+      } else {
+#line 4163
+        mode = (mode_t )f->stat.st_mode;
+      }
+    } else {
+#line 4163
+      mode = (mode_t )f->stat.st_mode;
+    }
+#line 4164
+    linkok = (int )f->linkok;
+  }
+#line 4169
+  if (linkok == -1) {
+#line 4169
+    if ((unsigned long )color_indicator[12].string != (unsigned long )((void *)0)) {
+#line 4170
+      type = (enum indicator_no )12;
+    } else {
+#line 4169
+      goto _L___6;
+    }
+  } else
+  _L___6: /* CIL Label */ 
+#line 4171
+  if (! f->stat_ok) {
+#line 4174
+    type = filetype_indicator[f->filetype];
+  } else
+#line 4178
+  if ((mode & 61440U) == 32768U) {
+#line 4180
+    type = (enum indicator_no )5;
+#line 4182
+    if ((mode & 2048U) != 0U) {
+#line 4182
+      tmp___3 = is_colored((enum indicator_no )16);
+#line 4182
+      if (tmp___3) {
+#line 4183
+        type = (enum indicator_no )16;
+      } else {
+#line 4182
+        goto _L___2;
+      }
+    } else
+    _L___2: /* CIL Label */ 
+#line 4184
+    if ((mode & 1024U) != 0U) {
+#line 4184
+      tmp___2 = is_colored((enum indicator_no )17);
+#line 4184
+      if (tmp___2) {
+#line 4185
+        type = (enum indicator_no )17;
+      } else {
+#line 4184
+        goto _L___1;
+      }
+    } else {
+      _L___1: /* CIL Label */ 
+#line 4186
+      tmp___1 = is_colored((enum indicator_no )21);
+#line 4186
+      if (tmp___1) {
+#line 4186
+        if (f->has_capability) {
+#line 4187
+          type = (enum indicator_no )21;
+        } else {
+#line 4186
+          goto _L___0;
+        }
+      } else
+      _L___0: /* CIL Label */ 
+#line 4188
+      if ((mode & (unsigned int )((64 | (64 >> 3)) | ((64 >> 3) >> 3))) != 0U) {
+#line 4188
+        tmp___0 = is_colored((enum indicator_no )14);
+#line 4188
+        if (tmp___0) {
+#line 4189
+          type = (enum indicator_no )14;
+        } else {
+#line 4188
+          goto _L;
+        }
+      } else
+      _L: /* CIL Label */ 
+#line 4190
+      if (1UL < f->stat.st_nlink) {
+#line 4190
+        tmp = is_colored((enum indicator_no )22);
+#line 4190
+        if (tmp) {
+#line 4191
+          type = (enum indicator_no )22;
+        }
+      }
+    }
+  } else
+#line 4193
+  if ((mode & 61440U) == 16384U) {
+#line 4195
+    type = (enum indicator_no )6;
+#line 4197
+    if (mode & 512U) {
+#line 4197
+      if (mode & (unsigned int )((128 >> 3) >> 3)) {
+#line 4197
+        tmp___6 = is_colored((enum indicator_no )20);
+#line 4197
+        if (tmp___6) {
+#line 4199
+          type = (enum indicator_no )20;
+        } else {
+#line 4197
+          goto _L___5;
+        }
+      } else {
+#line 4197
+        goto _L___5;
+      }
+    } else
+    _L___5: /* CIL Label */ 
+#line 4200
+    if ((mode & (unsigned int )((128 >> 3) >> 3)) != 0U) {
+#line 4200
+      tmp___5 = is_colored((enum indicator_no )19);
+#line 4200
+      if (tmp___5) {
+#line 4201
+        type = (enum indicator_no )19;
+      } else {
+#line 4200
+        goto _L___3;
+      }
+    } else
+    _L___3: /* CIL Label */ 
+#line 4202
+    if ((mode & 512U) != 0U) {
+#line 4202
+      tmp___4 = is_colored((enum indicator_no )18);
+#line 4202
+      if (tmp___4) {
+#line 4203
+        type = (enum indicator_no )18;
+      }
+    }
+  } else
+#line 4205
+  if ((mode & 61440U) == 40960U) {
+#line 4206
+    if (! linkok) {
+#line 4206
+      tmp___8 = strncmp(color_indicator[7].string, "target", sizeof("target") - 1UL);
+#line 4206
+      if (tmp___8) {
+#line 4206
+        if (color_indicator[13].string) {
+#line 4206
+          type = (enum indicator_no )13;
+        } else {
+#line 4206
+          type = (enum indicator_no )7;
+        }
+      } else {
+#line 4206
+        type = (enum indicator_no )13;
+      }
+    } else {
+#line 4206
+      type = (enum indicator_no )7;
+    }
+  } else
+#line 4210
+  if ((mode & 61440U) == 4096U) {
+#line 4211
+    type = (enum indicator_no )8;
+  } else
+#line 4212
+  if ((mode & 61440U) == 49152U) {
+#line 4213
+    type = (enum indicator_no )9;
+  } else
+#line 4214
+  if ((mode & 61440U) == 24576U) {
+#line 4215
+    type = (enum indicator_no )10;
+  } else
+#line 4216
+  if ((mode & 61440U) == 8192U) {
+#line 4217
+    type = (enum indicator_no )11;
+  } else {
+#line 4223
+    type = (enum indicator_no )13;
+  }
+#line 4228
+  ext = (struct color_ext_type *)((void *)0);
+#line 4229
+  if ((unsigned int )type == 5U) {
+#line 4233
+    len = strlen(name);
+#line 4234
+    name += len;
+#line 4235
+    ext = color_ext_list;
+#line 4235
+    while ((unsigned long )ext != (unsigned long )((void *)0)) {
+#line 4237
+      if (ext->ext.len <= len) {
+#line 4237
+        tmp___9 = strncmp(name - ext->ext.len, ext->ext.string, ext->ext.len);
+#line 4237
+        if (tmp___9 == 0) {
+#line 4240
+          break;
+        }
+      }
+#line 4235
+      ext = ext->next;
+    }
+  }
+#line 4245
+  if (ext) {
+#line 4245
+    tmp___10 = & ext->seq;
+  } else {
+#line 4245
+    tmp___10 = & color_indicator[type];
+  }
+#line 4245
+  s = (struct bin_str  const  *)tmp___10;
+#line 4247
+  if ((unsigned long )s->string != (unsigned long )((void *)0)) {
+#line 4250
+    tmp___11 = is_colored((enum indicator_no )4);
+#line 4250
+    if (tmp___11) {
+#line 4251
+      restore_default_color();
+    }
+#line 4252
+    put_indicator((struct bin_str  const  *)(& color_indicator[0]));
+#line 4253
+    put_indicator(s);
+#line 4254
+    put_indicator((struct bin_str  const  *)(& color_indicator[1]));
+#line 4255
+    return ((_Bool)1);
+  } else {
+#line 4258
     return ((_Bool)0);
   }
-#line 232
-  tmp___10 = strcmp(file, "-");
-#line 232
-  if (! (tmp___10 == 0)) {
-#line 232
-    tmp___11 = rpl_fclose(fp);
-#line 232
-    if (tmp___11 == -1) {
-#line 234
-      tmp___9 = __errno_location();
-#line 234
-      error(0, *tmp___9, "%s", file);
-#line 235
-      return ((_Bool)0);
+}
+}
+#line 4263 "ls.c"
+static void put_indicator(struct bin_str  const  *ind___0 ) 
+{ 
+
+  {
+#line 4266
+  if (! used_color) {
+#line 4268
+    used_color = (_Bool)1;
+#line 4269
+    prep_non_filename_text();
+  }
+#line 4272
+  fwrite_unlocked((void const   * __restrict  )ind___0->string, (size_t )ind___0->len,
+                  (size_t )1, (FILE * __restrict  )stdout);
+#line 4273
+  return;
+}
+}
+#line 4275 "ls.c"
+static size_t length_of_file_name_and_frills(struct fileinfo  const  *f ) 
+{ size_t len ;
+  size_t name_width ;
+  char buf___1[(((((((2UL * sizeof(uintmax_t )) * 8UL) * 146UL) / 485UL + 1UL) * 17UL - 16UL) + 1UL) + 3UL) + 1UL] ;
+  char *tmp ;
+  size_t tmp___0 ;
+  size_t tmp___1 ;
+  char *tmp___2 ;
+  char const   *tmp___3 ;
+  size_t tmp___4 ;
+  size_t tmp___5 ;
+  size_t tmp___6 ;
+  size_t tmp___7 ;
+  char c ;
+  char tmp___8 ;
+
+  {
+#line 4278
+  len = (size_t )0;
+#line 4282
+  if (print_inode) {
+#line 4283
+    if ((unsigned int )format == 4U) {
+#line 4283
+      tmp = (char *)umaxtostr((uintmax_t )f->stat.st_ino, buf___1);
+#line 4283
+      tmp___0 = strlen((char const   *)tmp);
+#line 4283
+      tmp___1 = tmp___0;
+    } else {
+#line 4283
+      tmp___1 = (size_t )inode_number_width;
+    }
+#line 4283
+    len += 1UL + tmp___1;
+  }
+#line 4287
+  if (print_block_size) {
+#line 4288
+    if ((unsigned int )format == 4U) {
+#line 4288
+      if (! f->stat_ok) {
+#line 4288
+        tmp___3 = "?";
+      } else {
+#line 4288
+        tmp___2 = human_readable((uintmax_t )f->stat.st_blocks, buf___1, human_output_opts,
+                                 (uintmax_t )512, output_block_size);
+#line 4288
+        tmp___3 = (char const   *)tmp___2;
+      }
+#line 4288
+      tmp___4 = strlen(tmp___3);
+#line 4288
+      tmp___5 = tmp___4;
+    } else {
+#line 4288
+      tmp___5 = (size_t )block_size_width;
+    }
+#line 4288
+    len += 1UL + tmp___5;
+  }
+#line 4295
+  if (print_scontext) {
+#line 4296
+    if ((unsigned int )format == 4U) {
+#line 4296
+      tmp___6 = strlen((char const   *)f->scontext);
+#line 4296
+      tmp___7 = tmp___6;
+    } else {
+#line 4296
+      tmp___7 = (size_t )scontext_width;
+    }
+#line 4296
+    len += 1UL + tmp___7;
+  }
+#line 4298
+  quote_name((FILE *)((void *)0), (char const   *)f->name, (struct quoting_options  const  *)filename_quoting_options,
+             & name_width);
+#line 4299
+  len += name_width;
+#line 4301
+  if ((unsigned int )indicator_style != 0U) {
+#line 4303
+    tmp___8 = get_type_indicator((_Bool )f->stat_ok, (mode_t )f->stat.st_mode, (enum filetype )f->filetype);
+#line 4303
+    c = tmp___8;
+#line 4304
+    len += (size_t )((int )c != 0);
+  }
+#line 4307
+  return (len);
+}
+}
+#line 4310 "ls.c"
+static void print_many_per_line(void) 
+{ size_t row ;
+  size_t cols ;
+  size_t tmp ;
+  struct column_info  const  *line_fmt ;
+  size_t rows ;
+  size_t col ;
+  size_t filesno ;
+  size_t pos ;
+  struct fileinfo  const  *f ;
+  size_t name_length ;
+  size_t tmp___0 ;
+  size_t max_name_length ;
+  size_t tmp___1 ;
+
+  {
+#line 4314
+  tmp = calculate_columns((_Bool)1);
+#line 4314
+  cols = tmp;
+#line 4315
+  line_fmt = (struct column_info  const  *)(column_info + (cols - 1UL));
+#line 4319
+  rows = cwd_n_used / cols + (size_t )(cwd_n_used % cols != 0UL);
+#line 4321
+  row = (size_t )0;
+#line 4321
+  while (row < rows) {
+#line 4323
+    col = (size_t )0;
+#line 4324
+    filesno = row;
+#line 4325
+    pos = (size_t )0;
+#line 4328
+    while (1) {
+#line 4330
+      f = (struct fileinfo  const  *)*(sorted_file + filesno);
+#line 4331
+      tmp___0 = length_of_file_name_and_frills(f);
+#line 4331
+      name_length = tmp___0;
+#line 4332
+      tmp___1 = col;
+#line 4332
+      col ++;
+#line 4332
+      max_name_length = *(line_fmt->col_arr + tmp___1);
+#line 4333
+      print_file_name_and_frills(f, pos);
+#line 4335
+      filesno += rows;
+#line 4336
+      if (filesno >= cwd_n_used) {
+#line 4337
+        break;
+      }
+#line 4339
+      indent(pos + name_length, pos + max_name_length);
+#line 4340
+      pos += max_name_length;
+    }
+#line 4342
+    putchar_unlocked('\n');
+#line 4321
+    row ++;
+  }
+#line 4344
+  return;
+}
+}
+#line 4346 "ls.c"
+static void print_horizontal(void) 
+{ size_t filesno ;
+  size_t pos ;
+  size_t cols ;
+  size_t tmp ;
+  struct column_info  const  *line_fmt ;
+  struct fileinfo  const  *f ;
+  size_t name_length ;
+  size_t tmp___0 ;
+  size_t max_name_length ;
+  size_t col ;
+
+  {
+#line 4350
+  pos = (size_t )0;
+#line 4351
+  tmp = calculate_columns((_Bool)0);
+#line 4351
+  cols = tmp;
+#line 4352
+  line_fmt = (struct column_info  const  *)(column_info + (cols - 1UL));
+#line 4353
+  f = (struct fileinfo  const  *)*(sorted_file + 0);
+#line 4354
+  tmp___0 = length_of_file_name_and_frills(f);
+#line 4354
+  name_length = tmp___0;
+#line 4355
+  max_name_length = *(line_fmt->col_arr + 0);
+#line 4358
+  print_file_name_and_frills(f, (size_t )0);
+#line 4361
+  filesno = (size_t )1;
+#line 4361
+  while (filesno < cwd_n_used) {
+#line 4363
+    col = filesno % cols;
+#line 4365
+    if (col == 0UL) {
+#line 4367
+      putchar_unlocked('\n');
+#line 4368
+      pos = (size_t )0;
+    } else {
+#line 4372
+      indent(pos + name_length, pos + max_name_length);
+#line 4373
+      pos += max_name_length;
+    }
+#line 4376
+    f = (struct fileinfo  const  *)*(sorted_file + filesno);
+#line 4377
+    print_file_name_and_frills(f, pos);
+#line 4379
+    name_length = length_of_file_name_and_frills(f);
+#line 4380
+    max_name_length = *(line_fmt->col_arr + col);
+#line 4361
+    filesno ++;
+  }
+#line 4382
+  putchar_unlocked('\n');
+#line 4383
+  return;
+}
+}
+#line 4385 "ls.c"
+static void print_with_commas(void) 
+{ size_t filesno ;
+  size_t pos ;
+  struct fileinfo  const  *f ;
+  size_t len ;
+  size_t tmp ;
+  char separator ;
+
+  {
+#line 4389
+  pos = (size_t )0;
+#line 4391
+  filesno = (size_t )0;
+#line 4391
+  while (filesno < cwd_n_used) {
+#line 4393
+    f = (struct fileinfo  const  *)*(sorted_file + filesno);
+#line 4394
+    tmp = length_of_file_name_and_frills(f);
+#line 4394
+    len = tmp;
+#line 4396
+    if (filesno != 0UL) {
+#line 4400
+      if ((pos + len) + 2UL < line_length) {
+#line 4402
+        pos += 2UL;
+#line 4403
+        separator = (char )' ';
+      } else {
+#line 4407
+        pos = (size_t )0;
+#line 4408
+        separator = (char )'\n';
+      }
+#line 4411
+      putchar_unlocked(',');
+#line 4412
+      putchar_unlocked((int )separator);
+    }
+#line 4415
+    print_file_name_and_frills(f, pos);
+#line 4416
+    pos += len;
+#line 4391
+    filesno ++;
+  }
+#line 4418
+  putchar_unlocked('\n');
+#line 4419
+  return;
+}
+}
+#line 4424 "ls.c"
+static void indent(size_t from , size_t to ) 
+{ 
+
+  {
+#line 4427
+  while (from < to) {
+#line 4429
+    if (tabsize != 0UL) {
+#line 4429
+      if (to / tabsize > (from + 1UL) / tabsize) {
+#line 4431
+        putchar_unlocked('\t');
+#line 4432
+        from += tabsize - from % tabsize;
+      } else {
+#line 4436
+        putchar_unlocked(' ');
+#line 4437
+        from ++;
+      }
+    } else {
+#line 4436
+      putchar_unlocked(' ');
+#line 4437
+      from ++;
     }
   }
-#line 238
-  tmp___12 = (char *)umaxtostr(length, length_buf);
-#line 238
-  hp = (char const   *)tmp___12;
-#line 240
-  while (length) {
-#line 241
-    crc = (crc << 8) ^ (unsigned long )crctab[((crc >> 24) ^ length) & 255UL];
-#line 240
-    length >>= 8;
+#line 4440
+  return;
+}
+}
+#line 4446 "ls.c"
+static void attach(char *dest , char const   *dirname , char const   *name ) 
+{ char const   *dirnamep ;
+  char *tmp ;
+  char const   *tmp___0 ;
+  char *tmp___1 ;
+  char *tmp___2 ;
+  char const   *tmp___3 ;
+
+  {
+#line 4449
+  dirnamep = dirname;
+#line 4452
+  if ((int const   )*(dirname + 0) != 46) {
+#line 4452
+    goto _L;
+  } else
+#line 4452
+  if ((int const   )*(dirname + 1) != 0) {
+    _L: /* CIL Label */ 
+#line 4454
+    while (*dirnamep) {
+#line 4455
+      tmp = dest;
+#line 4455
+      dest ++;
+#line 4455
+      tmp___0 = dirnamep;
+#line 4455
+      dirnamep ++;
+#line 4455
+      *tmp = (char )*tmp___0;
+    }
+#line 4457
+    if ((unsigned long )dirnamep > (unsigned long )dirname) {
+#line 4457
+      if ((int const   )*(dirnamep + -1) != 47) {
+#line 4458
+        tmp___1 = dest;
+#line 4458
+        dest ++;
+#line 4458
+        *tmp___1 = (char )'/';
+      }
+    }
   }
-#line 243
-  crc = ~ crc & 4294967295UL;
-#line 245
-  if (print_name) {
-#line 246
-    printf((char const   * __restrict  )"%u %s %s\n", (unsigned int )crc, hp, file);
+#line 4460
+  while (*name) {
+#line 4461
+    tmp___2 = dest;
+#line 4461
+    dest ++;
+#line 4461
+    tmp___3 = name;
+#line 4461
+    name ++;
+#line 4461
+    *tmp___2 = (char )*tmp___3;
+  }
+#line 4462
+  *dest = (char)0;
+#line 4463
+  return;
+}
+}
+#line 4476 "ls.c"
+static size_t column_info_alloc  ;
+#line 4469 "ls.c"
+static void init_column_info(void) 
+{ size_t i ;
+  size_t max_cols ;
+  size_t tmp ;
+  size_t new_column_info_alloc ;
+  size_t *p ;
+  void *tmp___0 ;
+  void *tmp___1 ;
+  size_t column_info_growth ;
+  size_t s ;
+  size_t t ;
+  void *tmp___2 ;
+  size_t j ;
+
+  {
+#line 4473
+  if (max_idx < cwd_n_used) {
+#line 4473
+    tmp = max_idx;
   } else {
-#line 248
-    printf((char const   * __restrict  )"%u %s\n", (unsigned int )crc, hp);
+#line 4473
+    tmp = cwd_n_used;
   }
-#line 250
-  tmp___15 = ferror_unlocked(stdout);
-#line 250
-  if (tmp___15) {
-#line 251
-    tmp___13 = gettext("write error");
-#line 251
-    tmp___14 = __errno_location();
-#line 251
-    error(1, *tmp___14, "-: %s", tmp___13);
+#line 4473
+  max_cols = tmp;
+#line 4478
+  if (column_info_alloc < max_cols) {
+#line 4483
+    if (max_cols < max_idx / 2UL) {
+#line 4490
+      tmp___0 = xnrealloc((void *)column_info, max_cols, 2UL * sizeof(*column_info));
+#line 4490
+      column_info = (struct column_info *)tmp___0;
+#line 4492
+      new_column_info_alloc = 2UL * max_cols;
+    } else {
+#line 4496
+      tmp___1 = xnrealloc((void *)column_info, max_idx, sizeof(*column_info));
+#line 4496
+      column_info = (struct column_info *)tmp___1;
+#line 4497
+      new_column_info_alloc = max_idx;
+    }
+#line 4505
+    column_info_growth = new_column_info_alloc - column_info_alloc;
+#line 4506
+    s = (column_info_alloc + 1UL) + new_column_info_alloc;
+#line 4507
+    t = s * column_info_growth;
+#line 4508
+    if (s < new_column_info_alloc) {
+#line 4509
+      xalloc_die();
+    } else
+#line 4508
+    if (t / column_info_growth != s) {
+#line 4509
+      xalloc_die();
+    }
+#line 4510
+    tmp___2 = xnmalloc(t / 2UL, sizeof(*p));
+#line 4510
+    p = (size_t *)tmp___2;
+#line 4514
+    i = column_info_alloc;
+#line 4514
+    while (i < new_column_info_alloc) {
+#line 4516
+      (column_info + i)->col_arr = p;
+#line 4517
+      p += i + 1UL;
+#line 4514
+      i ++;
+    }
+#line 4520
+    column_info_alloc = new_column_info_alloc;
   }
-#line 253
-  return ((_Bool)1);
+#line 4523
+  i = (size_t )0;
+#line 4523
+  while (i < max_cols) {
+#line 4527
+    (column_info + i)->valid_len = (_Bool)1;
+#line 4528
+    (column_info + i)->line_len = (i + 1UL) * 3UL;
+#line 4529
+    j = (size_t )0;
+#line 4529
+    while (j <= i) {
+#line 4530
+      *((column_info + i)->col_arr + j) = (size_t )3;
+#line 4529
+      j ++;
+    }
+#line 4523
+    i ++;
+  }
+#line 4532
+  return;
 }
 }
-#line 256
+#line 4537 "ls.c"
+static size_t calculate_columns(_Bool by_columns ) 
+{ size_t filesno ;
+  size_t cols ;
+  size_t max_cols ;
+  size_t tmp ;
+  struct fileinfo  const  *f ;
+  size_t name_length ;
+  size_t tmp___0 ;
+  size_t i ;
+  size_t idx ;
+  size_t tmp___1 ;
+  size_t real_length ;
+  int tmp___2 ;
+
+  {
+#line 4546
+  if (max_idx < cwd_n_used) {
+#line 4546
+    tmp = max_idx;
+  } else {
+#line 4546
+    tmp = cwd_n_used;
+  }
+#line 4546
+  max_cols = tmp;
+#line 4548
+  init_column_info();
+#line 4551
+  filesno = (size_t )0;
+#line 4551
+  while (filesno < cwd_n_used) {
+#line 4553
+    f = (struct fileinfo  const  *)*(sorted_file + filesno);
+#line 4554
+    tmp___0 = length_of_file_name_and_frills(f);
+#line 4554
+    name_length = tmp___0;
+#line 4557
+    i = (size_t )0;
+#line 4557
+    while (i < max_cols) {
+#line 4559
+      if ((column_info + i)->valid_len) {
+#line 4561
+        if (by_columns) {
+#line 4561
+          tmp___1 = filesno / ((cwd_n_used + i) / (i + 1UL));
+        } else {
+#line 4561
+          tmp___1 = filesno % (i + 1UL);
+        }
+#line 4561
+        idx = tmp___1;
+#line 4564
+        if (idx == i) {
+#line 4564
+          tmp___2 = 0;
+        } else {
+#line 4564
+          tmp___2 = 2;
+        }
+#line 4564
+        real_length = name_length + (size_t )tmp___2;
+#line 4566
+        if (*((column_info + i)->col_arr + idx) < real_length) {
+#line 4568
+          (column_info + i)->line_len += real_length - *((column_info + i)->col_arr + idx);
+#line 4570
+          *((column_info + i)->col_arr + idx) = real_length;
+#line 4571
+          (column_info + i)->valid_len = (_Bool )((column_info + i)->line_len < line_length);
+        }
+      }
+#line 4557
+      i ++;
+    }
+#line 4551
+    filesno ++;
+  }
+#line 4579
+  cols = max_cols;
+#line 4579
+  while (1UL < cols) {
+#line 4581
+    if ((column_info + (cols - 1UL))->valid_len) {
+#line 4582
+      break;
+    }
+#line 4579
+    cols --;
+  }
+#line 4585
+  return (cols);
+}
+}
+#line 4588
  __attribute__((__noreturn__)) void usage(int status ) ;
-#line 256 "cksum.c"
+#line 4588 "ls.c"
 void usage(int status ) 
 { char *tmp ;
   char *tmp___0 ;
   char *tmp___1 ;
   char *tmp___2 ;
   char *tmp___3 ;
+  char *tmp___4 ;
+  char *tmp___5 ;
+  char *tmp___6 ;
+  char *tmp___7 ;
+  char *tmp___8 ;
+  char *tmp___9 ;
+  char *tmp___10 ;
+  char *tmp___11 ;
+  char *tmp___12 ;
+  char *tmp___13 ;
+  char *tmp___14 ;
+  char *tmp___15 ;
+  char *tmp___16 ;
+  char *tmp___17 ;
+  char *tmp___18 ;
+  char *tmp___19 ;
+  char *tmp___20 ;
+  char *tmp___21 ;
+  char *tmp___22 ;
+  char *tmp___23 ;
+  char *tmp___24 ;
 
   {
-#line 259
+#line 4591
   if (status != 0) {
-#line 260
+#line 4592
     tmp = gettext("Try `%s --help\' for more information.\n");
-#line 260
+#line 4592
     fprintf((FILE * __restrict  )stderr, (char const   * __restrict  )tmp, program_name);
   } else {
-#line 264
-    tmp___0 = gettext("Usage: %s [FILE]...\n  or:  %s [OPTION]\n");
-#line 264
-    printf((char const   * __restrict  )tmp___0, program_name, program_name);
-#line 269
-    tmp___1 = gettext("Print CRC checksum and byte counts of each FILE.\n\n");
-#line 269
+#line 4596
+    tmp___0 = gettext("Usage: %s [OPTION]... [FILE]...\n");
+#line 4596
+    printf((char const   * __restrict  )tmp___0, program_name);
+#line 4597
+    tmp___1 = gettext("List information about the FILEs (the current directory by default).\nSort entries alphabetically if none of -cftuvSUX nor --sort is specified.\n\n");
+#line 4597
     fputs_unlocked((char const   * __restrict  )tmp___1, (FILE * __restrict  )stdout);
-#line 273
-    tmp___2 = gettext("      --help     display this help and exit\n");
-#line 273
+#line 4602
+    tmp___2 = gettext("Mandatory arguments to long options are mandatory for short options too.\n");
+#line 4602
     fputs_unlocked((char const   * __restrict  )tmp___2, (FILE * __restrict  )stdout);
-#line 274
-    tmp___3 = gettext("      --version  output version information and exit\n");
-#line 274
+#line 4605
+    tmp___3 = gettext("  -a, --all                  do not ignore entries starting with .\n  -A, --almost-all           do not list implied . and ..\n      --author               with -l, print the author of each file\n  -b, --escape               print C-style escapes for nongraphic characters\n");
+#line 4605
     fputs_unlocked((char const   * __restrict  )tmp___3, (FILE * __restrict  )stdout);
-#line 275
+#line 4611
+    tmp___4 = gettext("      --block-size=SIZE      scale sizes by SIZE before printing them.  E.g.,\n                               `--block-size=M\' prints sizes in units of\n                               1,048,576 bytes.  See SIZE format below.\n  -B, --ignore-backups       do not list implied entries ending with ~\n  -c                         with -lt: sort by, and show, ctime (time of last\n                               modification of file status information)\n                               with -l: show ctime and sort by name\n                               otherwise: sort by ctime, newest first\n");
+#line 4611
+    fputs_unlocked((char const   * __restrict  )tmp___4, (FILE * __restrict  )stdout);
+#line 4621
+    tmp___5 = gettext("  -C                         list entries by columns\n      --color[=WHEN]         colorize the output.  WHEN defaults to `always\'\n                               or can be `never\' or `auto\'.  More info below\n  -d, --directory            list directory entries instead of contents,\n                               and do not dereference symbolic links\n  -D, --dired                generate output designed for Emacs\' dired mode\n");
+#line 4621
+    fputs_unlocked((char const   * __restrict  )tmp___5, (FILE * __restrict  )stdout);
+#line 4629
+    tmp___6 = gettext("  -f                         do not sort, enable -aU, disable -ls --color\n  -F, --classify             append indicator (one of */=>@|) to entries\n      --file-type            likewise, except do not append `*\'\n      --format=WORD          across -x, commas -m, horizontal -x, long -l,\n                               single-column -1, verbose -l, vertical -C\n      --full-time            like -l --time-style=full-iso\n");
+#line 4629
+    fputs_unlocked((char const   * __restrict  )tmp___6, (FILE * __restrict  )stdout);
+#line 4637
+    tmp___7 = gettext("  -g                         like -l, but do not list owner\n");
+#line 4637
+    fputs_unlocked((char const   * __restrict  )tmp___7, (FILE * __restrict  )stdout);
+#line 4640
+    tmp___8 = gettext("      --group-directories-first\n                             group directories before files.\n                               augment with a --sort option, but any\n                               use of --sort=none (-U) disables grouping\n");
+#line 4640
+    fputs_unlocked((char const   * __restrict  )tmp___8, (FILE * __restrict  )stdout);
+#line 4646
+    tmp___9 = gettext("  -G, --no-group             in a long listing, don\'t print group names\n  -h, --human-readable       with -l, print sizes in human readable format\n                               (e.g., 1K 234M 2G)\n      --si                   likewise, but use powers of 1000 not 1024\n");
+#line 4646
+    fputs_unlocked((char const   * __restrict  )tmp___9, (FILE * __restrict  )stdout);
+#line 4652
+    tmp___10 = gettext("  -H, --dereference-command-line\n                             follow symbolic links listed on the command line\n      --dereference-command-line-symlink-to-dir\n                             follow each command line symbolic link\n                             that points to a directory\n      --hide=PATTERN         do not list implied entries matching shell PATTERN\n                               (overridden by -a or -A)\n");
+#line 4652
+    fputs_unlocked((char const   * __restrict  )tmp___10, (FILE * __restrict  )stdout);
+#line 4662
+    tmp___11 = gettext("      --indicator-style=WORD  append indicator with style WORD to entry names:\n                               none (default), slash (-p),\n                               file-type (--file-type), classify (-F)\n  -i, --inode                print the index number of each file\n  -I, --ignore=PATTERN       do not list implied entries matching shell PATTERN\n  -k                         like --block-size=1K\n");
+#line 4662
+    fputs_unlocked((char const   * __restrict  )tmp___11, (FILE * __restrict  )stdout);
+#line 4672
+    tmp___12 = gettext("  -l                         use a long listing format\n  -L, --dereference          when showing file information for a symbolic\n                               link, show information for the file the link\n                               references rather than for the link itself\n  -m                         fill width with a comma separated list of entries\n");
+#line 4672
+    fputs_unlocked((char const   * __restrict  )tmp___12, (FILE * __restrict  )stdout);
+#line 4680
+    tmp___13 = gettext("  -n, --numeric-uid-gid      like -l, but list numeric user and group IDs\n  -N, --literal              print raw entry names (don\'t treat e.g. control\n                               characters specially)\n  -o                         like -l, but do not list group information\n  -p, --indicator-style=slash\n                             append / indicator to directories\n");
+#line 4680
+    fputs_unlocked((char const   * __restrict  )tmp___13, (FILE * __restrict  )stdout);
+#line 4688
+    tmp___14 = gettext("  -q, --hide-control-chars   print ? instead of non graphic characters\n      --show-control-chars   show non graphic characters as-is (default\n                             unless program is `ls\' and output is a terminal)\n  -Q, --quote-name           enclose entry names in double quotes\n      --quoting-style=WORD   use quoting style WORD for entry names:\n                               literal, locale, shell, shell-always, c, escape\n");
+#line 4688
+    fputs_unlocked((char const   * __restrict  )tmp___14, (FILE * __restrict  )stdout);
+#line 4697
+    tmp___15 = gettext("  -r, --reverse              reverse order while sorting\n  -R, --recursive            list subdirectories recursively\n  -s, --size                 print the allocated size of each file, in blocks\n");
+#line 4697
+    fputs_unlocked((char const   * __restrict  )tmp___15, (FILE * __restrict  )stdout);
+#line 4702
+    tmp___16 = gettext("  -S                         sort by file size\n      --sort=WORD            sort by WORD instead of name: none -U,\n                             extension -X, size -S, time -t, version -v\n      --time=WORD            with -l, show time as WORD instead of modification\n                             time: atime -u, access -u, use -u, ctime -c,\n                             or status -c; use specified time as sort key\n                             if --sort=time\n");
+#line 4702
+    fputs_unlocked((char const   * __restrict  )tmp___16, (FILE * __restrict  )stdout);
+#line 4712
+    tmp___17 = gettext("      --time-style=STYLE     with -l, show times using style STYLE:\n                             full-iso, long-iso, iso, locale, +FORMAT.\n                             FORMAT is interpreted like `date\'; if FORMAT is\n                             FORMAT1<newline>FORMAT2, FORMAT1 applies to\n                             non-recent files and FORMAT2 to recent files;\n                             if STYLE is prefixed with `posix-\', STYLE\n                             takes effect only outside the POSIX locale\n");
+#line 4712
+    fputs_unlocked((char const   * __restrict  )tmp___17, (FILE * __restrict  )stdout);
+#line 4721
+    tmp___18 = gettext("  -t                         sort by modification time, newest first\n  -T, --tabsize=COLS         assume tab stops at each COLS instead of 8\n");
+#line 4721
+    fputs_unlocked((char const   * __restrict  )tmp___18, (FILE * __restrict  )stdout);
+#line 4725
+    tmp___19 = gettext("  -u                         with -lt: sort by, and show, access time\n                               with -l: show access time and sort by name\n                               otherwise: sort by access time\n  -U                         do not sort; list entries in directory order\n  -v                         natural sort of (version) numbers within text\n");
+#line 4725
+    fputs_unlocked((char const   * __restrict  )tmp___19, (FILE * __restrict  )stdout);
+#line 4732
+    tmp___20 = gettext("  -w, --width=COLS           assume screen width instead of current value\n  -x                         list entries by lines instead of by columns\n  -X                         sort alphabetically by entry extension\n  -Z, --context              print any SELinux security context of each file\n  -1                         list one file per line\n");
+#line 4732
+    fputs_unlocked((char const   * __restrict  )tmp___20, (FILE * __restrict  )stdout);
+#line 4739
+    tmp___21 = gettext("      --help     display this help and exit\n");
+#line 4739
+    fputs_unlocked((char const   * __restrict  )tmp___21, (FILE * __restrict  )stdout);
+#line 4740
+    tmp___22 = gettext("      --version  output version information and exit\n");
+#line 4740
+    fputs_unlocked((char const   * __restrict  )tmp___22, (FILE * __restrict  )stdout);
+#line 4741
+    emit_size_note();
+#line 4742
+    tmp___23 = gettext("\nUsing color to distinguish file types is disabled both by default and\nwith --color=never.  With --color=auto, ls emits color codes only when\nstandard output is connected to a terminal.  The LS_COLORS environment\nvariable can change the settings.  Use the dircolors command to set it.\n");
+#line 4742
+    fputs_unlocked((char const   * __restrict  )tmp___23, (FILE * __restrict  )stdout);
+#line 4749
+    tmp___24 = gettext("\nExit status:\n 0  if OK,\n 1  if minor problems (e.g., cannot access subdirectory),\n 2  if serious trouble (e.g., cannot access command-line argument).\n");
+#line 4749
+    fputs_unlocked((char const   * __restrict  )tmp___24, (FILE * __restrict  )stdout);
+#line 4756
     emit_ancillary_info();
   }
-#line 277
+#line 4758
   exit(status);
 }
 }
-#line 280 "cksum.c"
-int main(int argc , char **argv ) 
-{ int i ;
-  _Bool ok ;
-  int tmp ;
-  _Bool tmp___0 ;
-  int *tmp___1 ;
-  int tmp___2 ;
-  int tmp___3 ;
-
-  {
-#line 287
-  set_program_name((char const   *)*(argv + 0));
-#line 288
-  setlocale(6, "");
-#line 289
-  bindtextdomain("coreutils", "/usr/local/share/locale");
-#line 290
-  textdomain("coreutils");
-#line 292
-  atexit(& close_stdout);
-#line 294
-  parse_long_options(argc, argv, "cksum", "coreutils", Version, & usage, "Q. Frank Xia",
-                     (char const   *)((void *)0));
-#line 296
-  tmp = rpl_getopt_long(argc, argv, "", (struct rpl_option  const  *)((void *)0),
-                        (int *)((void *)0));
-#line 296
-  if (tmp != -1) {
-#line 297
-    usage(1);
-  }
-#line 299
-  have_read_stdin = (_Bool)0;
-#line 301
-  if (rpl_optind == argc) {
-#line 302
-    ok = cksum("-", (_Bool)0);
-  } else {
-#line 305
-    ok = (_Bool)1;
-#line 306
-    i = rpl_optind;
-#line 306
-    while (i < argc) {
-#line 307
-      tmp___0 = cksum((char const   *)*(argv + i), (_Bool)1);
-#line 307
-      ok = (_Bool )((int )ok & (int )tmp___0);
-#line 306
-      i ++;
-    }
-  }
-#line 310
-  if (have_read_stdin) {
-#line 310
-    tmp___2 = rpl_fclose(stdin);
-#line 310
-    if (tmp___2 == -1) {
-#line 311
-      tmp___1 = __errno_location();
-#line 311
-      error(1, *tmp___1, "-");
-    }
-  }
-#line 312
-  if (ok) {
-#line 312
-    tmp___3 = 0;
-  } else {
-#line 312
-    tmp___3 = 1;
-  }
-#line 312
-  exit(tmp___3);
-}
-}
-#line 1 "cil-RUL2YmB1.o"
-#pragma merger(0,"/tmp/cil-MlBhwNvn.i","")
-#line 2 "version.c"
-char const   *Version  =    "8.13.14-081e2-dirty";
