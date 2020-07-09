@@ -39,9 +39,13 @@ let search_lhost host name loc varid includeCallTmp =
 match host with Var(info) -> if (is_equal_varname_varid info name varid)&&(includeCallTmp || not (is_temporary info.vid)) then (info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::[] else []
             | Mem(exp) -> search_expression exp name loc varid includeCallTmp
  
-let rec search_offset os name loc varid includeCallTmp =
+let search_fieldinfo finfo varname varid loc =
+if String.compare finfo.fname varname = 0 then  
+(finfo.fname, loc, (String.trim (Pretty.sprint 1 (d_type () finfo.ftype))), (-1))::[] else []
+
+let rec search_offset os name loc varid includeCallTmp = Printf.printf "Offset is searched\n";
 match os with NoOffset -> []
-            | Field(_, offset) -> search_offset offset name loc varid includeCallTmp
+            | Field(fieldinfo, offset) -> Printf.printf "%s\n" fieldinfo.fname;(search_fieldinfo fieldinfo name varid loc)@(search_offset offset name loc varid includeCallTmp)
             | Index(exp, offset) -> (search_expression exp name loc varid includeCallTmp)@(search_offset offset name loc varid includeCallTmp)
 
 (* Finds a variable in a list of expressions *)
@@ -51,7 +55,7 @@ match list with x::xs -> (search_expression x name loc varid includeCallTmp)@(se
 
 (* Finds a variable in a list of instructions *)
 let rec search_instr_list_for_var list name varid includeCallTmp = 
-match list with Set((lhost, offset), exp, loc)::xs -> (search_lhost lhost name loc varid includeCallTmp)@(search_offset offset name loc varid includeCallTmp)@(search_expression exp name loc varid includeCallTmp)@(search_instr_list_for_var xs name varid includeCallTmp)
+match list with Set((lhost, offset), exp, loc)::xs -> Printf.printf "Set is found\n";(search_lhost lhost name loc varid includeCallTmp)@(search_offset offset name loc varid includeCallTmp)@(search_expression exp name loc varid includeCallTmp)@(search_instr_list_for_var xs name varid includeCallTmp)
                 | VarDecl(info, loc)::xs ->  (match info.vtype with TArray(_, Some(exp), _) -> search_expression exp name loc varid includeCallTmp | _ -> [])@(if (is_equal_varname_varid info name varid) && (includeCallTmp || not (is_temporary info.vid)) then (info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::(search_instr_list_for_var xs name varid includeCallTmp) else (search_instr_list_for_var xs name varid includeCallTmp))
                 | Call (Some(lhost,offset), exp, exp_list, loc)::xs -> (search_lhost lhost name loc varid includeCallTmp)@(search_offset offset name loc varid includeCallTmp)@(search_expression exp name loc varid includeCallTmp)@(search_expression_list exp_list name loc varid includeCallTmp)@(search_instr_list_for_var xs name varid includeCallTmp)
                 | Call (None, exp, exp_list, loc)::xs -> (search_expression exp name loc varid includeCallTmp)@(search_expression_list exp_list name loc varid includeCallTmp)@(search_instr_list_for_var xs name varid includeCallTmp)

@@ -62,7 +62,7 @@ int main(){
 
     int i2 = 4;
 
-    someone->roll -= i2;
+    person.roll -= i2;
 
     int *ptr = &i;
 
