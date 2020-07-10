@@ -31,4 +31,8 @@ let print_cilfile () =
 let cilfile = Frontc.parse sourceFile ()
 in Cil.dumpFile defaultCilPrinter stdout "" cilfile
 
-let _ = Printf.printf "%f\n" (measure_runtime (Frontc.parse sourceFile ()) ())
+let count_matches () =
+let cilfile = Frontc.parse sourceFile ()
+in Printf.printf "____________\nresults: %i\n" (List.length (map_query (parse_json_file jsonFile) cilfile))
+
+let _ = count_matches ()

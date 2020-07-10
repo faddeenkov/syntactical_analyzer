@@ -1,21 +1,12 @@
 open Cil
 open FuncVar
 
-(* Finds the declaration of a user-defined type by name *)
-let rec find_decl_iter_list name list = match list with (GCompTagDecl(info, loc))::xs -> if (String.compare name info.cname = 0) then ("", loc, name, -1)::[] else find_decl_iter_list name xs
-                                                    | (GEnumTagDecl(info, loc))::xs -> if (String.compare name info.ename = 0) then ("", loc, name, -1)::[] else find_decl_iter_list name xs
-                                                    | x::xs -> find_decl_iter_list name xs
-                                                    | [] -> []
-
 (* Finds the definition of a user-defined type by name *)
 let rec find_userdef_iter_list name list = match list with (GType(info, loc))::xs -> if (String.compare name info.tname = 0) then ("", loc, name, -1)::[] else find_userdef_iter_list name xs
                                                     | (GCompTag(info, loc))::xs -> if (String.compare name info.cname = 0) then ("", loc, name, -1)::[] else find_userdef_iter_list name xs
                                                     | (GEnumTag(info, loc))::xs -> if (String.compare name info.ename = 0) then ("", loc, name, -1)::[] else find_userdef_iter_list name xs
                                                     | x::xs -> find_userdef_iter_list name xs
                                                     | [] -> [] 
-
-(* Finds declaration of user-defined datatypes *)
-let find_decl name file = find_decl_iter_list name file.globals
 
 (* Finds definition of a user-defined type *)
 let find_def name file = find_userdef_iter_list name file.globals
@@ -29,19 +20,6 @@ match list with GType(info, loc)::xs -> ("", loc, info.tname, -1)::(iter_list xs
             | x::xs -> iter_list xs
             | [] -> []
 in iter_list file.globals
-
-(* Finds all global user-defined types and their type-definition *)
-let rec find_decl_all_glob_iter_list list acc = 
-match list with (GCompTagDecl(info,loc))::xs -> find_decl_all_glob_iter_list xs (("", loc, info.cname, -1)::acc)
-            | GEnumTagDecl(info, loc)::xs -> find_decl_all_glob_iter_list xs (("", loc, info.ename, -1)::acc)
-            | x::xs -> find_decl_all_glob_iter_list xs acc
-            | [] -> acc
-
-(* Finds all global type-definitions of user-defined variables *)
-let find_decl_all_glob file = List.rev (find_decl_all_glob_iter_list file.globals [])
-
-(* In CIL you cannot define any new datatype in function-scopes (see CIL-Doc 4.5) *)
-let find_decl_all file = find_decl_all_glob file
 
 let rec find_in_globals list name = 
 match list with GVar(info,t,loc)::xs -> if (String.compare name (String.trim (Pretty.sprint 1 (d_type () info.vtype))) = 0) then info.vid::(find_in_globals xs name) else (find_in_globals xs name)

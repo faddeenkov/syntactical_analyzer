@@ -101,7 +101,6 @@ match res with (name, loc, typ, id) -> if (String.compare name res_name = 0)
                                       &&(loc.line == res_line) then true else false
 
 let funcdatatype_tests = "test suite for func_Datatype" >::: [
-    "test find_decl" >:: (fun _ -> assert_equal (find_decl "someStruct" file1) []);
     "test find_in_globals" >:: (fun _ -> assert_equal (find_in_globals globals3 "int") [3;4]);
     "test find_fundec" >:: (fun _ -> assert_equal (find_fundec globals3 "factorial") (Some(fundec1)));
     "test find_uses_in_noncond" >:: (fun _ -> let result = find_uses_in_noncond "other_int" (Frontc.parse "test6.c" ())

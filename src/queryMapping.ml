@@ -37,13 +37,6 @@ match list_of_lists with x::y::xs -> and_several_lists ((and_two_lists x y)::xs)
 (* Naming of functions: resolve_query_[kind]_[find]_[structure] *)
 
 (* Resolution of datatype-oriented queries *)
-let resolve_query_datatype_decl_none query cilfile = 
-match query.tar with Name_t(name) -> FuncDatatype.find_decl name cilfile
-                | AllGlobVar_t -> FuncDatatype.find_decl_all_glob cilfile
-                | All_t -> FuncDatatype.find_decl_all cilfile
-                | Or_t(list) -> List.flatten (List.map (fun x -> FuncDatatype.find_decl x cilfile) list)
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
-
 let resolve_query_datatype_uses_fun query cilfile funname = 
 match query.tar with Name_t(name) -> FuncDatatype.find_uses_in_fun name funname cilfile
                 | And_t(list) -> and_several_lists (List.map (fun x -> FuncDatatype.find_uses_in_fun x funname cilfile) list)
@@ -85,8 +78,7 @@ match query.str with None_s -> resolve_query_datatype_defs_none query cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_datatype query cilfile = 
-match query.f with Decl_f -> if ((query.str = None_s)) then (resolve_query_datatype_decl_none query cilfile) else (Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[])
-                | Uses_f -> resolve_query_datatype_uses query cilfile
+match query.f with Uses_f -> resolve_query_datatype_uses query cilfile
                 | Defs_f -> resolve_query_datatype_defs query cilfile
                 | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
 
