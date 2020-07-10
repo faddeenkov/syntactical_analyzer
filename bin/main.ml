@@ -31,4 +31,4 @@ let print_cilfile () =
 let cilfile = Frontc.parse sourceFile ()
 in Cil.dumpFile defaultCilPrinter stdout "" cilfile
 
-let _ = executeQuery ()
+let _ = Printf.printf "%f\n" (measure_runtime (Frontc.parse sourceFile ()) ())
