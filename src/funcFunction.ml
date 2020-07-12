@@ -138,7 +138,7 @@ inherit nopCilVisitor
 method vfunc dec = if is_equal_funname_funid dec.svar funstrucname (-1) then DoChildren else SkipChildren
 method vinst instr =
 match instr with Call(_, exp, list, loc) -> (match exp with Lval(Var(varinfo), _) -> if is_equal_funname_funid varinfo fundec.svar.vname fundec.svar.vid then (if List.length (FuncVar.search_expression_list list varname loc_default varid true) > 0 then (result := (!result)@((varinfo.vname, loc, create_sig fundec file, varinfo.vid)::[]); SkipChildren) else SkipChildren) else SkipChildren
-                                                        | _ -> Printf.printf "some other exp in call\n"; SkipChildren)
+                                                        | _ -> SkipChildren)
                  | _ -> SkipChildren
 end 
 

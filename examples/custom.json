@@ -1,4 +1,4 @@
 {   "select":[["name"],["location"], ["id"], ["type"]],
-    "type": ["var"],
-    "target": ["name", "tmp"],
-    "find": ["uses"]}
+    "type": ["fun"],
+    "target": ["name", "f"],
+    "find": ["uses_with_var", "i"]}

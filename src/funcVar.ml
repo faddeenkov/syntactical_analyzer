@@ -66,12 +66,12 @@ match list with x::xs -> (match x.skind with Instr(ins_list) -> search_instr_lis
                                             | Goto(s_ref, loc) -> search_stmt_list_for_var ((!s_ref)::[]) name varid includeCallTmp
                                             | ComputedGoto(exp, loc) -> search_expression exp name loc varid includeCallTmp
                                             | If (exp, b1, b2, loc) -> (search_expression exp name loc varid includeCallTmp)@(search_stmt_list_for_var b1.bstmts name varid includeCallTmp)@(search_stmt_list_for_var b2.bstmts name varid includeCallTmp) 
-                                            | Switch (exp, block, stmt_list, loc) -> (search_expression exp name loc varid includeCallTmp)@(search_stmt_list_for_var stmt_list name varid includeCallTmp) (* (search_stmt_list_for_var block.bstmts name)@ is this a duplicate of stmt list? *)
+                                            | Switch (exp, block, stmt_list, loc) -> (search_expression exp name loc varid includeCallTmp)@(search_stmt_list_for_var stmt_list name varid includeCallTmp)
                                             | Loop (block, loc, None, None) -> search_stmt_list_for_var block.bstmts name varid includeCallTmp
                                             | Loop (block, loc, None, Some(s2)) -> (search_stmt_list_for_var block.bstmts name varid includeCallTmp)@(search_stmt_list_for_var (s2::[]) name varid includeCallTmp)
                                             | Loop (block, loc, Some(s1), None) -> (search_stmt_list_for_var block.bstmts name varid includeCallTmp)@(search_stmt_list_for_var (s1::[]) name varid includeCallTmp)
                                             | Loop (block, loc, Some(s1), Some(s2)) -> (search_stmt_list_for_var block.bstmts name varid includeCallTmp)@(search_stmt_list_for_var (s1::[]) name varid includeCallTmp)@(search_stmt_list_for_var (s2::[]) name varid includeCallTmp)
-                                            | Block(block) -> Printf.printf "A Block\n"; search_stmt_list_for_var block.bstmts name varid includeCallTmp
+                                            | Block(block) -> search_stmt_list_for_var block.bstmts name varid includeCallTmp
                                             | TryFinally (b1, b2, loc) -> (search_stmt_list_for_var b1.bstmts name varid includeCallTmp)@(search_stmt_list_for_var b2.bstmts name varid includeCallTmp)
                                             | TryExcept(b1, (instr_list, exp), b2, loc) -> (search_stmt_list_for_var b1.bstmts name varid includeCallTmp)@(search_instr_list_for_var instr_list name varid includeCallTmp)@(search_expression exp name loc varid includeCallTmp)@(search_stmt_list_for_var b2.bstmts name varid includeCallTmp)
                                             | _ -> [])@(search_stmt_list_for_var xs name varid includeCallTmp)
@@ -82,7 +82,7 @@ let find_uses_in_fun_var dec name varid includeCallTmp =
 let rec iter_list list = 
 match list with x::xs -> (search_stmt_list_for_var dec.sbody.bstmts x (-1) includeCallTmp)@(iter_list xs)
                 | [] -> []
-in (*Hashtbl.iter (fun a b -> Printf.printf "%s is mapped to %s\n" a b) varnameMapping ;*) if varid != (-1) then search_stmt_list_for_var dec.sbody.bstmts name varid includeCallTmp else iter_list (delete_duplicates (Hashtbl.find_all varnameMapping name) [])
+in if varid != (-1) then search_stmt_list_for_var dec.sbody.bstmts name varid includeCallTmp else iter_list (delete_duplicates (Hashtbl.find_all varnameMapping name) [])
 
 (* Finds the function in which a variable shall be found *)
 let rec find_uses_in_fun_find_fun list name varname varid includeCallTmp = 

@@ -1,4 +1,3 @@
-
 typedef unsigned char BYTE; //GType
 
 struct student;
@@ -58,8 +57,8 @@ int main(){
     int i = 0;
     struct student person = {{'a'}, 3, 1.0f};
     struct student *someone = &person;
-    char c = (*someone).name[i];
-
+    char c = f((*someone).name[i]);
+    
     int i2 = 4;
 
     person.roll -= i2;
@@ -70,21 +69,13 @@ int main(){
 
     int arr[i + 3];
 
-    BYTE z = x[0];
+    BYTE z = x[g(arr[f(i)] + 1)];
 
     int x2;
     x2 = 7;
     
     useless();
 
-    /**
-     * __try{
-        int j = x2;
-        x2 = j*3;
-    }
-    __finally{
-
-    } **/
     g(x2 + z);
 
     for(int i = 0; i < 10; i++){
@@ -106,6 +97,7 @@ int main(){
     char tmp = 'c';
     
     BYTE arr[] = {2};
+    f(arr[i]);
     switch(x[0]){
         case 1:
             x2 = 1;

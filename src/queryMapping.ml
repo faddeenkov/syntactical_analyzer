@@ -41,25 +41,25 @@ let resolve_query_datatype_uses_fun query cilfile funname =
 match query.tar with Name_t(name) -> FuncDatatype.find_uses_in_fun name funname cilfile
                 | And_t(list) -> and_several_lists (List.map (fun x -> FuncDatatype.find_uses_in_fun x funname cilfile) list)
                 | Or_t(list) -> List.flatten (List.map (fun x -> FuncDatatype.find_uses_in_fun x funname cilfile) list)
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_datatype_uses_none query cilfile =
 match query.tar with Name_t(name) -> FuncDatatype.find_uses name cilfile
                 | And_t(list) -> and_several_lists (List.map (fun x -> FuncDatatype.find_uses x cilfile) list)
                 | Or_t(list) -> List.flatten (List.map (fun x -> FuncDatatype.find_uses x cilfile) list)
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_datatype_uses_cond query cilfile =
 match query.tar with Name_t(name) -> FuncDatatype.find_uses_in_cond name cilfile
                 | And_t(list) -> and_several_lists (List.map (fun x -> FuncDatatype.find_uses_in_cond x cilfile) list)
                 | Or_t(list) -> List.flatten (List.map (fun x -> FuncDatatype.find_uses_in_cond x cilfile) list)
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_datatype_uses_noncond query cilfile =
 match query.tar with Name_t(name) -> FuncDatatype.find_uses_in_noncond name cilfile
                 | And_t(list) -> and_several_lists (List.map (fun x -> FuncDatatype.find_uses_in_noncond x cilfile) list)
                 | Or_t(list) -> List.flatten (List.map (fun x -> FuncDatatype.find_uses_in_cond x cilfile) list)
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_datatype_uses query cilfile =
 match query.str with Fun_s(funname) -> resolve_query_datatype_uses_fun query cilfile funname
@@ -71,16 +71,16 @@ let resolve_query_datatype_defs_none query cilfile =
 match query.tar with Name_t(name) -> FuncDatatype.find_def name cilfile
                 | Or_t(list) -> List.flatten (List.map (fun x -> FuncDatatype.find_def x cilfile) list)
                 | All_t -> FuncDatatype.find_def_all cilfile
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_datatype_defs query cilfile =
 match query.str with None_s -> resolve_query_datatype_defs_none query cilfile
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_datatype query cilfile = 
 match query.f with Uses_f -> resolve_query_datatype_uses query cilfile
                 | Defs_f -> resolve_query_datatype_defs query cilfile
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 (* Resolution of variable-oriented queries *)
 let resolve_query_var_uses_fun query cilfile funname = 
@@ -126,7 +126,7 @@ match query.tar with Name_t(name) -> FuncVar.find_decl_in_fun name (-1) funname 
                 | ID_t(id) -> FuncVar.find_decl_in_fun "" id funname cilfile
                 | All_t -> FuncVar.find_decl_in_fun_all funname cilfile
                 | Or_t(list) -> List.flatten (List.map (fun x -> FuncVar.find_decl_in_fun x (-1) funname cilfile) list)
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_var_decl_none query cilfile =
 match query.tar with AllGlobVar_t -> FuncVar.find_decl_all_glob cilfile
@@ -134,13 +134,13 @@ match query.tar with AllGlobVar_t -> FuncVar.find_decl_all_glob cilfile
                 | ID_t (id) -> FuncVar.find_decl "" id cilfile
                 | All_t -> FuncVar.find_decl_all cilfile
                 | Or_t(list) -> List.flatten (List.map (fun x -> FuncVar.find_decl x (-1) cilfile) list)
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_var_decl query cilfile =
 match query.str with Fun_s(funname) -> resolve_query_var_decl_fun query cilfile funname
                 | None_s -> resolve_query_var_decl_none query cilfile
                 | NonCond_s -> resolve_query_var_decl_none query cilfile
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_var_defs_fun query cilfile funname =
 match query.tar with Name_t(name) -> FuncVar.find_defs_in_fun name (-1) funname cilfile
@@ -148,7 +148,7 @@ match query.tar with Name_t(name) -> FuncVar.find_defs_in_fun name (-1) funname 
                 | AllGlobVar_t -> FuncVar.find_defs_in_fun_all_glob funname cilfile
                 | All_t -> FuncVar.find_defs_in_fun_all funname cilfile
                 | Or_t(list) -> List.flatten (List.map (fun x -> FuncVar.find_defs_in_fun x (-1) funname cilfile) list)
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_var_defs_none query cilfile =
 match query.tar with Name_t(name) -> FuncVar.find_defs name (-1) cilfile
@@ -156,40 +156,40 @@ match query.tar with Name_t(name) -> FuncVar.find_defs name (-1) cilfile
                 | AllGlobVar_t -> FuncVar.find_defs_all_glob cilfile
                 | All_t -> FuncVar.find_defs_all cilfile
                 | Or_t(list) -> List.flatten (List.map (fun x -> FuncVar.find_defs x (-1) cilfile) list)
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_var_defs query cilfile =
 match query.str with Fun_s(funname) -> resolve_query_var_defs_fun query cilfile funname
                 | None_s -> resolve_query_var_defs_none query cilfile
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_var query cilfile = 
 match query.f with Uses_f -> resolve_query_var_uses query cilfile
                 | Decl_f -> resolve_query_var_decl query cilfile
                 | Defs_f -> resolve_query_var_defs query cilfile 
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun_return_none query cilfile =
 match query.tar with Name_t(name) -> FuncFunction.find_returns name (-1) cilfile
                 | ID_t(id) -> FuncFunction.find_returns "" id cilfile
                 | All_t -> FuncFunction.find_returns_all cilfile
                 | Or_t(list) -> List.flatten (List.map (fun x -> FuncFunction.find_returns x (-1) cilfile) list)
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun_return query cilfile = 
 match query.str with None_s -> resolve_query_fun_return_none query cilfile
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun_defs_none query cilfile =
 match query.tar with Name_t(name) -> FuncFunction.find_def name (-1) cilfile
                 | ID_t(id) -> FuncFunction.find_def "" id cilfile
                 | All_t -> FuncFunction.find_def_all cilfile
                 | Or_t(list) -> List.flatten (List.map (fun x -> FuncFunction.find_def x (-1) cilfile) list)
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun_defs query cilfile =
 match query.str with None_s -> resolve_query_fun_defs_none query cilfile
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun_uses_none query cilfile =
 match query.tar with Name_t(name) -> FuncFunction.find_uses name (-1) cilfile
@@ -197,7 +197,7 @@ match query.tar with Name_t(name) -> FuncFunction.find_uses name (-1) cilfile
                 | All_t -> FuncFunction.find_uses_all cilfile
                 | And_t(list) -> and_several_lists (List.map (fun x -> FuncFunction.find_uses x (-1) cilfile) list)
                 | Or_t(list) -> List.flatten (List.map (fun x -> FuncFunction.find_uses x (-1) cilfile) list)
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun_uses_fun query cilfile funname =
 match query.tar with Name_t(name) -> FuncFunction.find_uses_in_fun name (-1) funname cilfile
@@ -205,7 +205,7 @@ match query.tar with Name_t(name) -> FuncFunction.find_uses_in_fun name (-1) fun
                 | All_t -> FuncFunction.find_uses_in_fun_all funname cilfile
                 | And_t(list) -> and_several_lists (List.map (fun x -> FuncFunction.find_uses_in_fun x (-1) funname cilfile) list)
                 | Or_t(list) -> List.flatten (List.map (fun x -> FuncFunction.find_uses_in_fun x (-1) funname cilfile) list)
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun_uses_cond query cilfile = 
 match query.tar with Name_t(name) -> FuncFunction.find_uses_cond name (-1) cilfile
@@ -213,7 +213,7 @@ match query.tar with Name_t(name) -> FuncFunction.find_uses_cond name (-1) cilfi
                 | All_t -> FuncFunction.find_uses_all cilfile
                 | And_t(list) -> and_several_lists (List.map (fun x -> FuncFunction.find_uses_cond x (-1) cilfile) list)
                 | Or_t(list) -> List.flatten (List.map (fun x -> FuncFunction.find_uses_cond x (-1) cilfile) list)
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun_uses_noncond query cilfile =
 match query.tar with Name_t(name) -> FuncFunction.find_uses_noncond name (-1) cilfile
@@ -221,7 +221,7 @@ match query.tar with Name_t(name) -> FuncFunction.find_uses_noncond name (-1) ci
                 | All_t -> FuncFunction.find_uses_noncond_all cilfile
                 | And_t(list) -> and_several_lists (List.map (fun x -> FuncFunction.find_uses_noncond x (-1) cilfile) list)
                 | Or_t(list) -> List.flatten (List.map (fun x -> FuncFunction.find_uses_noncond x (-1) cilfile) list)
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun_uses query cilfile = 
 match query.str with None_s -> resolve_query_fun_uses_none query cilfile
@@ -235,7 +235,7 @@ match query.tar with Name_t(funname) -> FuncFunction.find_usesvar_in_fun funname
                 | All_t -> FuncFunction.find_usesvar_in_fun_all strucfunname varname cilfile
                 | And_t(list) -> and_several_lists (List.map (fun x -> FuncFunction.find_usesvar_in_fun x (-1) strucfunname varname cilfile) list)
                 | Or_t(list) -> List.flatten (List.map (fun x -> FuncFunction.find_usesvar_in_fun x (-1) strucfunname varname cilfile) list)
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun_usesvar_none query cilfile varname =
 match query.tar with Name_t(funname) -> FuncFunction.find_usesvar funname (-1) varname cilfile
@@ -243,7 +243,7 @@ match query.tar with Name_t(funname) -> FuncFunction.find_usesvar funname (-1) v
                 | All_t -> FuncFunction.find_usesvar_all varname cilfile
                 | And_t(list) -> and_several_lists (List.map (fun x -> FuncFunction.find_usesvar x (-1) varname cilfile) list)
                 | Or_t(list) -> List.flatten (List.map (fun x -> FuncFunction.find_usesvar x (-1) varname cilfile) list)
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun_usesvar_cond query cilfile varname =
 match query.tar with Name_t(funname) -> FuncFunction.find_usesvar_cond funname (-1) varname cilfile
@@ -251,7 +251,7 @@ match query.tar with Name_t(funname) -> FuncFunction.find_usesvar_cond funname (
                 | All_t -> FuncFunction.find_usesvar_cond_all varname cilfile
                 | And_t(list) -> and_several_lists (List.map (fun x -> FuncFunction.find_usesvar_cond x (-1) varname cilfile) list)
                 | Or_t(list) -> List.flatten (List.map (fun x -> FuncFunction.find_usesvar_cond x (-1) varname cilfile) list)
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun_usesvar_noncond query cilfile varname =
 match query.tar with Name_t(funname) -> FuncFunction.find_usesvar_noncond funname (-1) varname cilfile
@@ -259,7 +259,7 @@ match query.tar with Name_t(funname) -> FuncFunction.find_usesvar_noncond funnam
                 | All_t -> FuncFunction.find_usesvar_noncond_all varname cilfile
                 | And_t(list) -> and_several_lists (List.map (fun x -> FuncFunction.find_usesvar_noncond x (-1) varname cilfile) list)
                 | Or_t(list) -> List.flatten (List.map (fun x -> FuncFunction.find_usesvar_noncond x (-1) varname cilfile) list)
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 let resolve_query_fun_usesvar query cilfile varname =
 match query.str with Fun_s(strucfunname) -> resolve_query_fun_usesvar_fun query cilfile varname strucfunname
@@ -272,7 +272,7 @@ match query.f with Returns_f -> resolve_query_fun_return query cilfile
                 | Defs_f -> resolve_query_fun_defs query cilfile
                 | Uses_f -> resolve_query_fun_uses query cilfile
                 | UsesWithVar_f(varname) -> resolve_query_fun_usesvar query cilfile varname
-                | _ -> Printf.printf "Not supported yet.\n"; ("", loc_default, "", -1)::[]
+                | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 (* Main mapping function *)
 let map_query query cilfile = delete_duplicates ((if (query.lim != None_c) then Printf.printf "Constraint is not supported yet. This parameter will be ignored.\n" else ()); (

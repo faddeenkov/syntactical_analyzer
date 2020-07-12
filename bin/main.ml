@@ -35,4 +35,4 @@ let count_matches () =
 let cilfile = Frontc.parse sourceFile ()
 in Printf.printf "____________\nresults: %i\n" (List.length (map_query (parse_json_file jsonFile) cilfile))
 
-let _ = count_matches ()
+let _ = executeQuery ()
