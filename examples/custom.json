@@ -1,4 +1,0 @@
-{   "select":[["name"],["location"], ["id"], ["type"]],
-    "type": ["var"],
-    "target": ["name", "i"],
-    "find": ["uses"]}
