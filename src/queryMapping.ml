@@ -17,9 +17,13 @@ match list with (name2, loc2, typ2, id2)::xs -> if (String.compare name1 name2 =
                                                                else (name2, loc2, typ2, id2)::(delete_elem (name1, loc1, typ1, id1) xs)
             | [] -> []
 
-let rec delete_duplicates list acc = 
-match list with x::xs -> delete_duplicates (delete_elem x list) (x::acc)
-            | [] -> List.rev acc
+let rec delete_duplicates list tbl = 
+match list with x::xs -> 
+                    (match Hashtbl.find_opt tbl x with None -> Hashtbl.add tbl x 1; x::(delete_duplicates xs tbl)
+                                                    | Some (_) -> delete_duplicates xs tbl)
+            | [] -> []
+
+
 
 let rec and_one_elem (name1, loc1, typ1, id1) list =
 match list with (name2, loc2, typ2, id2)::xs -> if loc1.line = loc2.line then [(name1, loc1, typ1, id1);(name2, loc2, typ2, id2)] else and_one_elem (name1, loc1, typ1, id1) xs
@@ -275,7 +279,10 @@ match query.f with Returns_f -> resolve_query_fun_return query cilfile
                 | _ -> Printf.printf "Not supported.\n"; ("", loc_default, "", -1)::[]
 
 (* Main mapping function *)
-let map_query query cilfile = delete_duplicates ((if (query.lim != None_c) then Printf.printf "Constraint is not supported yet. This parameter will be ignored.\n" else ()); (
+let map_query query cilfile = 
+let tmp = (if (query.lim != None_c) then Printf.printf "Constraint is not supported yet. This parameter will be ignored.\n" else ()); (
 match query.k with Datatype_k -> resolve_query_datatype query cilfile
                 | Var_k -> resolve_query_var query cilfile
-                | Fun_k -> resolve_query_fun query cilfile )) []
+                | Fun_k -> resolve_query_fun query cilfile )
+in let hashtbl = Hashtbl.create (List.length tmp)
+in delete_duplicates tmp hashtbl
