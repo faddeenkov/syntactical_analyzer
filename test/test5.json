@@ -1,5 +1,5 @@
 {
-    "select" : [["name"]],
+    "select" : [["name"], ["location"]],
     "type" : ["var"],
     "target" : ["and", ["copy_var", "new_var"]],
     "find" : ["uses"]

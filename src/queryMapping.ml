@@ -26,7 +26,7 @@ match list with x::xs ->
 
 
 let rec and_one_elem (name1, loc1, typ1, id1) list =
-match list with (name2, loc2, typ2, id2)::xs -> if loc1.line = loc2.line then [(name1, loc1, typ1, id1);(name2, loc2, typ2, id2)] else and_one_elem (name1, loc1, typ1, id1) xs
+match list with (name2, loc2, typ2, id2)::xs -> if loc1.line = loc2.line then [(name1, loc1, typ1, id1);(name2, loc2, typ2, id2)]@(and_one_elem (name1, loc1, typ1, id1) xs) else and_one_elem (name1, loc1, typ1, id1) xs
             | [] -> []
 
 let rec and_two_lists list1 list2 =
