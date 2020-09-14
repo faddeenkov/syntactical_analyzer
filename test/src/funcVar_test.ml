@@ -158,11 +158,11 @@ let funcvar_tests = "test suite for func_Var" >::: [
                                      assert_bool "check result of third" (check_result (List.nth result 2) "global" "char" 17));
    "test correct differentiation of user-defined and cil-generated variables 1" >:: 
    (fun _ -> let result = find_uses "i" (-1) (Frontc.parse "test17.c" ()) false
-            in assert_equal (List.length result) 6; (* i++ is causing duplicates *)
-               assert_bool "check result of first" (check_result (List.hd result) "i" "double" 9);
-               assert_bool "check result of second" (check_result (List.nth result 1) "i" "double" 10);
-               assert_bool "check result of third" (check_result (List.nth result 2) "i___0" "int" 4);
-               assert_bool "check result of fourth" (check_result (List.nth result 3) "i___0" "int" 4));
+            in assert_equal (List.length result) 6;(* i++ is causing duplicates *)
+               assert_bool "check result of first" (check_result (List.hd result) "i___0" "int" 4);
+               assert_bool "check result of second" (check_result (List.nth result 1) "i___0" "int" 4);
+               assert_bool "check result of fifth" (check_result (List.nth result 4) "i" "double" 9);
+               assert_bool "check result of sixth" (check_result (List.nth result 5) "i" "double" 10));
    "test correct differentiation of user-defined and cil-generated variables 2" >::
    (fun _ -> let result = find_uses "i___0" (-1) (Frontc.parse "test17.c" ()) false
             in assert_equal (List.length result) 2;
@@ -171,5 +171,14 @@ let funcvar_tests = "test suite for func_Var" >::: [
    "test correct differentiation of user-defined and cil-generated variables 3" >::
    (fun _ -> let result = find_uses "tmp" (-1) (Frontc.parse "test17.c" ()) false
             in assert_equal (List.length result) 1;
-               assert_bool "check result" (check_result (List.hd result) "tmp___0" "int" 13))
+               assert_bool "check result" (check_result (List.hd result) "tmp___0" "int" 13));
+   "test correct correlation of variable mappings between the functions" >::
+   (fun _ -> let result = find_uses "i" (-1) (Frontc.parse "test18.c" ()) false
+            in assert_equal (List.length result) 2;
+               assert_bool "check result of first" (check_result (List.hd result) "i___0" "int" 2);
+               assert_bool "check result of second" (check_result (List.nth result 1) "i___0" "int" 3));
+   "test visibility of global variables in variable mappings" >::
+   (fun _ -> let result = find_uses_in_fun "m" (-1) "g" (Frontc.parse "test19.c" ()) false
+            in assert_equal (List.length result) 1;
+               assert_bool "check result of first" (check_result (List.hd result) "m" "int" 8))
 ]
