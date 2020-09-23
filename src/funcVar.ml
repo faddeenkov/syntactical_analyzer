@@ -9,11 +9,41 @@ let rec delete_elem list s =
 match list with x::xs -> if (String.compare x s = 0) then (delete_elem xs s) else x::(delete_elem xs s)
             | [] -> []
 
-let rec delete_duplicates list acc = 
-match list with x::xs -> delete_duplicates (delete_elem xs x) (x::acc)
-            | [] -> acc
+let rec delete_duplicates list tbl = 
+match list with x::xs -> 
+                    (match Hashtbl.find_opt tbl x with None -> Hashtbl.add tbl x 1; x::(delete_duplicates xs tbl)
+                                                    | Some (_) -> delete_duplicates xs tbl)
+            | [] -> []
 
 let is_temporary id = Inthash.mem allTempVars id
+
+let generate_func_loc_table cilfile =
+let rec iter_list list = match list with
+  GFun(dec, loc)::xs -> (dec.svar.vname, loc.line)::(iter_list xs) 
+| _::xs ->  iter_list xs
+| [] -> []
+in iter_list cilfile.globals
+
+let generate_globalvar_list cilfile =
+let rec iter_list list = match list with
+  GVar(varinfo, _, _)::xs -> varinfo.vname::(iter_list xs)
+| _ ::xs -> iter_list xs
+| [] -> []
+in iter_list cilfile.globals
+
+let get_all_alphaconverted_in_fun varname funname cilfile = 
+let fun_loc_table = generate_func_loc_table cilfile
+in let loc_start = match List.find (function (x,y) -> String.compare x funname = 0) fun_loc_table with (a,b) -> b
+in let rec iter_fun_loc list = match list with
+  (fname, _)::xs -> if fname = funname then (match xs with (_, line)::ys -> line | [] -> max_int) else iter_fun_loc xs
+| [] -> 0 
+in let loc_end = iter_fun_loc fun_loc_table
+in let tmp = Hashtbl.find_all myEnv varname
+in let rec iter_list list = match list with 
+  (EnvVar(varinfo), loc)::xs -> if loc.line >= loc_start && loc.line < loc_end then (varinfo.vname)::(iter_list xs) else iter_list xs
+| _::xs -> iter_list xs
+| [] -> []
+in delete_duplicates ((iter_list tmp)@(if List.exists (function x -> String.compare x varname = 0) (generate_globalvar_list cilfile) then [varname] else [])) (Hashtbl.create 30)
 
 (*
 let find_all_cil_generated info varname loc =
@@ -78,20 +108,20 @@ match list with x::xs -> (match x.skind with Instr(ins_list) -> search_instr_lis
             | [] -> []
 
 (* Finds all uses of a variable in a function-body *)
-let find_uses_in_fun_var dec name varid includeCallTmp = 
+let find_uses_in_fun_var dec name varid includeCallTmp cilfile = 
 let rec iter_list list = 
 match list with x::xs -> (search_stmt_list_for_var dec.sbody.bstmts x (-1) includeCallTmp)@(iter_list xs)
-                | [] -> []
-in if varid != (-1) then search_stmt_list_for_var dec.sbody.bstmts name varid includeCallTmp else iter_list (delete_duplicates (Hashtbl.find_all varnameMapping name) [])
+                | [] ->  []
+in if varid != (-1) then search_stmt_list_for_var dec.sbody.bstmts name varid includeCallTmp else ( iter_list (get_all_alphaconverted_in_fun name dec.svar.vname cilfile))
 
 (* Finds the function in which a variable shall be found *)
-let rec find_uses_in_fun_find_fun list name varname varid includeCallTmp = 
-match list with GFun(dec, loc)::xs -> if String.compare dec.svar.vname name = 0 then find_uses_in_fun_var dec varname varid includeCallTmp else find_uses_in_fun_find_fun xs name varname varid includeCallTmp
+let rec find_uses_in_fun_find_fun list name varname varid includeCallTmp cilfile = 
+match list with GFun(dec, loc)::xs -> if String.compare dec.svar.vname name = 0 then find_uses_in_fun_var dec varname varid includeCallTmp cilfile else find_uses_in_fun_find_fun xs name varname varid includeCallTmp cilfile
             | [] -> []
-            | _::xs -> find_uses_in_fun_find_fun xs name varname varid includeCallTmp
+            | _::xs -> find_uses_in_fun_find_fun xs name varname varid includeCallTmp cilfile
 
 (* Finds all uses of a variable in a function *)
-let find_uses_in_fun varname varid funname file includeCallTmp = find_uses_in_fun_find_fun file.globals funname varname varid includeCallTmp
+let find_uses_in_fun varname varid funname file includeCallTmp = find_uses_in_fun_find_fun file.globals funname varname varid includeCallTmp file
 
 let rec find_all_glob_vars list = 
 match list with GVar(info, _, _)::xs -> info.vid::(find_all_glob_vars xs)
@@ -164,19 +194,19 @@ match list with x::xs -> (match x.skind with If(exp, b1, b2, loc) -> (search_exp
             | [] -> []
 
 (* Finds all uses of a variable in conditions of a function *)
-let find_uses_in_cond_in_fun varname varid funname file includeCallTmp =
+let find_uses_in_cond_in_fun varname varid funname file includeCallTmp cilfile =
 let fundec_opt = find_fundec file.globals funname
 in let rec iter_list list fundec =
 match list with x::xs -> (cond_search_uses_stmt_list fundec.sbody.bstmts x (-1) includeCallTmp)@(iter_list xs fundec)
             | [] -> []
 in match fundec_opt with None -> []
 | Some(fundec) -> if varid != (-1) then cond_search_uses_stmt_list fundec.sbody.bstmts varname varid includeCallTmp
-else iter_list (delete_duplicates (Hashtbl.find_all varnameMapping varname) []) fundec
+else iter_list (get_all_alphaconverted_in_fun varname funname cilfile) fundec
 
 (* Finds all uses of a variable in conditions in all functions *)
 let find_uses_in_cond varname varid file includeCallTmp = 
 let rec iter_functions list = 
-match list with GFun(dec,_)::xs -> (find_uses_in_cond_in_fun varname varid dec.svar.vname file includeCallTmp)@(iter_functions xs)
+match list with GFun(dec,_)::xs -> (find_uses_in_cond_in_fun varname varid dec.svar.vname file includeCallTmp file)@(iter_functions xs)
             | _ ::xs -> iter_functions xs
             | [] -> []
 in iter_functions file.globals
@@ -193,7 +223,7 @@ in iter_list id_list
 let find_uses_in_cond_in_fun_all_glob funname file includeCallTmp =
 let id_list = find_all_glob_vars file.globals
 in let rec iter_list list = 
-match list with x::xs -> (find_uses_in_cond_in_fun "" x funname file includeCallTmp)@(iter_list xs)
+match list with x::xs -> (find_uses_in_cond_in_fun "" x funname file includeCallTmp file)@(iter_list xs)
             | [] -> []
 in iter_list id_list
 
@@ -201,7 +231,7 @@ in iter_list id_list
 let find_uses_in_cond_in_fun_all funname file includeCallTmp = 
 let get_formals_locals dec = dec.sformals@dec.slocals
 in let rec iter_list list = 
-match list with x::xs -> (find_uses_in_cond_in_fun x.vname (-1) funname file includeCallTmp)@(iter_list xs)
+match list with x::xs -> (find_uses_in_cond_in_fun x.vname (-1) funname file includeCallTmp file)@(iter_list xs)
 | [] -> []
 in let fundec_opt = find_fundec file.globals funname
 in match fundec_opt with None -> []
@@ -260,7 +290,7 @@ match name_list with x::xs -> (iter_list_name varinfo_list x)@(iter_namelist xs 
                 | [] -> []
 in match fundec_opt with None -> []
                     | Some(fundec) -> if varid != (-1) then iter_list_id (get_formals_locals fundec)
-else iter_namelist (delete_duplicates (Hashtbl.find_all varnameMapping varname) []) (get_formals_locals fundec)
+else iter_namelist (get_all_alphaconverted_in_fun varname funname file) (get_formals_locals fundec)
 
 (* Finds all declarations in a function *)
 let find_decl_in_fun_all funname file =
@@ -314,7 +344,7 @@ match list with x::xs -> visitCilFileSameGlobals (new var_find_def_in_fun x (-1)
             | [] -> !result
 in let visitor = new var_find_def_in_fun varname varid funname result
 in if varid != (-1) then (visitCilFileSameGlobals visitor file; !result)
-else iter_list (delete_duplicates (Hashtbl.find_all varnameMapping varname) [])
+else iter_list (get_all_alphaconverted_in_fun varname funname file)
 
 (* Finds definitions of all global variables in a function *)
 let find_defs_in_fun_all_glob funname file =
