@@ -1,6 +1,6 @@
 open OUnit2
 open Cil
-open Mylib.FuncDatatype
+open SyntacticalAnalyzer.FuncDatatype
 
 let typeinfo1 = {tname = "BYTE";
                  ttype = TInt(IInt,[]);

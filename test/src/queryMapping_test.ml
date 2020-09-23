@@ -1,7 +1,7 @@
 open OUnit2
-open Mylib.QueryMapping
+open SyntacticalAnalyzer.QueryMapping
 open Cil
-open Mylib.JsonParser
+open SyntacticalAnalyzer.JsonParser
 
 let check_result res res_name res_typ res_line =
 match res with (name, loc, typ, id) -> if (String.compare name res_name = 0)

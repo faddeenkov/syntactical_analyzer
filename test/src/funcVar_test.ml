@@ -1,5 +1,5 @@
 open OUnit2
-open Mylib.FuncVar
+open SyntacticalAnalyzer.FuncVar
 open Cil
 
 let location1 = {line = 1;file = "test";byte = 0}

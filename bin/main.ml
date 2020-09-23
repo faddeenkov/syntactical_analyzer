@@ -1,6 +1,6 @@
-open Mylib.JsonParser
-open Mylib.QueryMapping
-open Mylib.ResultPrinter
+open SyntacticalAnalyzer.JsonParser
+open SyntacticalAnalyzer.QueryMapping
+open SyntacticalAnalyzer.ResultPrinter
 open Cil
 open Cabs2cil
 

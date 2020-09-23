@@ -1,4 +1,7 @@
 (library
-(name testlib)
-(libraries oUnit mylib)
-)
+ (name testlib)
+ (libraries oUnit syntactical_analyzer))
+
+(env
+ (dev
+  (flags (:standard -warn-error -A))))
