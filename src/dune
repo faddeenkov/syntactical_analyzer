@@ -1,4 +1,9 @@
 (library
-(name mylib)
-(libraries yojson goblint-cil ppx_deriving_yojson.runtime)
-(preprocess (pps ppx_deriving_yojson)))
+ (name SyntacticalAnalyzer)
+ (public_name syntactical_analyzer)
+ (libraries yojson goblint-cil ppx_deriving_yojson.runtime)
+ (preprocess (pps ppx_deriving_yojson)))
+
+(env
+ (dev
+  (flags (:standard -warn-error -A))))

@@ -1,5 +1,5 @@
 open OUnit2
-open Mylib.JsonParser
+open SyntacticalAnalyzer.JsonParser
 
 let query = {sel = [Name_sel; ID_sel;Location_sel];
               k = Datatype_k;
