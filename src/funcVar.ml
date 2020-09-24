@@ -194,19 +194,19 @@ match list with x::xs -> (match x.skind with If(exp, b1, b2, loc) -> (search_exp
             | [] -> []
 
 (* Finds all uses of a variable in conditions of a function *)
-let find_uses_in_cond_in_fun varname varid funname file includeCallTmp cilfile =
+let find_uses_in_cond_in_fun varname varid funname file includeCallTmp =
 let fundec_opt = find_fundec file.globals funname
 in let rec iter_list list fundec =
 match list with x::xs -> (cond_search_uses_stmt_list fundec.sbody.bstmts x (-1) includeCallTmp)@(iter_list xs fundec)
             | [] -> []
 in match fundec_opt with None -> []
 | Some(fundec) -> if varid != (-1) then cond_search_uses_stmt_list fundec.sbody.bstmts varname varid includeCallTmp
-else iter_list (get_all_alphaconverted_in_fun varname funname cilfile) fundec
+else iter_list (get_all_alphaconverted_in_fun varname funname file) fundec
 
 (* Finds all uses of a variable in conditions in all functions *)
 let find_uses_in_cond varname varid file includeCallTmp = 
 let rec iter_functions list = 
-match list with GFun(dec,_)::xs -> (find_uses_in_cond_in_fun varname varid dec.svar.vname file includeCallTmp file)@(iter_functions xs)
+match list with GFun(dec,_)::xs -> (find_uses_in_cond_in_fun varname varid dec.svar.vname file includeCallTmp)@(iter_functions xs)
             | _ ::xs -> iter_functions xs
             | [] -> []
 in iter_functions file.globals
@@ -223,7 +223,7 @@ in iter_list id_list
 let find_uses_in_cond_in_fun_all_glob funname file includeCallTmp =
 let id_list = find_all_glob_vars file.globals
 in let rec iter_list list = 
-match list with x::xs -> (find_uses_in_cond_in_fun "" x funname file includeCallTmp file)@(iter_list xs)
+match list with x::xs -> (find_uses_in_cond_in_fun "" x funname file includeCallTmp)@(iter_list xs)
             | [] -> []
 in iter_list id_list
 
@@ -231,7 +231,7 @@ in iter_list id_list
 let find_uses_in_cond_in_fun_all funname file includeCallTmp = 
 let get_formals_locals dec = dec.sformals@dec.slocals
 in let rec iter_list list = 
-match list with x::xs -> (find_uses_in_cond_in_fun x.vname (-1) funname file includeCallTmp file)@(iter_list xs)
+match list with x::xs -> (find_uses_in_cond_in_fun x.vname (-1) funname file includeCallTmp)@(iter_list xs)
 | [] -> []
 in let fundec_opt = find_fundec file.globals funname
 in match fundec_opt with None -> []
