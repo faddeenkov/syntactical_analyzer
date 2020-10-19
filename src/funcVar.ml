@@ -38,7 +38,7 @@ in let rec iter_fun_loc list = match list with
   (fname, _)::xs -> if fname = funname then (match xs with (_, line)::ys -> line | [] -> max_int) else iter_fun_loc xs
 | [] -> 0 
 in let loc_end = iter_fun_loc fun_loc_table
-in let tmp = Hashtbl.find_all myEnv varname
+in let tmp = Hashtbl.find_all environment varname
 in let rec iter_list list = match list with 
   (EnvVar(varinfo), loc)::xs -> if loc.line >= loc_start && loc.line < loc_end then (varinfo.vname)::(iter_list xs) else iter_list xs
 | _::xs -> iter_list xs
