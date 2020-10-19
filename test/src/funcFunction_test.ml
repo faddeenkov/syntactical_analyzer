@@ -3,7 +3,7 @@ open Cil
 open SyntacticalAnalyzer.FuncFunction
 
 let check_result res res_name res_typ res_line =
-match res with (name, loc, typ, id) -> if (String.compare name res_name = 0)
+match res with (name, loc, typ, _) -> if (String.compare name res_name = 0)
                                       &&(String.compare typ res_typ = 0)
                                       &&(loc.line == res_line) then true else false
 
@@ -59,9 +59,9 @@ let funcfunction_tests = "test suite for func_Function" >::: [
                                                  assert_bool "check result of first" (check_result (List.hd result) "f" "int f (int a, int b)" 10);
                                                  assert_bool "check result of second" (check_result (List.nth result 1) "h" "void h (double x, int z)" 15));
 "test find_usesvar so that it finds CIL-renamed vars too" >:: (fun _ -> let result = find_usesvar "f" (-1) "i" (Frontc.parse "test16.c" ())
-                                                               in 
+                                                               in
                                                                   assert_bool "check result of first" (check_result (List.hd result) "f" "void f (int x)" 14);
                                                                   assert_bool "check result of second" (check_result (List.nth result 1) "f" "void f (int x)" 9);
-                                                                  assert_bool "check result of third" (check_result (List.nth result 2) "f" "void f (int x)" 11)) 
+                                                                  assert_bool "check result of third" (check_result (List.nth result 2) "f" "void f (int x)" 11))
 
  ]

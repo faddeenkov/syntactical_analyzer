@@ -6,8 +6,8 @@ let location1 = {line = 1;file = "test";byte = 0}
 let location2 = {line = 2;file = "test";byte = 5}
 let location3 = {line = 3;file = "test";byte = 8}
 
-let varinfo1 = {vname = "x"; 
-                  vtype = TInt(IInt,[]); 
+let varinfo1 = {vname = "x";
+                  vtype = TInt(IInt,[]);
                   vattr = [];
                   vstorage = NoStorage;
                   vglob = true;
@@ -23,8 +23,8 @@ let varinfo1 = {vname = "x";
 
 let lhost1 = Var(varinfo1)
 
-let varinfo2 = {vname = "y"; 
-                  vtype = TInt(IInt,[]); 
+let varinfo2 = {vname = "y";
+                  vtype = TInt(IInt,[]);
                   vattr = [];
                   vstorage = NoStorage;
                   vglob = true;
@@ -76,7 +76,7 @@ let statement3 = {labels = [];
 let stmt_list = statement1::statement2::statement3::[]
 
 let check_result res res_name res_typ res_line =
-match res with (name, loc, typ, id) -> if (String.compare name res_name = 0)
+match res with (name, loc, typ, _) -> if (String.compare name res_name = 0)
                                       &&(String.compare typ res_typ = 0)
                                       &&(loc.line == res_line) then true else false
 
@@ -114,7 +114,7 @@ let funcvar_tests = "test suite for func_Var" >::: [
                                          assert_bool "check result of second" (check_result (List.nth result 1) "new_var" "struct var" 8);
                                          assert_bool "check result of third" (check_result (List.nth result 2) "new_var" "struct var" 8);
                                          assert_bool "check result of fourth" (check_result (List.nth result 3) "new_var" "struct var" 13);
-                                         assert_bool "check result of fifth" (check_result (List.nth result 4) "copy_var" "struct var" 13));    
+                                         assert_bool "check result of fifth" (check_result (List.nth result 4) "copy_var" "struct var" 13));
    "test find_uses_in_cond" >:: (fun _ -> let result = find_uses_in_cond "i" (-1) (Frontc.parse "test4.c" ()) false
                                           in assert_equal (List.length result) 3;
                                              assert_bool "check result of first" (check_result (List.hd result) "i" "int" 4);
@@ -132,7 +132,7 @@ let funcvar_tests = "test suite for func_Var" >::: [
                                                     assert_bool "check result of second" (check_result (List.nth result 1) "j" "int" 4);
                                                     assert_bool "check resut of third" (check_result (List.nth result 2) "global" "int" 13);
                                                     assert_bool "check result of fourth" (check_result (List.nth result 4) "global" "int" 17);
-                                                    assert_bool "check result of fifth" (check_result (List.nth result 6) "x" "int" 17)); 
+                                                    assert_bool "check result of fifth" (check_result (List.nth result 6) "x" "int" 17));
    "test find_decl_all" >:: (fun _ -> let result = find_decl_all (Frontc.parse "test5.c" ())
                                        in assert_equal (List.length result) 3;
                                           assert_bool "check result of first" (check_result (List.hd result) "global" "int" 1);
@@ -156,7 +156,7 @@ let funcvar_tests = "test suite for func_Var" >::: [
                                      assert_bool "check result of first" (check_result (List.hd result) "global" "char" 1);
                                      assert_bool "check result of second" (check_result (List.nth result 1) "global" "char" 4);
                                      assert_bool "check result of third" (check_result (List.nth result 2) "global" "char" 17));
-   "test correct differentiation of user-defined and cil-generated variables 1" >:: 
+   "test correct differentiation of user-defined and cil-generated variables 1" >::
    (fun _ -> let result = find_uses "i" (-1) (Frontc.parse "test17.c" ()) false
             in assert_equal (List.length result) 6;(* i++ is causing duplicates *)
                assert_bool "check result of first" (check_result (List.hd result) "i___0" "int" 4);

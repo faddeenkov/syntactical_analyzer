@@ -55,8 +55,8 @@ let file2 = {fileName = "anotherFile";
              globinit = None;
              globinitcalled = false}
 
-let varinfo1 = {vname = "yeet"; 
-                  vtype = TInt(IInt,[]); 
+let varinfo1 = {vname = "yeet";
+                  vtype = TInt(IInt,[]);
                   vattr = [];
                   vstorage = NoStorage;
                   vglob = true;
@@ -70,8 +70,8 @@ let varinfo1 = {vname = "yeet";
                   vdescrpure = true;
                   vhasdeclinstruction = true}
 
-let varinfo2 = {vname = "useful"; 
-                  vtype = TInt(IInt,[]); 
+let varinfo2 = {vname = "useful";
+                  vtype = TInt(IInt,[]);
                   vattr = [];
                   vstorage = NoStorage;
                   vglob = true;
@@ -91,12 +91,12 @@ let gvar3 = GVar( (makeVarinfo false "notUseful" (TFloat(FComplexLongDouble, [])
 
 let globals3 = [gfun1; gvar1; gvar3; GText("//TODO"); gvar2]
 
-let print_varids gvar = 
+let print_varids gvar =
 match gvar with GVar(info,_,_) -> Printf.printf "id: %i\n" info.vid
             | _ -> ()
 
 let check_result res res_name res_typ res_line =
-match res with (name, loc, typ, id) -> if (String.compare name res_name = 0)
+match res with (name, loc, typ, _) -> if (String.compare name res_name = 0)
                                       &&(String.compare typ res_typ = 0)
                                       &&(loc.line == res_line) then true else false
 

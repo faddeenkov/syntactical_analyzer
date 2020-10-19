@@ -4,7 +4,7 @@ open Cil
 open SyntacticalAnalyzer.JsonParser
 
 let check_result res res_name res_typ res_line =
-match res with (name, loc, typ, id) -> if (String.compare name res_name = 0)
+match res with (name, loc, typ, _) -> if (String.compare name res_name = 0)
                                       &&(String.compare typ res_typ = 0)
                                       &&(loc.line == res_line) then true else false
 
@@ -33,4 +33,4 @@ let mapping_tests = "test suite for queryMapper" >::: [
                                               assert_bool "check result of first" (check_result (List.hd result) "" "int" 9);
                                               assert_bool "check result of second" (check_result (List.nth result 1) "" "int" 12);
                                               assert_bool "check result of third" (check_result (List.nth result 2) "" "void" 18))
-] 
+]

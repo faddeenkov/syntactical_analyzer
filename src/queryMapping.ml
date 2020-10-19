@@ -1,6 +1,3 @@
-open FuncDatatype
-open FuncVar
-open FuncFunction
 open Cil
 open JsonParser
 
