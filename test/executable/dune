@@ -1,5 +1,7 @@
 (test
  (name main_test)
-  (libraries testlib))
+  (libraries testlib)
+  (deps (source_tree .))
+  )
 
   ;;ocamlfind ocamlc -o test -package oUnit -linkpkg -g foo.ml test.ml
