@@ -11,8 +11,9 @@ apt install opam
 opam init
 opam switch create . ocaml-base-compiler.4.09.0
 eval $(opam env)
+opam pin goblint-cil https://github.com/goblint/cil.git
 ```
-Install the following opam-packages: dune, zarith, ounit,  yojson and ppx_deriving_yojson with 
+Install the following opam-packages: dune, zarith, ounit,  yojson and ppx_deriving_yojson, merlin with
 ```bash
 opam install [package]
 ```
