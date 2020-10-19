@@ -1,6 +1,5 @@
 open Cil
 open Cabs2cil
-open Hashtbl
 
 let is_equal_funname_funid varinfo name id =
   if String.compare varinfo.vname name = 0 || varinfo.vid = id then true
@@ -18,14 +17,14 @@ let rec delete_duplicates list acc =
   | [] -> acc
 
 class fun_find_returns funname funid result : nopCilVisitor =
-  object (self)
+  object
     inherit nopCilVisitor
 
-    method vfunc fundec =
+    method! vfunc fundec =
       if is_equal_funname_funid fundec.svar funname funid then DoChildren
       else SkipChildren
 
-    method vstmt stmt =
+    method! vstmt stmt =
       match stmt.skind with
       | Return (Some exp, loc) ->
           result :=
@@ -33,7 +32,7 @@ class fun_find_returns funname funid result : nopCilVisitor =
             @ [
                 ( "",
                   loc,
-                  String.trim (Pretty.sprint 1 (d_type () (typeOf exp))),
+                  String.trim (Pretty.sprint ~width:1 (d_type () (typeOf exp))),
                   -1 );
               ];
           DoChildren
@@ -62,14 +61,14 @@ let find_returns_all file =
   iter_list file.globals
 
 class fun_find_sig funname funid result : nopCilVisitor =
-  object (self)
+  object
     inherit nopCilVisitor
 
-    method vfunc fundec =
+    method! vfunc fundec =
       if is_equal_funname_funid fundec.svar funname funid then DoChildren
       else SkipChildren
 
-    method vstmt stmt =
+    method! vstmt stmt =
       match stmt.skind with
       | Return (Some exp, loc) ->
           result :=
@@ -77,7 +76,7 @@ class fun_find_sig funname funid result : nopCilVisitor =
             @ [
                 ( "",
                   loc,
-                  String.trim (Pretty.sprint 1 (d_type () (typeOf exp))),
+                  String.trim (Pretty.sprint ~width:1 (d_type () (typeOf exp))),
                   -1 );
               ];
           SkipChildren
@@ -91,22 +90,19 @@ let create_sig fundec file =
   let result = ref [] in
   let return_type =
     match
-      ignore
-        (visitCilFileSameGlobals
-           (new fun_find_sig fundec.svar.vname fundec.svar.vid result)
-           file);
+      visitCilFileSameGlobals (new fun_find_sig fundec.svar.vname fundec.svar.vid result) file;
       !result
     with
-    | (_, _, typ, _) :: xs -> typ
+    | (_, _, typ, _) :: _ -> typ
     | [] ->
         Printf.printf "This should never happen\n";
         ""
   in
   let rec input_type list =
     match list with
-    | [ x ] -> String.trim (Pretty.sprint 1 (d_type () x.vtype)) ^ " " ^ x.vname
+    | [ x ] -> String.trim (Pretty.sprint ~width:1 (d_type () x.vtype)) ^ " " ^ x.vname
     | x :: xs ->
-        String.trim (Pretty.sprint 1 (d_type () x.vtype))
+        String.trim (Pretty.sprint ~width:1 (d_type () x.vtype))
         ^ " " ^ x.vname ^ ", " ^ input_type xs
     | [] -> ""
   in
@@ -146,12 +142,12 @@ let rec find_fundec funname funid list =
   | [] -> None
 
 class fun_find_uses funname funid file result : nopCilVisitor =
-  object (self)
+  object
     inherit nopCilVisitor
 
-    method vinst instr =
+    method! vinst instr =
       match instr with
-      | Call (_, Lval (Var varinfo, NoOffset), list, loc) ->
+      | Call (_, Lval (Var varinfo, NoOffset), _, loc) ->
           if is_equal_funname_funid varinfo funname funid then (
             match find_fundec funname funid file.globals with
             | None -> SkipChildren
@@ -183,16 +179,16 @@ let find_uses_all file =
 
 class fun_find_uses_in_fun funname funid funstrucname file result :
   nopCilVisitor =
-  object (self)
+  object
     inherit nopCilVisitor
 
-    method vfunc fundec =
+    method! vfunc fundec =
       if is_equal_funname_funid fundec.svar funstrucname (-1) then DoChildren
       else SkipChildren
 
-    method vinst instr =
+    method! vinst instr =
       match instr with
-      | Call (_, Lval (Var varinfo, NoOffset), list, loc) ->
+      | Call (_, Lval (Var varinfo, NoOffset), _, loc) ->
           if is_equal_funname_funid varinfo funname funid then (
             match find_fundec funname funid file.globals with
             | None -> SkipChildren
@@ -229,14 +225,14 @@ let loc_default = { line = -1; file = ""; byte = -1 }
 
 class fun_find_usesvar_in_fun fundec funstrucname varname varid file result :
   nopCilVisitor =
-  object (self)
+  object
     inherit nopCilVisitor
 
-    method vfunc dec =
+    method! vfunc dec =
       if is_equal_funname_funid dec.svar funstrucname (-1) then DoChildren
       else SkipChildren
 
-    method vinst instr =
+    method! vinst instr =
       match instr with
       | Call (_, exp, list, loc) -> (
           match exp with
@@ -321,13 +317,13 @@ let find_usesvar_all varname file =
 
 let is_temporary id = Inthash.mem allTempVars id
 
-class find_calls_with_tmp file result funname funid : nopCilVisitor =
+class find_calls_with_tmp result funname funid : nopCilVisitor =
   object
     inherit nopCilVisitor
 
-    method vinst instr =
+    method! vinst instr =
       match instr with
-      | Call (lval_opt, Lval (Var varinfo, _), _, loc) ->
+      | Call (lval_opt, Lval (Var varinfo, _), _, _) ->
           if is_equal_funname_funid varinfo funname funid then
             match lval_opt with
             | Some (Var tmpinfo, _) ->
@@ -341,7 +337,7 @@ class find_calls_with_tmp file result funname funid : nopCilVisitor =
 
 let find_lval_of_calls funname funid file =
   let result = ref [] in
-  let visitor = new find_calls_with_tmp file result funname funid in
+  let visitor = new find_calls_with_tmp result funname funid in
   visitCilFileSameGlobals visitor file;
   !result
 
@@ -359,7 +355,7 @@ let find_uses_cond funname funid file =
     match list with
     | (tmp, func) :: xs -> (
         match FuncVar.find_uses_in_cond "" tmp file true with
-        | (name, loc, typ, id) :: ys ->
+        | (_, loc, _, _) :: _ ->
             create_fun_res "" func file loc :: iter_list xs
         | [] -> iter_list xs )
     | _ -> []
@@ -402,12 +398,12 @@ let find_uses_noncond_all file =
   in
   iter_list file.globals
 
-class find_calls_usesvar_with_tmp file result funname funid varname :
+class find_calls_usesvar_with_tmp result funname funid varname :
   nopCilVisitor =
   object
     inherit nopCilVisitor
 
-    method vinst instr =
+    method! vinst instr =
       match instr with
       | Call (lval_opt, Lval (Var varinfo, _), arg_list, loc) ->
           if
@@ -435,7 +431,7 @@ class find_calls_usesvar_with_tmp file result funname funid varname :
 let find_lval_of_calls_usesvar funname funid varname file =
   let result = ref [] in
   let visitor =
-    new find_calls_usesvar_with_tmp file result funname funid varname
+    new find_calls_usesvar_with_tmp result funname funid varname
   in
   visitCilFileSameGlobals visitor file;
   !result
@@ -447,7 +443,7 @@ let find_usesvar_cond funname funid varname file =
     match list with
     | (tmp, func) :: xs -> (
         match FuncVar.find_uses_in_cond "" tmp file true with
-        | (name, loc, typ, id) :: ys ->
+        | (_, loc, _, _) :: _ ->
             create_fun_res "" func file loc :: iter_list xs
         | [] -> iter_list xs )
     | _ -> []

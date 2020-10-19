@@ -1,6 +1,5 @@
 open Cil
 open Cabs2cil
-open Hashtbl
 
 (* Helper functions *)
 let is_equal_varname_varid varinfo name id =
@@ -45,17 +44,12 @@ let generate_globalvar_list cilfile =
 
 let get_all_alphaconverted_in_fun varname funname cilfile =
   let fun_loc_table = generate_func_loc_table cilfile in
-  let loc_start =
-    match
-      List.find (function x, y -> String.compare x funname = 0) fun_loc_table
-    with
-    | a, b -> b
-  in
+  let loc_start = snd @@ List.find (function x, _ -> String.compare x funname = 0) fun_loc_table in
   let rec iter_fun_loc list =
     match list with
     | (fname, _) :: xs ->
         if fname = funname then
-          match xs with (_, line) :: ys -> line | [] -> max_int
+          match xs with (_, line) :: _ -> line | [] -> max_int
         else iter_fun_loc xs
     | [] -> 0
   in
@@ -90,10 +84,10 @@ in iter_list stringList *)
 
 class var_search_in_expr varname varid loc result includeCallTmp : nopCilVisitor
   =
-  object (self)
+  object
     inherit nopCilVisitor
 
-    method vvrbl info =
+    method! vvrbl info =
       if
         is_equal_varname_varid info varname varid
         && (includeCallTmp || not (is_temporary info.vid))
@@ -103,7 +97,7 @@ class var_search_in_expr varname varid loc result includeCallTmp : nopCilVisitor
           @ [
               ( info.vname,
                 loc,
-                String.trim (Pretty.sprint 1 (d_type () info.vtype)),
+                String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)),
                 info.vid );
             ]
       else ();
@@ -128,7 +122,7 @@ let search_lhost host name loc varid includeCallTmp =
         [
           ( info.vname,
             loc,
-            String.trim (Pretty.sprint 1 (d_type () info.vtype)),
+            String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)),
             info.vid );
         ]
       else []
@@ -170,7 +164,7 @@ let rec search_instr_list_for_var list name varid includeCallTmp =
       then
         ( info.vname,
           loc,
-          String.trim (Pretty.sprint 1 (d_type () info.vtype)),
+          String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)),
           info.vid )
         :: search_instr_list_for_var xs name varid includeCallTmp
       else search_instr_list_for_var xs name varid includeCallTmp
@@ -197,7 +191,7 @@ let rec search_stmt_list_for_var list name varid includeCallTmp =
           search_instr_list_for_var ins_list name varid includeCallTmp
       | Return (Some exp, loc) ->
           search_expression exp name loc varid includeCallTmp
-      | Goto (s_ref, loc) ->
+      | Goto (s_ref, _) ->
           search_stmt_list_for_var [ !s_ref ] name varid includeCallTmp
       | ComputedGoto (exp, loc) ->
           search_expression exp name loc varid includeCallTmp
@@ -205,24 +199,24 @@ let rec search_stmt_list_for_var list name varid includeCallTmp =
           search_expression exp name loc varid includeCallTmp
           @ search_stmt_list_for_var b1.bstmts name varid includeCallTmp
           @ search_stmt_list_for_var b2.bstmts name varid includeCallTmp
-      | Switch (exp, block, stmt_list, loc) ->
+      | Switch (exp, _, stmt_list, loc) ->
           search_expression exp name loc varid includeCallTmp
           @ search_stmt_list_for_var stmt_list name varid includeCallTmp
-      | Loop (block, loc, None, None) ->
+      | Loop (block, _, None, None) ->
           search_stmt_list_for_var block.bstmts name varid includeCallTmp
-      | Loop (block, loc, None, Some s2) ->
+      | Loop (block, _, None, Some s2) ->
           search_stmt_list_for_var block.bstmts name varid includeCallTmp
           @ search_stmt_list_for_var [ s2 ] name varid includeCallTmp
-      | Loop (block, loc, Some s1, None) ->
+      | Loop (block, _, Some s1, None) ->
           search_stmt_list_for_var block.bstmts name varid includeCallTmp
           @ search_stmt_list_for_var [ s1 ] name varid includeCallTmp
-      | Loop (block, loc, Some s1, Some s2) ->
+      | Loop (block, _, Some s1, Some s2) ->
           search_stmt_list_for_var block.bstmts name varid includeCallTmp
           @ search_stmt_list_for_var [ s1 ] name varid includeCallTmp
           @ search_stmt_list_for_var [ s2 ] name varid includeCallTmp
       | Block block ->
           search_stmt_list_for_var block.bstmts name varid includeCallTmp
-      | TryFinally (b1, b2, loc) ->
+      | TryFinally (b1, b2, _) ->
           search_stmt_list_for_var b1.bstmts name varid includeCallTmp
           @ search_stmt_list_for_var b2.bstmts name varid includeCallTmp
       | TryExcept (b1, (instr_list, exp), b2, loc) ->
@@ -251,7 +245,7 @@ let find_uses_in_fun_var dec name varid includeCallTmp cilfile =
 let rec find_uses_in_fun_find_fun list name varname varid includeCallTmp cilfile
     =
   match list with
-  | GFun (dec, loc) :: xs ->
+  | GFun (dec, _) :: xs ->
       if String.compare dec.svar.vname name = 0 then
         find_uses_in_fun_var dec varname varid includeCallTmp cilfile
       else
@@ -313,7 +307,7 @@ let rec find_var_in_globals varname varid list =
         [
           ( info.vname,
             loc,
-            String.trim (Pretty.sprint 1 (d_type () info.vtype)),
+            String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)),
             info.vid );
         ]
       else find_var_in_globals varname varid xs
@@ -373,26 +367,26 @@ let rec cond_search_uses_stmt_list list varname varid includeCallTmp =
           search_expression exp varname loc varid includeCallTmp
           @ cond_search_uses_stmt_list (b1.bstmts @ b2.bstmts) varname varid
               includeCallTmp
-      | Switch (exp, block, stmt_list, loc) ->
+      | Switch (exp, block, _, loc) ->
           search_expression exp varname loc varid includeCallTmp
           @ cond_search_uses_stmt_list block.bstmts varname varid includeCallTmp
-      | Loop (block, loc, None, None) ->
+      | Loop (block, _, None, None) ->
           cond_search_uses_stmt_list block.bstmts varname varid includeCallTmp
-      | Loop (block, loc, None, Some s1) ->
+      | Loop (block, _, None, Some s1) ->
           cond_search_uses_stmt_list (s1 :: block.bstmts) varname varid
             includeCallTmp
-      | Loop (block, loc, Some s2, None) ->
+      | Loop (block, _, Some s2, None) ->
           cond_search_uses_stmt_list (s2 :: block.bstmts) varname varid
             includeCallTmp
-      | Loop (block, loc, Some s2, Some s1) ->
+      | Loop (block, _, Some s2, Some s1) ->
           cond_search_uses_stmt_list (s2 :: s1 :: block.bstmts) varname varid
             includeCallTmp
       | Block block ->
           cond_search_uses_stmt_list block.bstmts varname varid includeCallTmp
-      | TryFinally (b1, b2, loc) ->
+      | TryFinally (b1, b2, _) ->
           cond_search_uses_stmt_list (b1.bstmts @ b2.bstmts) varname varid
             includeCallTmp
-      | TryExcept (b1, _, b2, loc) ->
+      | TryExcept (b1, _, b2, _) ->
           cond_search_uses_stmt_list (b1.bstmts @ b2.bstmts) varname varid
             includeCallTmp
       | _ -> [] )
@@ -528,7 +522,7 @@ let find_decl_in_fun varname varid funname file =
         if x.vid = varid then
           ( x.vname,
             x.vdecl,
-            String.trim (Pretty.sprint 1 (d_type () x.vtype)),
+            String.trim (Pretty.sprint ~width:1 (d_type () x.vtype)),
             x.vid )
           :: iter_list_id xs
         else iter_list_id xs
@@ -540,7 +534,7 @@ let find_decl_in_fun varname varid funname file =
         if String.compare x.vname name = 0 && not (is_temporary x.vid) then
           ( x.vname,
             x.vdecl,
-            String.trim (Pretty.sprint 1 (d_type () x.vtype)),
+            String.trim (Pretty.sprint ~width:1 (d_type () x.vtype)),
             x.vid )
           :: iter_list_name xs name
         else iter_list_name xs name
@@ -568,7 +562,7 @@ let find_decl_in_fun_all funname file =
     | x :: xs ->
         ( x.vname,
           x.vdecl,
-          String.trim (Pretty.sprint 1 (d_type () x.vtype)),
+          String.trim (Pretty.sprint ~width:1 (d_type () x.vtype)),
           x.vid )
         :: iter_list xs
     | [] -> []
@@ -584,7 +578,7 @@ let find_decl_all_glob file =
     | GVar (info, _, loc) :: xs ->
         ( info.vname,
           loc,
-          String.trim (Pretty.sprint 1 (d_type () info.vtype)),
+          String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)),
           info.vid )
         :: iter_list xs
     | _ :: xs -> iter_list xs
@@ -604,7 +598,7 @@ let find_decl varname varid file =
   in
   let rec iter_functions globals =
     match globals with
-    | GFun (dec, loc) :: xs ->
+    | GFun (dec, _) :: xs ->
         find_decl_in_fun varname varid dec.svar.vname file @ iter_functions xs
     | _ :: xs -> iter_functions xs
     | [] -> []
@@ -615,7 +609,7 @@ let find_decl varname varid file =
 let find_decl_all file =
   let rec iter_list list =
     match list with
-    | GFun (dec, loc) :: xs ->
+    | GFun (dec, _) :: xs ->
         find_decl_in_fun_all dec.svar.vname file @ iter_list xs
     | _ :: xs -> iter_list xs
     | [] -> []
@@ -623,23 +617,23 @@ let find_decl_all file =
   find_decl_all_glob file @ iter_list file.globals
 
 class var_find_def_in_fun varname varid funname result : nopCilVisitor =
-  object (self)
+  object
     inherit nopCilVisitor
 
-    method vfunc fundec =
+    method! vfunc fundec =
       if String.compare fundec.svar.vname funname = 0 then DoChildren
       else SkipChildren
 
-    method vinst instr =
+    method! vinst instr =
       match instr with
-      | Set ((Var info, _), exp, loc) ->
+      | Set ((Var info, _), _, loc) ->
           if is_equal_varname_varid info varname varid then (
             result :=
               !result
               @ [
                   ( info.vname,
                     loc,
-                    String.trim (Pretty.sprint 1 (d_type () info.vtype)),
+                    String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)),
                     info.vid );
                 ];
             SkipChildren )

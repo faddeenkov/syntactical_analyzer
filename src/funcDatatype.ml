@@ -1,5 +1,4 @@
 open Cil
-open FuncVar
 
 (* Finds the definition of a user-defined type by name *)
 let rec find_userdef_iter_list name list =
@@ -13,7 +12,7 @@ let rec find_userdef_iter_list name list =
   | GEnumTag (info, loc) :: xs ->
       if String.compare name info.ename = 0 then [ ("", loc, name, -1) ]
       else find_userdef_iter_list name xs
-  | x :: xs -> find_userdef_iter_list name xs
+  | _ :: xs -> find_userdef_iter_list name xs
   | [] -> []
 
 (* Finds definition of a user-defined type *)
@@ -26,17 +25,17 @@ let find_def_all file =
     | GType (info, loc) :: xs -> ("", loc, info.tname, -1) :: iter_list xs
     | GCompTag (info, loc) :: xs -> ("", loc, info.cname, -1) :: iter_list xs
     | GEnumTag (info, loc) :: xs -> ("", loc, info.ename, -1) :: iter_list xs
-    | x :: xs -> iter_list xs
+    | _ :: xs -> iter_list xs
     | [] -> []
   in
   iter_list file.globals
 
 let rec find_in_globals list name =
   match list with
-  | GVar (info, t, loc) :: xs ->
+  | GVar (info, _, _) :: xs ->
       if
         String.compare name
-          (String.trim (Pretty.sprint 1 (d_type () info.vtype)))
+          (String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)))
         = 0
       then info.vid :: find_in_globals xs name
       else find_in_globals xs name
@@ -48,7 +47,7 @@ let rec find_in_varinfos list name =
   | info :: xs ->
       if
         String.compare name
-          (String.trim (Pretty.sprint 1 (d_type () info.vtype)))
+          (String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)))
         = 0
       then info.vid :: find_in_varinfos xs name
       else find_in_varinfos xs name
@@ -84,14 +83,14 @@ let find_uses_in_fun typename funname file =
 (* Finds all uses of a datatype in all functions *)
 let find_uses typename file =
   let list = FuncVar.find_uses_all file false in
-  List.filter (fun (name, loc, typ, id) -> String.compare typ typename = 0) list
+  List.filter (fun (_, _, typ, _) -> String.compare typ typename = 0) list
 
 (* Finds all uses of a datatype in conditions *)
 let find_uses_in_cond typename file =
   let list = FuncVar.find_uses_in_cond_all file false in
-  List.filter (fun (name, loc, typ, id) -> String.compare typ typename = 0) list
+  List.filter (fun (_, _, typ, _) -> String.compare typ typename = 0) list
 
 (* Finds all uses of a datatype in non-conditions *)
 let find_uses_in_noncond typename file =
   let list = FuncVar.find_uses_in_noncond_all file false in
-  List.filter (fun (name, loc, typ, id) -> String.compare typ typename = 0) list
+  List.filter (fun (_, _, typ, _) -> String.compare typ typename = 0) list
