@@ -1,77 +1,72 @@
 open Cil
 
-(* Finds the definition of a user-defined type by name *)
-let rec find_userdef_iter_list name list =
-  match list with
-  | GType (info, loc) :: xs ->
-      if String.compare name info.tname = 0 then [ ("", loc, name, -1) ]
-      else find_userdef_iter_list name xs
-  | GCompTag (info, loc) :: xs ->
-      if String.compare name info.cname = 0 then [ ("", loc, name, -1) ]
-      else find_userdef_iter_list name xs
-  | GEnumTag (info, loc) :: xs ->
-      if String.compare name info.ename = 0 then [ ("", loc, name, -1) ]
-      else find_userdef_iter_list name xs
-  | _ :: xs -> find_userdef_iter_list name xs
-  | [] -> []
-
 (* Finds definition of a user-defined type *)
-let find_def name file = find_userdef_iter_list name file.globals
+let find_def name file =
+  List.filter_map
+    (function
+      | GType (info, loc) ->
+          if String.compare name info.tname = 0 then Some ("", loc, name, -1)
+          else None
+      | GCompTag (info, loc) ->
+          if String.compare name info.cname = 0 then Some ("", loc, name, -1)
+          else None
+      | GEnumTag (info, loc) ->
+          if String.compare name info.ename = 0 then Some ("", loc, name, -1)
+          else None
+      | _ -> None)
+    file.globals
 
 (* Finds all definition of user-defined types *)
 let find_def_all file =
-  let rec iter_list list =
-    match list with
-    | GType (info, loc) :: xs -> ("", loc, info.tname, -1) :: iter_list xs
-    | GCompTag (info, loc) :: xs -> ("", loc, info.cname, -1) :: iter_list xs
-    | GEnumTag (info, loc) :: xs -> ("", loc, info.ename, -1) :: iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
+  List.filter_map
+    (function
+      | GType (info, loc) -> Some ("", loc, info.tname, -1)
+      | GCompTag (info, loc) -> Some ("", loc, info.cname, -1)
+      | GEnumTag (info, loc) -> Some ("", loc, info.ename, -1)
+      | _ -> None)
+    file.globals
+
+let find_in_globals list name =
+  List.filter_map
+    (function
+      | GVar (info, _, _) ->
+          if
+            String.compare name
+              (String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)))
+            = 0
+          then Some info.vid
+          else None
+      | _ -> None)
+    list
+
+let find_in_varinfos list name =
+  List.filter_map
+    (fun info ->
+      if
+        String.compare name
+          (String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)))
+        = 0
+      then Some info.vid
+      else None)
+    list
+
+let find_fundec globals name =
+  let gfun =
+    List.find_opt
+      (function
+        | GFun (fundec, _) -> String.compare fundec.svar.vname name = 0
+        | _ -> false)
+      globals
   in
-  iter_list file.globals
+  match gfun with Some (GFun (fundec, _)) -> Some fundec | _ -> None
 
-let rec find_in_globals list name =
-  match list with
-  | GVar (info, _, _) :: xs ->
-      if
-        String.compare name
-          (String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)))
-        = 0
-      then info.vid :: find_in_globals xs name
-      else find_in_globals xs name
-  | [] -> []
-  | _ :: xs -> find_in_globals xs name
-
-let rec find_in_varinfos list name =
-  match list with
-  | info :: xs ->
-      if
-        String.compare name
-          (String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)))
-        = 0
-      then info.vid :: find_in_varinfos xs name
-      else find_in_varinfos xs name
-  | [] -> []
-
-let rec find_fundec globals name =
-  match globals with
-  | GFun (fundec, _) :: xs ->
-      if String.compare fundec.svar.vname name = 0 then Some fundec
-      else find_fundec xs name
-  | [] -> None
-  | _ :: xs -> find_fundec xs name
-
-let rec find_typevar_uses_in_fun list funname file =
-  match list with
-  | x :: xs ->
-      FuncVar.find_uses_in_fun "" x funname file false
-      @ find_typevar_uses_in_fun xs funname file
-  | [] -> []
+let find_typevar_uses_in_fun list funname file =
+  List.flatten
+  @@ List.map (fun x -> FuncVar.find_uses_in_fun "" x funname file false) list
 
 (* Finds uses of a datatype in a function *)
 let find_uses_in_fun typename funname file =
-  let fundec_res = find_fundec file.globals funname in
-  match fundec_res with
+  match find_fundec file.globals funname with
   | None -> []
   | Some f ->
       find_typevar_uses_in_fun

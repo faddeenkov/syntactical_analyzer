@@ -22,29 +22,30 @@ let rec delete_duplicates list tbl =
       | Some _ -> delete_duplicates xs tbl )
   | [] -> []
 
+let map_gfun f = function GFun (dec, loc) -> f dec loc | _ -> None
+
+let map_gvar f = function
+  | GVar (varinfo, initinfo, loc) -> f varinfo initinfo loc
+  | _ -> None
+
 let is_temporary id = Inthash.mem allTempVars id
 
 let generate_func_loc_table cilfile =
-  let rec iter_list list =
-    match list with
-    | GFun (dec, loc) :: xs -> (dec.svar.vname, loc.line) :: iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
-  in
-  iter_list cilfile.globals
+  List.filter_map
+    (map_gfun (fun dec loc -> Some (dec.svar.vname, loc.line)))
+    cilfile.globals
 
 let generate_globalvar_list cilfile =
-  let rec iter_list list =
-    match list with
-    | GVar (varinfo, _, _) :: xs -> varinfo.vname :: iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
-  in
-  iter_list cilfile.globals
+  List.filter_map
+    (map_gvar (fun varinfo _ _ -> Some varinfo.vname))
+    cilfile.globals
 
 let get_all_alphaconverted_in_fun varname funname cilfile =
   let fun_loc_table = generate_func_loc_table cilfile in
-  let loc_start = snd @@ List.find (function x, _ -> String.compare x funname = 0) fun_loc_table in
+  let loc_start =
+    snd
+    @@ List.find (function x, _ -> String.compare x funname = 0) fun_loc_table
+  in
   let rec iter_fun_loc list =
     match list with
     | (fname, _) :: xs ->
@@ -54,18 +55,17 @@ let get_all_alphaconverted_in_fun varname funname cilfile =
     | [] -> 0
   in
   let loc_end = iter_fun_loc fun_loc_table in
-  let tmp = Hashtbl.find_all environment varname in
-  let rec iter_list list =
-    match list with
-    | (EnvVar varinfo, loc) :: xs ->
-        if loc.line >= loc_start && loc.line < loc_end then
-          varinfo.vname :: iter_list xs
-        else iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
+  let tmp =
+    List.filter_map
+      (function
+        | EnvVar varinfo, loc when loc.line >= loc_start && loc.line < loc_end
+          ->
+            Some varinfo.vname
+        | _ -> None)
+      (Hashtbl.find_all environment varname)
   in
   delete_duplicates
-    ( iter_list tmp
+    ( tmp
     @
     if
       List.exists
@@ -74,13 +74,6 @@ let get_all_alphaconverted_in_fun varname funname cilfile =
     then [ varname ]
     else [] )
     (Hashtbl.create 30)
-
-(*
-let find_all_cil_generated info varname loc =
-let stringList = delete_duplicates (List.map (fun x -> match x with (EnvVar(envinfo),_) -> envinfo.vname | _ -> "") (Hashtbl.find_all absolutenv varname)) []
-in let rec iter_list list = match list with x::xs -> if (String.compare x info.vname = 0) then (info.vname, loc, (String.trim (Pretty.sprint 1 (d_type () info.vtype))), info.vid)::(iter_list xs) else iter_list xs
-                                        | [] -> []
-in iter_list stringList *)
 
 class var_search_in_expr varname varid loc result includeCallTmp : nopCilVisitor
   =
@@ -230,134 +223,129 @@ let rec search_stmt_list_for_var list name varid includeCallTmp =
 
 (* Finds all uses of a variable in a function-body *)
 let find_uses_in_fun_var dec name varid includeCallTmp cilfile =
-  let rec iter_list list =
-    match list with
-    | x :: xs ->
-        search_stmt_list_for_var dec.sbody.bstmts x (-1) includeCallTmp
-        @ iter_list xs
-    | [] -> []
-  in
   if varid != -1 then
     search_stmt_list_for_var dec.sbody.bstmts name varid includeCallTmp
-  else iter_list (get_all_alphaconverted_in_fun name dec.svar.vname cilfile)
+  else
+    let list = get_all_alphaconverted_in_fun name dec.svar.vname cilfile in
+    List.flatten
+    @@ List.map
+         (fun x ->
+           search_stmt_list_for_var dec.sbody.bstmts x (-1) includeCallTmp)
+         list
 
 (* Finds the function in which a variable shall be found *)
-let rec find_uses_in_fun_find_fun list name varname varid includeCallTmp cilfile
-    =
-  match list with
-  | GFun (dec, _) :: xs ->
-      if String.compare dec.svar.vname name = 0 then
-        find_uses_in_fun_var dec varname varid includeCallTmp cilfile
-      else
-        find_uses_in_fun_find_fun xs name varname varid includeCallTmp cilfile
-  | [] -> []
-  | _ :: xs ->
-      find_uses_in_fun_find_fun xs name varname varid includeCallTmp cilfile
+let find_uses_in_fun_find_fun list name varname varid includeCallTmp cilfile =
+  let r =
+    List.find_opt
+      (function
+        | GFun (dec, _) -> String.compare dec.svar.vname name = 0 | _ -> false)
+      list
+  in
+  match r with
+  | Some (GFun (dec, _)) ->
+      find_uses_in_fun_var dec varname varid includeCallTmp cilfile
+  | _ -> []
 
 (* Finds all uses of a variable in a function *)
 let find_uses_in_fun varname varid funname file includeCallTmp =
   find_uses_in_fun_find_fun file.globals funname varname varid includeCallTmp
     file
 
-let rec find_all_glob_vars list =
-  match list with
-  | GVar (info, _, _) :: xs -> info.vid :: find_all_glob_vars xs
-  | _ :: xs -> find_all_glob_vars xs
-  | [] -> []
+let find_all_glob_vars list =
+  List.filter_map (map_gvar (fun info _ _ -> Some info.vid)) list
 
 (* Finds all uses of all global variables in a function *)
 let find_uses_in_fun_all_glob funname file includeCallTmp =
   let id_list = find_all_glob_vars file.globals in
-  let rec iter_list l =
-    match l with
-    | x :: xs ->
-        find_uses_in_fun "" x funname file includeCallTmp @ iter_list xs
-    | [] -> []
-  in
-  iter_list id_list
+  List.flatten
+  @@ List.map
+       (fun x -> find_uses_in_fun "" x funname file includeCallTmp)
+       id_list
 
-let rec find_fundec globals funname =
-  match globals with
-  | GFun (dec, _) :: xs ->
-      if String.compare dec.svar.vname funname = 0 then Some dec
-      else find_fundec xs funname
-  | _ :: xs -> find_fundec xs funname
-  | [] -> None
+let find_fundec globals funname =
+  let r =
+    List.find_opt
+      (function
+        | GFun (dec, _) -> String.compare dec.svar.vname funname = 0
+        | _ -> false)
+      globals
+  in
+  match r with Some (GFun (dec, _)) -> Some dec | _ -> None
 
 (* Finds all uses of all variables in a function *)
 let find_uses_in_fun_all funname file includeCallTmp =
-  let fundec_opt = find_fundec file.globals funname in
-  let rec iter_list l =
-    match l with
-    | x :: xs ->
-        find_uses_in_fun "" x funname file includeCallTmp @ iter_list xs
-    | [] -> []
+  let flat l =
+    List.flatten
+    @@ List.map (fun x -> find_uses_in_fun "" x funname file includeCallTmp) l
   in
-  match fundec_opt with
+  match find_fundec file.globals funname with
   | None -> []
   | Some fundec ->
       find_uses_in_fun_all_glob funname file includeCallTmp
-      @ iter_list (List.map (fun x -> x.vid) fundec.sformals)
-      @ iter_list (List.map (fun x -> x.vid) fundec.slocals)
+      @ flat (List.map (fun x -> x.vid) fundec.sformals)
+      @ flat (List.map (fun x -> x.vid) fundec.slocals)
 
-let rec find_var_in_globals varname varid list =
-  match list with
-  | GVar (info, _, loc) :: xs ->
-      if is_equal_varname_varid info varname varid then
-        [
-          ( info.vname,
-            loc,
-            String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)),
-            info.vid );
-        ]
-      else find_var_in_globals varname varid xs
-  | _ :: xs -> find_var_in_globals varname varid xs
-  | [] -> []
+let find_var_in_globals varname varid list =
+  let r =
+    List.find_opt
+      (function
+        | GVar (info, _, _) -> is_equal_varname_varid info varname varid
+        | _ -> false)
+      list
+  in
+  match r with
+  | Some (GVar (info, _, loc)) ->
+      [
+        ( info.vname,
+          loc,
+          String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)),
+          info.vid );
+      ]
+  | _ -> []
 
 (* Find all uses of a variable in all functions *)
 let find_uses varname varid file includeCallTmp =
-  let rec find_uses_in_all_fun l =
-    match l with
-    | GFun (dec, _) :: xs ->
-        find_uses_in_fun varname varid dec.svar.vname file includeCallTmp
-        @ find_uses_in_all_fun xs
-    | _ :: xs -> find_uses_in_all_fun xs
-    | [] -> []
+  let uses_in_all_fun =
+    List.flatten
+    @@ List.filter_map
+         (map_gfun (fun dec _ ->
+              Some
+                (find_uses_in_fun varname varid dec.svar.vname file
+                   includeCallTmp)))
+         file.globals
   in
-  find_var_in_globals varname varid file.globals
-  @ find_uses_in_all_fun file.globals
+  find_var_in_globals varname varid file.globals @ uses_in_all_fun
 
 (* Finds all uses of global variables in all functions *)
 let find_uses_all_glob file includeCallTmp =
-  let rec iter_functions list =
-    match list with
-    | GFun (dec, _) :: xs ->
-        find_uses_in_fun_all_glob dec.svar.vname file includeCallTmp
-        @ iter_functions xs
-    | _ :: xs -> iter_functions xs
-    | [] -> []
+  let res =
+    List.flatten
+    @@ List.filter_map
+         (map_gfun (fun dec _ ->
+              Some
+                (find_uses_in_fun_all_glob dec.svar.vname file includeCallTmp)))
+         file.globals
   in
   List.flatten
     (List.map
        (fun x -> find_var_in_globals "" x file.globals)
        (find_all_glob_vars file.globals))
-  @ iter_functions file.globals
+  @ res
 
 (* Finds uses of all variables in all functions *)
 let find_uses_all file includeCallTmp =
-  let rec iter_functions list =
-    match list with
-    | GFun (dec, _) :: xs ->
-        find_uses_in_fun_all dec.svar.vname file includeCallTmp
-        @ iter_functions xs
-    | _ :: xs -> iter_functions xs
-    | [] -> []
+  let res =
+    List.flatten
+    @@ List.filter_map
+         (map_gfun (fun dec _ ->
+              Some (find_uses_in_fun_all dec.svar.vname file includeCallTmp)))
+         file.globals
   in
   List.flatten
     (List.map
        (fun x -> find_var_in_globals "" x file.globals)
        (find_all_glob_vars file.globals))
-  @ iter_functions file.globals
+  @ res
 
 let rec cond_search_uses_stmt_list list varname varid includeCallTmp =
   match list with
@@ -395,21 +383,19 @@ let rec cond_search_uses_stmt_list list varname varid includeCallTmp =
 
 (* Finds all uses of a variable in conditions of a function *)
 let find_uses_in_cond_in_fun varname varid funname file includeCallTmp =
-  let fundec_opt = find_fundec file.globals funname in
-  let rec iter_list list fundec =
-    match list with
-    | x :: xs ->
-        cond_search_uses_stmt_list fundec.sbody.bstmts x (-1) includeCallTmp
-        @ iter_list xs fundec
-    | [] -> []
-  in
-  match fundec_opt with
+  match find_fundec file.globals funname with
   | None -> []
   | Some fundec ->
       if varid != -1 then
         cond_search_uses_stmt_list fundec.sbody.bstmts varname varid
           includeCallTmp
-      else iter_list (get_all_alphaconverted_in_fun varname funname file) fundec
+      else
+        List.flatten
+        @@ List.map
+             (fun x ->
+               cond_search_uses_stmt_list fundec.sbody.bstmts x (-1)
+                 includeCallTmp)
+             (get_all_alphaconverted_in_fun varname funname file)
 
 (* Finds all uses of a variable in conditions in all functions *)
 let find_uses_in_cond varname varid file includeCallTmp =
@@ -427,52 +413,39 @@ let find_uses_in_cond varname varid file includeCallTmp =
 (* Finds all uses of global variables in conditions in all functions *)
 let find_uses_in_cond_all_glob file includeCallTmp =
   let id_list = find_all_glob_vars file.globals in
-  let rec iter_list list =
-    match list with
-    | x :: xs -> find_uses_in_cond "" x file includeCallTmp @ iter_list xs
-    | [] -> []
-  in
-  iter_list id_list
+  List.flatten
+  @@ List.map (fun x -> find_uses_in_cond "" x file includeCallTmp) id_list
 
 (* Finds all uses of global variables in conditions in a function *)
 let find_uses_in_cond_in_fun_all_glob funname file includeCallTmp =
   let id_list = find_all_glob_vars file.globals in
-  let rec iter_list list =
-    match list with
-    | x :: xs ->
-        find_uses_in_cond_in_fun "" x funname file includeCallTmp @ iter_list xs
-    | [] -> []
-  in
-  iter_list id_list
+  List.flatten
+  @@ List.map
+       (fun x -> find_uses_in_cond_in_fun "" x funname file includeCallTmp)
+       id_list
 
 (* Finds all uses of variables in conditions in a function *)
 let find_uses_in_cond_in_fun_all funname file includeCallTmp =
   let get_formals_locals dec = dec.sformals @ dec.slocals in
-  let rec iter_list list =
-    match list with
-    | x :: xs ->
-        find_uses_in_cond_in_fun x.vname (-1) funname file includeCallTmp
-        @ iter_list xs
-    | [] -> []
-  in
   let fundec_opt = find_fundec file.globals funname in
   match fundec_opt with
   | None -> []
   | Some fundec ->
       find_uses_in_cond_in_fun_all_glob funname file includeCallTmp
-      @ iter_list (get_formals_locals fundec)
+      @ List.flatten
+      @@ List.map
+           (fun x ->
+             find_uses_in_cond_in_fun x.vname (-1) funname file includeCallTmp)
+           (get_formals_locals fundec)
 
 (* Finds all uses of variables in conditions in all functions *)
 let find_uses_in_cond_all file includeCallTmp =
-  let rec iter_list list =
-    match list with
-    | GFun (dec, _) :: xs ->
-        find_uses_in_cond_in_fun_all dec.svar.vname file includeCallTmp
-        @ iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
-  in
-  iter_list file.globals
+  List.flatten
+  @@ List.filter_map
+       (map_gfun (fun dec _ ->
+            Some
+              (find_uses_in_cond_in_fun_all dec.svar.vname file includeCallTmp)))
+       file.globals
 
 let rec remove_result list res =
   match list with
@@ -484,71 +457,52 @@ let rec remove_result list res =
 let find_uses_in_noncond varname varid file includeCallTmp =
   let no_struc_result = find_uses varname varid file includeCallTmp in
   let cond_result = find_uses_in_cond varname varid file includeCallTmp in
-  let rec iter_list list new_list =
-    match list with
-    | x :: xs -> iter_list xs (remove_result new_list x)
-    | [] -> new_list
-  in
-  iter_list cond_result no_struc_result
+  List.filter (fun x -> not (List.mem x cond_result)) no_struc_result
 
 (* Finds all uses of global variables in non-conditions *)
 let find_uses_in_noncond_all_glob file includeCallTmp =
   let id_list = find_all_glob_vars file.globals in
-  let rec iter_list list =
-    match list with
-    | x :: xs -> find_uses_in_noncond "" x file includeCallTmp @ iter_list xs
-    | [] -> []
-  in
-  iter_list id_list
+  List.flatten
+  @@ List.map (fun x -> find_uses_in_noncond "" x file includeCallTmp) id_list
 
 (* Finds all uses of variables in non-conditions *)
 let find_uses_in_noncond_all file includeCallTmp =
   let no_struc_result = find_uses_all file includeCallTmp in
   let cond_result = find_uses_in_cond_all file includeCallTmp in
-  let rec iter_list list new_list =
-    match list with
-    | x :: xs -> iter_list xs (remove_result new_list x)
-    | [] -> new_list
-  in
-  iter_list cond_result no_struc_result
+  List.filter (fun x -> not (List.mem x cond_result)) no_struc_result
 
 (* Finds the declaration of a variable in a function *)
 let find_decl_in_fun varname varid funname file =
-  let fundec_opt = find_fundec file.globals funname in
   let get_formals_locals dec = dec.sformals @ dec.slocals in
-  let rec iter_list_id list =
-    match list with
-    | x :: xs ->
-        if x.vid = varid then
-          ( x.vname,
-            x.vdecl,
-            String.trim (Pretty.sprint ~width:1 (d_type () x.vtype)),
-            x.vid )
-          :: iter_list_id xs
-        else iter_list_id xs
-    | [] -> []
-  in
-  let rec iter_list_name list name =
-    match list with
-    | x :: xs ->
+  let iter_list_name list name =
+    List.filter_map
+      (fun x ->
         if String.compare x.vname name = 0 && not (is_temporary x.vid) then
-          ( x.vname,
-            x.vdecl,
-            String.trim (Pretty.sprint ~width:1 (d_type () x.vtype)),
-            x.vid )
-          :: iter_list_name xs name
-        else iter_list_name xs name
-    | [] -> []
+          Some
+            ( x.vname,
+              x.vdecl,
+              String.trim (Pretty.sprint ~width:1 (d_type () x.vtype)),
+              x.vid )
+        else None)
+      list
   in
-  let rec iter_namelist name_list varinfo_list =
-    match name_list with
-    | x :: xs -> iter_list_name varinfo_list x @ iter_namelist xs varinfo_list
-    | [] -> []
+  let iter_namelist name_list varinfo_list =
+    List.flatten @@ List.map (fun x -> iter_list_name varinfo_list x) name_list
   in
-  match fundec_opt with
+  match find_fundec file.globals funname with
   | None -> []
   | Some fundec ->
-      if varid != -1 then iter_list_id (get_formals_locals fundec)
+      if varid != -1 then
+        List.filter_map
+          (fun x ->
+            if x.vid = varid then
+              Some
+                ( x.vname,
+                  x.vdecl,
+                  String.trim (Pretty.sprint ~width:1 (d_type () x.vtype)),
+                  x.vid )
+            else None)
+          (get_formals_locals fundec)
       else
         iter_namelist
           (get_all_alphaconverted_in_fun varname funname file)
@@ -556,35 +510,27 @@ let find_decl_in_fun varname varid funname file =
 
 (* Finds all declarations in a function *)
 let find_decl_in_fun_all funname file =
-  let fundec_opt = find_fundec file.globals funname in
-  let rec iter_list list =
-    match list with
-    | x :: xs ->
-        ( x.vname,
-          x.vdecl,
-          String.trim (Pretty.sprint ~width:1 (d_type () x.vtype)),
-          x.vid )
-        :: iter_list xs
-    | [] -> []
-  in
-  match fundec_opt with
+  match find_fundec file.globals funname with
   | None -> []
-  | Some fundec -> iter_list (fundec.sformals @ fundec.slocals)
+  | Some fundec ->
+      List.map
+        (fun x ->
+          ( x.vname,
+            x.vdecl,
+            String.trim (Pretty.sprint ~width:1 (d_type () x.vtype)),
+            x.vid ))
+        (fundec.sformals @ fundec.slocals)
 
 (* Finds all global variable declarations *)
 let find_decl_all_glob file =
-  let rec iter_list list =
-    match list with
-    | GVar (info, _, loc) :: xs ->
-        ( info.vname,
-          loc,
-          String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)),
-          info.vid )
-        :: iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
-  in
-  iter_list file.globals
+  List.filter_map
+    (map_gvar (fun info _ loc ->
+         Some
+           ( info.vname,
+             loc,
+             String.trim (Pretty.sprint ~width:1 (d_type () info.vtype)),
+             info.vid )))
+    file.globals
 
 (* Finds the declarations of a variable globally and in all functions  *)
 let find_decl varname varid file =
@@ -607,14 +553,14 @@ let find_decl varname varid file =
 
 (* Finds all declaration globally and in all functions *)
 let find_decl_all file =
-  let rec iter_list list =
-    match list with
-    | GFun (dec, _) :: xs ->
-        find_decl_in_fun_all dec.svar.vname file @ iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
+  let list =
+    List.flatten
+    @@ List.filter_map
+         (map_gfun (fun dec _ ->
+              Some (find_decl_in_fun_all dec.svar.vname file)))
+         file.globals
   in
-  find_decl_all_glob file @ iter_list file.globals
+  find_decl_all_glob file @ list
 
 class var_find_def_in_fun varname varid funname result : nopCilVisitor =
   object
@@ -644,84 +590,71 @@ class var_find_def_in_fun varname varid funname result : nopCilVisitor =
 (* Finds definitions of a variable in a function *)
 let find_defs_in_fun varname varid funname file =
   let result = ref [] in
-  let rec iter_list list =
-    match list with
-    | x :: xs ->
-        visitCilFileSameGlobals
-          (new var_find_def_in_fun x (-1) funname result)
-          file;
-        iter_list xs
-    | [] -> !result
-  in
   let visitor = new var_find_def_in_fun varname varid funname result in
   if varid != -1 then (
     visitCilFileSameGlobals visitor file;
     !result )
-  else iter_list (get_all_alphaconverted_in_fun varname funname file)
+  else
+    let list = get_all_alphaconverted_in_fun varname funname file in
+    List.iter
+      (fun x ->
+        visitCilFileSameGlobals
+          (new var_find_def_in_fun x (-1) funname result)
+          file)
+      list;
+    !result
 
 (* Finds definitions of all global variables in a function *)
 let find_defs_in_fun_all_glob funname file =
-  let rec iter_list list =
-    match list with
-    | GVar (info, _, _) :: xs ->
-        find_defs_in_fun "" info.vid funname file @ iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
-  in
-  iter_list file.globals
+  List.flatten
+  @@ List.filter_map
+       (map_gvar (fun info _ _ ->
+            Some (find_defs_in_fun "" info.vid funname file)))
+       file.globals
 
 (* Finds definitions of all variables in a functions *)
 let find_defs_in_fun_all funname file =
   let fundec_opt = find_fundec file.globals funname in
   let get_formals_locals dec = dec.sformals @ dec.slocals in
-  let rec iter_list list =
-    match list with
-    | x :: xs -> find_defs_in_fun "" x.vid funname file @ iter_list xs
-    | [] -> []
-  in
   match fundec_opt with
   | None -> []
   | Some fundec ->
       find_defs_in_fun_all_glob funname file
-      @ iter_list (get_formals_locals fundec)
+      @ List.flatten
+      @@ List.map
+           (fun x -> find_defs_in_fun "" x.vid funname file)
+           (get_formals_locals fundec)
 
 (* Finds definitions of a variable in all functions *)
 let find_defs varname varid file =
-  let rec iter_list list =
-    match list with
-    | GFun (dec, _) :: xs ->
-        find_defs_in_fun varname varid dec.svar.vname file @ iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
+  let r =
+    List.flatten
+    @@ List.filter_map
+         (map_gfun (fun dec _ ->
+              Some (find_defs_in_fun varname varid dec.svar.vname file)))
+         file.globals
   in
-  find_var_in_globals varname varid file.globals @ iter_list file.globals
+  find_var_in_globals varname varid file.globals @ r
 
 (* Finds definitions of all global variables in all functions *)
 let find_defs_all_glob file =
-  let rec iter_list list =
-    match list with
-    | GFun (dec, _) :: xs ->
-        find_defs_in_fun_all_glob dec.svar.vname file @ iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
-  in
   List.flatten
     (List.map
        (fun x -> find_var_in_globals "" x file.globals)
        (find_all_glob_vars file.globals))
-  @ iter_list file.globals
+  @ List.flatten
+  @@ List.filter_map
+       (map_gfun (fun dec _ ->
+            Some (find_defs_in_fun_all_glob dec.svar.vname file)))
+       file.globals
 
 (* Finds definitions of all variables in all functions *)
 let find_defs_all file =
-  let rec iter_list list =
-    match list with
-    | GFun (dec, _) :: xs ->
-        find_defs_in_fun_all dec.svar.vname file @ iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
-  in
   List.flatten
     (List.map
        (fun x -> find_var_in_globals "" x file.globals)
        (find_all_glob_vars file.globals))
-  @ iter_list file.globals
+  @ List.flatten
+  @@ List.filter_map
+       (map_gfun (fun dec _ -> Some (find_defs_in_fun_all dec.svar.vname file)))
+       file.globals
