@@ -16,6 +16,8 @@ let rec delete_duplicates list acc =
   | x :: xs -> delete_duplicates (delete_elem xs x) (x :: acc)
   | [] -> acc
 
+let map_gfun f = function GFun (dec, loc) -> f dec loc | _ -> None
+
 class fun_find_returns funname funid result : nopCilVisitor =
   object
     inherit nopCilVisitor
@@ -51,14 +53,10 @@ let find_returns funname funid file =
 
 (* Finds all returns in all functions *)
 let find_returns_all file =
-  let rec iter_list list =
-    match list with
-    | GFun (fundec, _) :: xs ->
-        find_returns "" fundec.svar.vid file @ iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
-  in
-  iter_list file.globals
+  List.flatten
+  @@ List.filter_map
+       (map_gfun (fun fundec _ -> Some (find_returns "" fundec.svar.vid file)))
+       file.globals
 
 class fun_find_sig funname funid result : nopCilVisitor =
   object
@@ -90,7 +88,9 @@ let create_sig fundec file =
   let result = ref [] in
   let return_type =
     match
-      visitCilFileSameGlobals (new fun_find_sig fundec.svar.vname fundec.svar.vid result) file;
+      visitCilFileSameGlobals
+        (new fun_find_sig fundec.svar.vname fundec.svar.vid result)
+        file;
       !result
     with
     | (_, _, typ, _) :: _ -> typ
@@ -100,7 +100,8 @@ let create_sig fundec file =
   in
   let rec input_type list =
     match list with
-    | [ x ] -> String.trim (Pretty.sprint ~width:1 (d_type () x.vtype)) ^ " " ^ x.vname
+    | [ x ] ->
+        String.trim (Pretty.sprint ~width:1 (d_type () x.vtype)) ^ " " ^ x.vname
     | x :: xs ->
         String.trim (Pretty.sprint ~width:1 (d_type () x.vtype))
         ^ " " ^ x.vname ^ ", " ^ input_type xs
@@ -111,35 +112,30 @@ let create_sig fundec file =
 
 (* Finds all definitions of a function *)
 let find_def funname funid file =
-  let rec iter_list list =
-    match list with
-    | GFun (dec, loc) :: xs ->
-        if is_equal_funname_funid dec.svar funname funid then
-          (dec.svar.vname, loc, create_sig dec file, dec.svar.vid)
-          :: iter_list xs
-        else iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
+  let fn fundec loc =
+    if is_equal_funname_funid fundec.svar funname funid then
+      Some (fundec.svar.vname, loc, create_sig fundec file, fundec.svar.vid)
+    else None
   in
-  iter_list file.globals
+  List.filter_map (map_gfun fn) file.globals
 
 (* Finds all definitions of all functions *)
 let find_def_all file =
-  let rec iter_list list =
-    match list with
-    | GFun (fundec, _) :: xs -> find_def "" fundec.svar.vid file @ iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
-  in
-  iter_list file.globals
+  List.flatten
+  @@ List.filter_map
+       (map_gfun (fun fundec _ -> Some (find_def "" fundec.svar.vid file)))
+       file.globals
 
-let rec find_fundec funname funid list =
-  match list with
-  | GFun (dec, _) :: xs ->
-      if is_equal_funname_funid dec.svar funname funid then Some dec
-      else find_fundec funname funid xs
-  | _ :: xs -> find_fundec funname funid xs
-  | [] -> None
+let find_fundec funname funid list =
+  let gfun =
+    List.find_opt
+      (fun x ->
+        match x with
+        | GFun (dec, _) -> is_equal_funname_funid dec.svar funname funid
+        | _ -> false)
+      list
+  in
+  match gfun with Some (GFun (dec, _)) -> Some dec | _ -> None
 
 class fun_find_uses funname funid file result : nopCilVisitor =
   object
@@ -169,13 +165,10 @@ let find_uses funname funid file =
 
 (* Find all calls of all functions in all functions *)
 let find_uses_all file =
-  let rec iter_list list =
-    match list with
-    | GFun (fundec, _) :: xs -> find_uses "" fundec.svar.vid file @ iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
-  in
-  iter_list file.globals
+  List.flatten
+  @@ List.filter_map
+       (map_gfun (fun fundec _ -> Some (find_uses "" fundec.svar.vid file)))
+       file.globals
 
 class fun_find_uses_in_fun funname funid funstrucname file result :
   nopCilVisitor =
@@ -212,14 +205,11 @@ let find_uses_in_fun funname funid funstrucname file =
 
 (* Finds all calls of all functions in a function *)
 let find_uses_in_fun_all funstrucname file =
-  let rec iter_list list =
-    match list with
-    | GFun (fundec, _) :: xs ->
-        find_uses_in_fun "" fundec.svar.vid funstrucname file @ iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
-  in
-  iter_list file.globals
+  List.flatten
+  @@ List.filter_map
+       (map_gfun (fun fundec _ ->
+            Some (find_uses_in_fun "" fundec.svar.vid funstrucname file)))
+       file.globals
 
 let loc_default = { line = -1; file = ""; byte = -1 }
 
@@ -260,60 +250,46 @@ class fun_find_usesvar_in_fun fundec funstrucname varname varid file result :
 
 (* Finds calls of a function with a var in argument in a function *)
 let find_usesvar_in_fun funname funid funstrucname varname file =
-  let fundec_opt = find_fundec funname funid file.globals in
-  let result = ref [] in
-  let rec iter_list list fundec =
-    match list with
-    | x :: xs ->
-        ignore
-          (visitCilFileSameGlobals
-             (new fun_find_usesvar_in_fun
-                fundec funstrucname x (-1) file result)
-             file);
-        iter_list xs fundec
-    | [] -> !result
-  in
-  match fundec_opt with
+  match find_fundec funname funid file.globals with
   | None -> []
   | Some fundec ->
-      iter_list
-        (delete_duplicates (Hashtbl.find_all varnameMapping varname) [])
-        fundec
+      let result = ref [] in
+      let dedup =
+        delete_duplicates (Hashtbl.find_all varnameMapping varname) []
+      in
+      List.iter
+        (fun x ->
+          visitCilFileSameGlobals
+            (new fun_find_usesvar_in_fun fundec funstrucname x (-1) file result)
+            file)
+        dedup;
+      !result
 
 (* Finds calls of all function with a var in argument in a function *)
 let find_usesvar_in_fun_all funstrucname varname file =
-  let rec iter_list list =
-    match list with
-    | GFun (dec, _) :: xs ->
-        find_usesvar_in_fun "" dec.svar.vid funstrucname varname file
-        @ iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
-  in
-  iter_list file.globals
+  List.flatten
+  @@ List.filter_map
+       (map_gfun (fun fundec _ ->
+            Some
+              (find_usesvar_in_fun "" fundec.svar.vid funstrucname varname file)))
+       file.globals
 
 (* Finds all calls of a function with a var in argument in all functions *)
 let find_usesvar funname funid varname file =
-  let rec iter_list list =
-    match list with
-    | GFun (dec, _) :: xs ->
-        find_usesvar_in_fun funname funid dec.svar.vname varname file
-        @ iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
-  in
-  iter_list file.globals
+  List.flatten
+  @@ List.filter_map
+       (map_gfun (fun fundec _ ->
+            Some
+              (find_usesvar_in_fun funname funid fundec.svar.vname varname file)))
+       file.globals
 
 (* Finds all calls of all functions with a var in argument in all functions *)
 let find_usesvar_all varname file =
-  let rec iter_list list =
-    match list with
-    | GFun (dec, _) :: xs ->
-        find_usesvar "" dec.svar.vid varname file @ iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
-  in
-  iter_list file.globals
+  List.flatten
+  @@ List.filter_map
+       (map_gfun (fun fundec _ ->
+            Some (find_usesvar "" fundec.svar.vid varname file)))
+       file.globals
 
 let is_temporary id = Inthash.mem allTempVars id
 
@@ -351,55 +327,35 @@ let create_fun_res name id file loc =
 (* Finds all calls of a function in a condition in all functions *)
 let find_uses_cond funname funid file =
   let id_list = find_lval_of_calls funname funid file in
-  let rec iter_list list =
-    match list with
-    | (tmp, func) :: xs -> (
-        match FuncVar.find_uses_in_cond "" tmp file true with
-        | (_, loc, _, _) :: _ ->
-            create_fun_res "" func file loc :: iter_list xs
-        | [] -> iter_list xs )
-    | _ -> []
-  in
-  iter_list id_list
+  List.filter_map
+    (fun (tmp, func) ->
+      match FuncVar.find_uses_in_cond "" tmp file true with
+      | (_, loc, _, _) :: _ -> Some (create_fun_res "" func file loc)
+      | _ -> None)
+    id_list
 
 (* Finds all calls of all functions in a condition in all functions *)
 let find_uses_cond_all file =
-  let rec iter_list list =
-    match list with
-    | GFun (dec, _) :: xs -> find_uses_cond "" dec.svar.vid file @ iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
-  in
-  iter_list file.globals
-
-let rec remove_result list res =
-  match list with
-  | x :: xs ->
-      if x = res then remove_result xs res else x :: remove_result xs res
-  | [] -> []
+  List.flatten
+  @@ List.filter_map
+       (map_gfun (fun fundec _ -> Some (find_uses_cond "" fundec.svar.vid file)))
+       file.globals
 
 (* Finds calls of a function in non-condition in all functions *)
 let find_uses_noncond funname funid file =
-  let rec iter_list biglist smalllist =
-    match smalllist with
-    | x :: xs -> iter_list (remove_result biglist x) xs
-    | _ -> biglist
-  in
-  iter_list (find_uses funname funid file) (find_uses_cond funname funid file)
+  let uses_cond = find_uses_cond funname funid file in
+  let all_uses = find_uses funname funid file in
+  List.filter (fun x -> not (List.mem x uses_cond)) all_uses
 
 (* Finds calls of all functions in non-condition in all functions *)
 let find_uses_noncond_all file =
-  let rec iter_list list =
-    match list with
-    | GFun (dec, _) :: xs ->
-        find_uses_noncond "" dec.svar.vid file @ iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
-  in
-  iter_list file.globals
+  List.flatten
+  @@ List.filter_map
+       (map_gfun (fun fundec _ ->
+            Some (find_uses_noncond "" fundec.svar.vid file)))
+       file.globals
 
-class find_calls_usesvar_with_tmp result funname funid varname :
-  nopCilVisitor =
+class find_calls_usesvar_with_tmp result funname funid varname : nopCilVisitor =
   object
     inherit nopCilVisitor
 
@@ -430,55 +386,38 @@ class find_calls_usesvar_with_tmp result funname funid varname :
 
 let find_lval_of_calls_usesvar funname funid varname file =
   let result = ref [] in
-  let visitor =
-    new find_calls_usesvar_with_tmp result funname funid varname
-  in
+  let visitor = new find_calls_usesvar_with_tmp result funname funid varname in
   visitCilFileSameGlobals visitor file;
   !result
 
 (* Finds calls of a function with a variable as argument in conditions *)
 let find_usesvar_cond funname funid varname file =
   let id_list = find_lval_of_calls_usesvar funname funid varname file in
-  let rec iter_list list =
-    match list with
-    | (tmp, func) :: xs -> (
-        match FuncVar.find_uses_in_cond "" tmp file true with
-        | (_, loc, _, _) :: _ ->
-            create_fun_res "" func file loc :: iter_list xs
-        | [] -> iter_list xs )
-    | _ -> []
-  in
-  iter_list id_list
+  List.filter_map
+    (fun (tmp, func) ->
+      match FuncVar.find_uses_in_cond "" tmp file true with
+      | (_, loc, _, _) :: _ -> Some (create_fun_res "" func file loc)
+      | _ -> None)
+    id_list
 
 (* Finds calls of all functions with a variable as argument in conditions *)
 let find_usesvar_cond_all varname file =
-  let rec iter_list list =
-    match list with
-    | GFun (dec, _) :: xs ->
-        find_usesvar_cond "" dec.svar.vid varname file @ iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
-  in
-  iter_list file.globals
+  List.flatten
+  @@ List.filter_map
+       (map_gfun (fun fundec _ ->
+            Some (find_usesvar_cond "" fundec.svar.vid varname file)))
+       file.globals
 
 (* Finds calls of a function with a variable as argument in non-conditions *)
 let find_usesvar_noncond funname funid varname file =
-  let rec iter_list biglist smalllist =
-    match smalllist with
-    | x :: xs -> iter_list (remove_result biglist x) xs
-    | _ -> biglist
-  in
-  iter_list
-    (find_usesvar funname funid varname file)
-    (find_usesvar_cond funname funid varname file)
+  let uses_cond = find_usesvar_cond funname funid varname file in
+  let all_uses = find_usesvar funname funid varname file in
+  List.filter (fun x -> not (List.mem x uses_cond)) all_uses
 
 (* Finds calls of all functions with a variable as argument in non-conditions *)
 let find_usesvar_noncond_all varname file =
-  let rec iter_list list =
-    match list with
-    | GFun (dec, _) :: xs ->
-        find_usesvar_noncond "" dec.svar.vid varname file @ iter_list xs
-    | _ :: xs -> iter_list xs
-    | [] -> []
-  in
-  iter_list file.globals
+  List.flatten
+  @@ List.filter_map
+       (map_gfun (fun fundec _ ->
+            Some (find_usesvar_noncond "" fundec.svar.vid varname file)))
+       file.globals
